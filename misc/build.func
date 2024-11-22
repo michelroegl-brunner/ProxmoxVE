@@ -65,7 +65,7 @@ msg_ok() {
 }
 
 # This function displays a error message with a red color.
-msg_error() {
+msg_error() {https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/mailcow-dockerized/ct/mailcow.sh
   if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
   printf "\e[?25h"
   local msg="$1"
@@ -666,7 +666,7 @@ http://dl-cdn.alpinelinux.org/alpine/latest-stable/community
 EOF'
     pct exec "$CTID" -- ash -c "apk add bash >/dev/null"
   fi
-  lxc-attach -n "$CTID" -- bash -c "$(wget -qLO - https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/install/$var_install.sh)" || exit
+  lxc-attach -n "$CTID" -- bash -c "$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/main/install//$var_install.sh)" || exit
 
 }
 
