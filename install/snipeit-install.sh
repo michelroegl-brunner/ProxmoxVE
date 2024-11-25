@@ -19,7 +19,7 @@ $STD apt-get install -y sudo
 $STD apt-get install -y mc
 $STD apt-get install -y apache2
 $STD apt-get install -y php8.1-{bcmath,common,ctype,curl,fileinfo,fpm,gd,iconv,intl,mbstring,mysql,soap,xml,xsl,zip,cli}
-$std apt-get install -y mariadb-server
+$STD apt-get install -y mariadb-server
 
 msg_ok "Installed Dependencies"
 
