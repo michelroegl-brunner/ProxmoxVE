@@ -15,16 +15,81 @@ update_os
 
 msg_info "Installing Dependencies"
  apt-get install -y curl
+ apt-get install -y git
  apt-get install -y sudo
  apt-get install -y mc
- apt-get install -y apache2
+ apt-get install -y nginx
  apt-get install -y php8.2-{bcmath,common,ctype,curl,fileinfo,fpm,gd,iconv,intl,mbstring,mysql,soap,xml,xsl,zip,cli}
  apt-get install -y mariadb-server
-
 msg_ok "Installed Dependencies"
 
+msg_info "Installing Composer"
+curl -sS https://getcomposer.org/installer -o composer-setup.php
+php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+msg_ok "Installed Composer"
 
+msg_info "Configre Database"
+read -r -p "Enter password for Database user " password
+echo "CREATE DATABASE snipeit;" | mysql
+echo "GRANT ALL ON snipeit.* TO snipeit@localhost identified by '$password';" | mysql
+echo "FLUSH PRIVILEGES" | mysql
+msg_ok "Configured Database
 
+msg_info "Clone SnipeIT from Github"
+cd /var/www/html
+git clone https://github.com/snipe/snipe-it snipe-it
+msg_ok "Finished cloning"
+
+msg_info "Configure SnipeIT"
+cd snipe-it
+cp .env.example .env
+IPADDRESS=$(hostname -I | awk '{print $1}')
+sed -i "s|^APP_URL=.*|APP_URL=http://$IPADDRESS|" .env
+
+sed -i "s|^DB_DATABASE=.*|DB_DATABASE=snipeit|" .env
+sed -i "s|^DB_USERNAME=.*|DB_USERNAME=snipeit|" .env
+sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=$password|" .env
+chown -R www-data: /var/www/html/snipe-it
+chmod -R 755 /var/www/html/snipe-it
+
+msg_ok "Configred SnipeIT"
+
+msg_info "Update SnipeIT dependencies"
+composer update --no-plugins --no-scripts
+composer install --no-dev --prefer-source --no-plugins --no-scripts
+msg_ok "Update OK"
+
+msg_info "Generate APP_KEY"
+php artisan key:generate
+msg_ok "Done"
+
+msg_info "Configure NGINX"
+echo -e '{
+server {
+        listen 80;
+        server_name $IPADDRESS;
+        root /var/www/html/snipe-it/public;
+        
+        index index.php;
+                
+        location / {
+                try_files $uri $uri/ /index.php?$query_string;
+
+        }
+        
+        location ~ \.php$ {
+		include fastcgi.conf;
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/run/php/php8.1-fpm.sock;
+		fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        	fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        	include fastcgi_params;
+        }
+}' > /etc/nginx/conf.d/snipeit.conf
+systemctl restart nginx
+msg_ok "Configured NGINX"
+
+msg_ok "SnipeIT is up and running, head to $IPADDRESS to reach the site"
 
 motd_ssh
 customize
