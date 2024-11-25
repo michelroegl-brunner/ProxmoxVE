@@ -14,12 +14,12 @@ network_check
 update_os
 
 msg_info "Installing Dependencies"
-$STD apt-get install -y curl
-$STD apt-get install -y sudo
-$STD apt-get install -y mc
-$STD apt-get install -y apache2
-$STD apt-get install -y php8.1-{bcmath,common,ctype,curl,fileinfo,fpm,gd,iconv,intl,mbstring,mysql,soap,xml,xsl,zip,cli}
-$STD apt-get install -y mariadb-server
+ apt-get install -y curl
+ apt-get install -y sudo
+ apt-get install -y mc
+ apt-get install -y apache2
+ apt-get install -y php8.1-{bcmath,common,ctype,curl,fileinfo,fpm,gd,iconv,intl,mbstring,mysql,soap,xml,xsl,zip,cli}
+ apt-get install -y mariadb-server
 
 msg_ok "Installed Dependencies"
 
