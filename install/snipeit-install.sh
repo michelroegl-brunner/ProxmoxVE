@@ -14,13 +14,13 @@ network_check
 update_os
 
 msg_info "Installing Dependencies"
- apt-get install -y curl
- apt-get install -y git
- apt-get install -y sudo
- apt-get install -y mc
- apt-get install -y nginx
- apt-get install -y php8.2-{bcmath,common,ctype,curl,fileinfo,fpm,gd,iconv,intl,mbstring,mysql,soap,xml,xsl,zip,cli}
- apt-get install -y mariadb-server
+$STD apt-get install -y curl
+$STD apt-get install -y git
+$STD apt-get install -y sudo
+$STD apt-get install -y mc
+$STD apt-get install -y nginx
+$STD apt-get install -y php8.2-{bcmath,common,ctype,curl,fileinfo,fpm,gd,iconv,intl,mbstring,mysql,soap,xml,xsl,zip,cli}
+$STD apt-get install -y mariadb-server
 msg_ok "Installed Dependencies"
 
 msg_info "Installing Composer"
@@ -30,9 +30,9 @@ msg_ok "Installed Composer"
 
 msg_ok "Configre Database\n"
 read -r -p "Enter password for Database user " password
-echo "CREATE DATABASE snipeit;" | mysql
-echo "GRANT ALL ON snipeit.* TO snipeit@localhost identified by '$password';" | mysql
-echo "FLUSH PRIVILEGES" | mysql
+echo -e '{CREATE DATABASE snipeit;}' | mysql
+echo -e '{GRANT ALL ON snipeit.* TO snipeit@localhost identified by '$password';}' | mysql
+echo -e '{FLUSH PRIVILEGES;}' | mysql
 msg_ok "Configured Database
 
 msg_info "Clone SnipeIT from Github"
