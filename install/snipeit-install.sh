@@ -28,7 +28,7 @@ curl -sS https://getcomposer.org/installer -o composer-setup.php
 php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 msg_ok "Installed Composer"
 
-msg_info "Configre Database"
+msg_ok "Configre Database\n"
 read -r -p "Enter password for Database user " password
 echo "CREATE DATABASE snipeit;" | mysql
 echo "GRANT ALL ON snipeit.* TO snipeit@localhost identified by '$password';" | mysql
