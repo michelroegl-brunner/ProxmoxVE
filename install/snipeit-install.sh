@@ -18,7 +18,7 @@ msg_info "Installing Dependencies"
  apt-get install -y sudo
  apt-get install -y mc
  apt-get install -y apache2
- apt-get install -y php8.3-{bcmath,common,ctype,curl,fileinfo,fpm,gd,iconv,intl,mbstring,mysql,soap,xml,xsl,zip,cli}
+ apt-get install -y php8.2-{bcmath,common,ctype,curl,fileinfo,fpm,gd,iconv,intl,mbstring,mysql,soap,xml,xsl,zip,cli}
  apt-get install -y mariadb-server
 
 msg_ok "Installed Dependencies"
