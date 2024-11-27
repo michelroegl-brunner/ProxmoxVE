@@ -29,7 +29,7 @@ php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 msg_ok "Installed Composer"
 
 msg_ok "Configre Database\n"
-read -r -p "Enter password for Database user " password
+read -r -p "Enter password for Database user: " password
 echo -e 'CREATE DATABASE snipeit;' | mysql
 echo -e "GRANT ALL ON snipeit.* TO snipeit@localhost identified by '$password';" | mysql
 echo -e 'FLUSH PRIVILEGES;' | mysql
