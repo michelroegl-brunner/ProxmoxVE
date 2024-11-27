@@ -31,9 +31,9 @@ msg_ok "Installed Composer"
 msg_ok "Configre Database\n"
 read -r -p "Enter password for Database user " password
 echo -e 'CREATE DATABASE snipeit;' | mysql
-echo -e 'GRANT ALL ON snipeit.* TO snipeit@localhost identified by '$password';' | mysql
+echo -e "GRANT ALL ON snipeit.* TO snipeit@localhost identified by '$password';" | mysql
 echo -e 'FLUSH PRIVILEGES;' | mysql
-msg_ok "Configured Database
+msg_ok "Configured Database"
 
 msg_info "Clone SnipeIT from Github"
 cd /var/www/html
@@ -67,7 +67,7 @@ msg_info "Configure NGINX"
 echo -e '{
 server {
         listen 80;
-        server_name $IPADDRESS;
+        server_name '$IPADDRESS';
         root /var/www/html/snipe-it/public;
         
         index index.php;
