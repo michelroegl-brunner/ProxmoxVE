@@ -1,20 +1,25 @@
 #!/usr/bin/env bash
 source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/snipeit-bare-metal/misc/build.func)
 
-# Copyright (c) 2021-2024 tteck
-# Author: tteck (tteckster)
+#Copyright (c) 2021-2024 community-scripts ORG
+# Author: Michel Roegl-Brunner (michelroegl-brunner)
 # License: MIT
 # https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 function header_info {
 clear
 cat <<"EOF"
-SnipeIT
+   _____       _                  __________
+  / ___/____  (_)___  ___        /  _/_  __/
+  \__ \/ __ \/ / __ \/ _ \______ / /  / /   
+ ___/ / / / / / /_/ /  __/_____// /  / /    
+/____/_/ /_/_/ .___/\___/     /___/ /_/     
+            /_/                             
 EOF
 }
 header_info
 echo -e "Loading..."
 APP="SnipeIT"
-var_disk="20"
+var_disk="5"
 var_cpu="2"
 var_ram="2048"
 var_os="debian"
@@ -51,7 +56,7 @@ function update_script() {
 header_info
 check_container_storage
 check_container_resources
-if [[ ! -d /var ]]; then msg_error "No ${APP} Installation Found!"; exit; fi
+if [[ ! -d /opt/snipe-it ]]; then msg_error "No ${APP} Installation Found!"; exit; fi
 msg_info "Updating ${APP} LXC"
 apt-get update &>/dev/null
 apt-get -y upgrade &>/dev/null
