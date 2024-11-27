@@ -51,20 +51,22 @@ sed -i "s|^DB_USERNAME=.*|DB_USERNAME=snipeit|" .env
 sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=$password|" .env
 chown -R www-data: /var/www/html/snipe-it
 chmod -R 755 /var/www/html/snipe-it
+git config --global --add safe.directory /var/www/html/snipe-it
 
 msg_ok "Configred SnipeIT"
 
 msg_info "Update SnipeIT dependencies"
+export COMPOSER_ALLOW_SUPERUSER=1
 composer update --no-plugins --no-scripts
 composer install --no-dev --prefer-source --no-plugins --no-scripts
 msg_ok "Update OK"
 
 msg_info "Generate APP_KEY"
-php artisan key:generate
+php artisan key:generate --force
 msg_ok "Done"
 
 msg_info "Configure NGINX"
-echo -e '{
+echo -e '
 server {
         listen 80;
         server_name '$IPADDRESS';
@@ -80,7 +82,7 @@ server {
         location ~ \.php$ {
 		include fastcgi.conf;
                 include snippets/fastcgi-php.conf;
-                fastcgi_pass unix:/run/php/php8.1-fpm.sock;
+                fastcgi_pass unix:/run/php/php8.2-fpm.sock;
 		fastcgi_split_path_info ^(.+\.php)(/.+)$;
         	fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         	include fastcgi_params;
