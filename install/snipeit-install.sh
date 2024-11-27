@@ -47,6 +47,7 @@ wget -q "https://github.com/snipe/snipe-it/archive/refs/tags/v${RELEASE}.zip"
 unzip -q v${RELEASE}.zip
 mv snipe-it-${RELEASE} /opt/snipe-it
 
+cd /opt/snipe-it
 cp .env.example .env
 IPADDRESS=$(hostname -I | awk '{print $1}')
 
