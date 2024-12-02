@@ -46,6 +46,7 @@ msg_info "Installing Snipe-IT"
 cd /opt
 RELEASE=$(curl -s https://api.github.com/repos/snipe/snipe-it/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
 wget -q "https://github.com/snipe/snipe-it/archive/refs/tags/v${RELEASE}.zip"
+echo "${VERSION}" >"/opt/${APP_NAME}_version.txt"
 unzip -q v${RELEASE}.zip
 mv snipe-it-${RELEASE} /opt/snipe-it
 
