@@ -1,6 +1,6 @@
 <div align="center">
   <a href="#">
-    <img src="https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/images/logo.png" height="100px" />
+    <img src="https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/dev/misc/images/logo.png" height="100px" />
  </a>
 </div>
 <h2 align="center">Contributing to Proxmox VE Helper Scripts</h2>
