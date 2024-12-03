@@ -140,9 +140,9 @@ cat *.sql | mysql -u root ${DB_NAME}
 {
     echo "mysql-hostname: 127.0.0.1"
     echo "mysql-port: 3306"
-    echo "mysql-database: ${DB_NAME}"
-    echo "mysql-username: ${DB_USER}"
-    echo "mysql-password: ${DB_PASS}"
+    echo "mysql-database: $DB_NAME"
+    echo "mysql-username: $DB_USER"
+    echo "mysql-password: $DB_PASS"
 
 } >> /etc/guacamole/guacamole.properties
 
