@@ -16,8 +16,8 @@ network_check
 update_os
 
 msg_info "Installing Dependencies"
-$STD apt-get install -y \
-   build-essential \ 
+apt-get install -y \
+   build-essential \
    libcairo2-dev \
    libjpeg-turbo62-dev \
    libpng-dev \
