@@ -16,10 +16,13 @@ network_check
 update_os
 
 msg_info "Installing Dependencies"
+
 apt-get install -y \
    build-essential \
+   curl \
+   jq \
    libcairo2-dev \
-   libjpeg-turbo62-dev \
+   libturbojpeg0 \
    libpng-dev \
    libtool-bin \
    libossp-uuid-dev \
@@ -36,27 +39,115 @@ apt-get install -y \
    libswscale-dev \
    libavcodec-dev \
    libavutil-dev \
-   libavformat-dev
+   libavformat-dev \
+   mariadb-server 
+
+
 msg_ok "Installed Dependencies"
 
-
-msg_info "Installing Apache Guacamole"
-
-REALESE=$(curl -sL https://api.github.com/repos/apache/guacamole-server/tags | jq -r '.[0].zipball_url')
+msg_info "Install Tomcat"
 mkdir /opt/${APPLICATION}
-$STD wget https://api.github.com/repos/apache/guacamole-server/zipball/refs/tags/ -p /opt/${APPLICATION}
-cd /opt/${APPLICATION}
-tar -xvf guacamole-server.${REALESE}.tar.gz
-cd guacamole-server.${REALESE}.tar.gz
+mkdir /opt/${APPLICATION}/tomcat9
+#wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.97/bin/apache-tomcat-9.0.97.tar.gz
+#tar xzf apache-tomcat-9.0.97.tar.gz -C /opt/${APPLICATION}/tomcat9 --strip-components=1
+
+useradd -r -d /opt/tomcat9 -s /bin/false tomcat
+chown -R tomcat: /opt/${APPLICATION}/tomcat9/{logs,temp,webapps,work}
+chown -R :tomcat /opt/${APPLICATION}/tomcat9/
+chmod -R g+r /opt/${APPLICATION}/tomcat9/conf
+chmod g+x /opt/${APPLICATION}/tomcat9/conf
+JAVA_HOME=$(update-alternatives --query javadoc | grep Value: | head -n1 | sed 's/Value: //' | sed 's@bin/javadoc$@@')
+cat <<EOF >/etc/systemd/system/tomcat.service
+[Unit]
+Description=Apache Tomcat Web Application Container
+After=network.target
+
+[Service]
+Type=forking
+
+Environment="JAVA_HOME=${JAVA_HOME}"
+Environment="CATALINA_PID=/opt/${APPLICATION}/tomcat9/temp/tomcat.pid"
+Environment="CATALINA_HOME=/opt/${APPLICATION}/tomcat9/"
+Environment="CATALINA_BASE=/opt/${APPLICATION}/tomcat9/"
+Environment="CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC"
+Environment="JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom"
+
+ExecStart=/opt/${APPLICATION}/tomcat9/bin/startup.sh
+ExecStop=/opt/${APPLICATION}/tomcat9/bin/shutdown.sh
+
+User=tomcat
+Group=tomcat
+UMask=0007
+RestartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl daemon-reload
+systemctl enable --now tomcat
+
+msg_ok "Installed Tomcat"
+
+msg_info "Installing Guacamole"
+
+mkdir -p /etc/guacamole/{extensions,lib}
+
+REALESE_SERVER=$(curl -sL https://api.github.com/repos/apache/guacamole-server/tags | jq -r '.[0].name')
+mkdir /opt/${APPLICATION}/apache-guacamole-server-${REALESE_SERVER}
+wget -O apache-guacamole-server-${REALESE_SERVER} https://api.github.com/repos/apache/guacamole-server/tarball/refs/tags/${REALESE_SERVER}
+tar -xvf apache-guacamole-server-${REALESE_SERVER} -C /opt/${APPLICATION}/apache-guacamole-server-${REALESE_SERVER} --strip-components=1
+cd /opt/${APPLICATION}/apache-guacamole-server-${REALESE_SERVER}
+autoreconf -fi
 ./configure --with-init-dir=/etc/init.d --enable-allow-freerdp-snapshots
 make
 make install
 ldconfig
 systemctl daemon-reload
 systemctl enable --now guacd
-mkdir -p /opt/guacamole/{extensions,lib}
 
+REALESE_CLIENT=$(curl -sL https://api.github.com/repos/apache/guacamole-client/tags | jq -r '.[0].name')
+wget -O /opt/${APPLICATION}/tomcat9/webapps/guacamole.war https://downloads.apache.org/guacamole/${REALESE_CLIENT}/binary/guacamole-${REALESE_CLIENT}.war
 
+systemctl restart guacd tomcat
+msg_ok "Installed Guacamole"
+
+msg_info "Creating Service"
+
+cd /root
+wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.26.tar.gz
+tar -xf mysql-connector-java-8.0.26.tar.gz
+mv mysql-connector-java-8.0.26/mysql-connector-java-8.0.26.jar /etc/guacamole/lib/
+wget https://downloads.apache.org/guacamole/1.5.5/binary/guacamole-auth-jdbc-1.5.5.tar.gz
+tar -xf guacamole-auth-jdbc-1.5.5.tar.gz
+mv guacamole-auth-jdbc-1.5.5/mysql/guacamole-auth-jdbc-mysql-1.5.5.jar /etc/guacamole/extensions/
+
+DB_NAME=guacamole_db
+DB_USER=guacamole_user
+DB_PASS=$(openssl rand -base64 18 | tr -dc 'a-zA-Z0-9' | head -c13)
+mysql -u root -e "CREATE DATABASE $DB_NAME;"
+mysql -u root -e "CREATE USER '$DB_USER'@'localhost' IDENTIFIED WITH mysql_native_password AS PASSWORD('$DB_PASS');"
+mysql -u root -e "GRANT ALL ON $DB_NAME.* TO '$DB_USER'@'localhost'; FLUSH PRIVILEGES;"
+{
+    echo "SnipeIT-Credentials"
+    echo "SnipeIT Database User: $DB_USER"
+    echo "SnipeIT Database Password: $DB_PASS"
+    echo "SnipeIT Database Name: $DB_NAME"
+} >> ~/guacamole.creds
+cd guacamole-auth-jdbc-1.5.5/mysql/schema
+cat *.sql | mysql -u root -e guacamole_db
+
+cat <<EOF >/etc/guacamole/guacamole.properties
+mysql-hostname: 127.0.0.1
+mysql-port: 3306
+mysql-database: ${DB_NAME}
+mysql-username: ${DB_USER}
+mysql-password: ${DB_PASS}
+EOF
+
+systemctl restart tomcat guacd mysql
+
+msg_ok "Creted Service"
 
 motd_ssh
 customize
