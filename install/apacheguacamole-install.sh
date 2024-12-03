@@ -48,9 +48,8 @@ msg_ok "Installed Dependencies"
 msg_info "Install Tomcat"
 mkdir /opt/${APPLICATION}
 mkdir /opt/${APPLICATION}/tomcat9
-#wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.97/bin/apache-tomcat-9.0.97.tar.gz
-#tar xzf apache-tomcat-9.0.97.tar.gz -C /opt/${APPLICATION}/tomcat9 --strip-components=1
-
+wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.97/bin/apache-tomcat-9.0.97.tar.gz
+tar xzf apache-tomcat-9.0.97.tar.gz -C /opt/${APPLICATION}/tomcat9 --strip-components=1
 useradd -r -d /opt/tomcat9 -s /bin/false tomcat
 chown -R tomcat: /opt/${APPLICATION}/tomcat9/{logs,temp,webapps,work}
 chown -R :tomcat /opt/${APPLICATION}/tomcat9/
