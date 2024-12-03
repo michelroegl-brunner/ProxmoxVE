@@ -135,7 +135,7 @@ mysql -u root -e "GRANT ALL ON $DB_NAME.* TO '$DB_USER'@'localhost'; FLUSH PRIVI
     echo "SnipeIT Database Name: $DB_NAME"
 } >> ~/guacamole.creds
 cd guacamole-auth-jdbc-1.5.5/mysql/schema
-cat *.sql | mysql -u root ${DBNAME}
+cat *.sql | mysql -u root ${DB_NAME}
 
 {
     echo "mysql-hostname: 127.0.0.1"
