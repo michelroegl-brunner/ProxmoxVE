@@ -7,6 +7,12 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 function header_info {
 clear
 cat <<"EOF"
+    ___                     __            ______                                       __   
+   /   |  ____  ____ ______/ /_  ___     / ____/_  ______ __________ _____ ___  ____  / /__ 
+  / /| | / __ \/ __ `/ ___/ __ \/ _ \   / / __/ / / / __ `/ ___/ __ `/ __ `__ \/ __ \/ / _ \
+ / ___ |/ /_/ / /_/ / /__/ / / /  __/  / /_/ / /_/ / /_/ / /__/ /_/ / / / / / / /_/ / /  __/
+/_/  |_/ .___/\__,_/\___/_/ /_/\___/   \____/\__,_/\__,_/\___/\__,_/_/ /_/ /_/\____/_/\___/ 
+      /_/                                                                                   
 EOF
 }
 header_info
@@ -46,12 +52,6 @@ function default_settings() {
   echo_default
 }
 
-function update_script() {
-header_info
-check_container_storage
-check_container_resources
-if [[ ! -d /opt ]]; then msg_error "No ${APP} Installation Found!"; exit; fi
-}
 start
 build_container
 description

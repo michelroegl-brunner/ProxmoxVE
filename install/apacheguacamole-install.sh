@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 
-
 #Copyright (c) 2021-2024 community-scripts ORG
 # Author: Michel Roegl-Brunner (michelroegl-brunner)
 # License: MIT
 # https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
-
 
 source /dev/stdin <<<"$FUNCTIONS_FILE_PATH"
 color
@@ -16,7 +14,6 @@ network_check
 update_os
 
 msg_info "Installing Dependencies"
-
 $STD apt-get install -y \
    build-essential \
    curl \
@@ -42,8 +39,6 @@ $STD apt-get install -y \
    libavformat-dev \
    mariadb-server \
    default-jdk
-
-
 msg_ok "Installed Dependencies"
 
 msg_info "Install Tomcat"
@@ -86,13 +81,10 @@ WantedBy=multi-user.target
 EOF
 $STD systemctl daemon-reload
 $STD systemctl enable --now tomcat
-
 msg_ok "Installed Tomcat"
 
 msg_info "Installing Guacamole"
-
 mkdir -p /etc/guacamole/{extensions,lib}
-
 REALESE_SERVER=$(curl -sL https://api.github.com/repos/apache/guacamole-server/tags | jq -r '.[0].name')
 mkdir /opt/${APPLICATION}/apache-guacamole-server-${REALESE_SERVER}
 $STD wget -O apache-guacamole-server-${REALESE_SERVER} https://api.github.com/repos/apache/guacamole-server/tarball/refs/tags/${REALESE_SERVER}
@@ -105,15 +97,12 @@ $STD make install
 $STD ldconfig
 $STD systemctl daemon-reload
 $STD systemctl enable --now guacd
-
 REALESE_CLIENT=$(curl -sL https://api.github.com/repos/apache/guacamole-client/tags | jq -r '.[0].name')
 $STD wget -O /opt/${APPLICATION}/tomcat9/webapps/guacamole.war https://downloads.apache.org/guacamole/${REALESE_CLIENT}/binary/guacamole-${REALESE_CLIENT}.war
-
 $STD systemctl restart guacd tomcat
 msg_ok "Installed Guacamole"
 
 msg_info "Creating Service"
-
 cd /root
 $STD wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.26.tar.gz
 $STD tar -xf mysql-connector-java-8.0.26.tar.gz
@@ -121,7 +110,6 @@ mv mysql-connector-java-8.0.26/mysql-connector-java-8.0.26.jar /etc/guacamole/li
 $STD wget https://downloads.apache.org/guacamole/1.5.5/binary/guacamole-auth-jdbc-1.5.5.tar.gz
 $STD tar -xf guacamole-auth-jdbc-1.5.5.tar.gz
 mv guacamole-auth-jdbc-1.5.5/mysql/guacamole-auth-jdbc-mysql-1.5.5.jar /etc/guacamole/extensions/
-
 DB_NAME=guacamole_db
 DB_USER=guacamole_user
 DB_PASS=$(openssl rand -base64 18 | tr -dc 'a-zA-Z0-9' | head -c13)
@@ -136,7 +124,6 @@ mysql -u root -e "GRANT ALL ON $DB_NAME.* TO '$DB_USER'@'localhost'; FLUSH PRIVI
 } >> ~/guacamole.creds
 cd guacamole-auth-jdbc-1.5.5/mysql/schema
 cat *.sql | mysql -u root ${DB_NAME}
-
 {
     echo "mysql-hostname: 127.0.0.1"
     echo "mysql-port: 3306"
@@ -145,15 +132,17 @@ cat *.sql | mysql -u root ${DB_NAME}
     echo "mysql-password: $DB_PASS"
 
 } >> /etc/guacamole/guacamole.properties
-
 $STD systemctl restart tomcat guacd mysql
-
 msg_ok "Creted Service"
 
 motd_ssh
 customize
 
 msg_info "Cleaning up"
+$STD rm mysql-connector-java-8.0.26.tar.gz
+$STD rm -rf mysql-connector-java-8.0.26
+$STD rm guacamole-auth-jdbc-1.5.5.tar.gz
+$STD rm -rf guacamole-auth-jdbc-1.5.5
 $STD apt-get -y autoremove
 $STD apt-get -y autoclean
 msg_ok "Cleaned"

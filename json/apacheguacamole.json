@@ -30,5 +30,15 @@
     "username": null,
     "password": null
   },
-  "notes": []
+  "notes": [
+    {
+      "text": "After installation you can reach the Management Dashboard with $IP:8080/guacamole"
+      "type": "info"
+    }
+    {
+      "text": "Default Username is guacadmin, Password is guacadmin"
+      "type": "info"
+    }
+
+  ]
 }
