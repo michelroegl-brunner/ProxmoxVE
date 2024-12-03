@@ -40,7 +40,8 @@ apt-get install -y \
    libavcodec-dev \
    libavutil-dev \
    libavformat-dev \
-   mariadb-server 
+   mariadb-server \
+   default-jdk
 
 
 msg_ok "Installed Dependencies"
