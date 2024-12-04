@@ -1,0 +1,43 @@
+{
+  "name": "Checkmk",
+  "slug": "checkmk",
+  "categories": [
+    7
+  ],
+  "date_created": "2024-12-04",
+  "type": "ct",
+  "updateable": true,
+  "privileged": false,
+  "interface_port": 80,
+  "documentation": "https://docs.checkmk.com/latest/",
+  "website": "https://checkmk.com/",
+  "logo": "https://github.com/Checkmk/checkmk/blob/master/omd/license_sources/checkmk_logo.svg",
+  "description": "Checkmk - Your complete IT monitoring solution",
+  "install_methods": [
+    {
+      "type": "default",
+      "script": "/ct/checkmk.sh",
+      "resources": {
+        "cpu": 2,
+        "ram": 2048,
+        "hdd": 8,
+        "os": "Debian",
+        "version": "12"
+      }
+    }
+  ],
+  "default_credentials": {
+    "username": null,
+    "password": null
+  },
+  "notes": [
+    {
+      "text": "You can reach the Webinterface by going to IP/SITENAME",
+      "type": "info"
+    },
+    {
+      "text": "The credentials for the first login can be found in the LXC root folder in checkmk.creds",
+      "type": "info"
+    }
+  ]
+}

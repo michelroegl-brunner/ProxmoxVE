@@ -20,8 +20,8 @@ msg_ok "Install Dependencies"
 msg_info "Setup Checkmk"
 #RELEASE=$(curl -s https://checkmk.com/download/archive | grep -oP 'handle="\K[^"]+' | head -n 1)
 RELEASE=2.3.0p20
-wget -q https://download.checkmk.com/checkmk/${RELEASE}/check-mk-raw-${RELEASE}_0.bookworm_amd64.deb
-$STD apt-get install -y ./check-mk-raw-${RELEASE}_0.bookworm_amd64.deb
+wget -q --directory-prefix=/opt https://download.checkmk.com/checkmk/${RELEASE}/check-mk-raw-${RELEASE}_0.bookworm_amd64.deb
+$STD apt-get install -y /opt/check-mk-raw-${RELEASE}_0.bookworm_amd64.deb
 echo "${RELEASE}" >"/opt/${APPLICATION}_version.txt"
 msg_ok "Setup Checkmk"
 
@@ -44,6 +44,7 @@ customize
 
 msg_info "Cleaning up"
 rm -rf /opt/v${RELEASE}.zip
+$STD rm /opt/check-mk-raw-${RELEASE}_0.bookworm_amd64.deb
 $STD apt-get -y autoremove
 $STD apt-get -y autoclean
 msg_ok "Cleaned"
