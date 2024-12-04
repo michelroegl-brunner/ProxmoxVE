@@ -56,14 +56,14 @@ if [[ ! -d /opt/omd ]]; then msg_error "No ${APP} Installation Found!"; exit; fi
 RELEASE=$(curl -s https://checkmk.com/download/archive | grep -oP 'handle="\K[^"]+' | head -n 1)
 if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
 SITE=$(grep -oP 'Checkmk Site:\s*\K.*' checkmk.creds)
-msg_info "Backup Site: ${SITE} to ${SITE}_BACKUP"
+msg_info "Backup Site: ${SITE} to ${SITE}_BACKUP.tar"
 omd stop $SITE &>/dev/null
 omd backup $SITE ${SITE}_$(cat /opt/${APP}_version.txt)_BACKUP &>/dev/null
 msg_ok "Backup Site: ${SITE} to ${SITE}_BACKUP"
 
 msg_info "Updating ${APP} to v${RELEASE}"
 wget -q --directory-prefix=/opt  https://download.checkmk.com/checkmk/${RELEASE}/check-mk-raw-${RELEASE}_0.bookworm_amd64.deb
-apt-get install -y /opt/check-mk-raw-${RELEASE}_0.bookworm_amd64.deb 
+apt-get install -y /opt/check-mk-raw-${RELEASE}_0.bookworm_amd64.deb &>/dev/null 
 echo "${RELEASE}" >"/opt/${APP}_version.txt"
 omd su $SITE &>/dev/null
 omd update --conflict install &>/dev/null
