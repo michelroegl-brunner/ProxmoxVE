@@ -17,7 +17,7 @@ EOF
 }
 header_info
 echo -e "Loading..."
-APP="ApacheGuacamole"
+APP="Apache-Guacamole"
 
 var_disk="4"
 var_cpu="1"
