@@ -104,7 +104,7 @@ mv mysql-connector-java-8.0.26/mysql-connector-java-8.0.26.jar /etc/guacamole/li
 wget -q https://downloads.apache.org/guacamole/1.5.5/binary/guacamole-auth-jdbc-1.5.5.tar.gz
 $STD tar -xf guacamole-auth-jdbc-1.5.5.tar.gz
 mv guacamole-auth-jdbc-1.5.5/mysql/guacamole-auth-jdbc-mysql-1.5.5.jar /etc/guacamole/extensions/
-msg_ok "Setup Databse"
+msg_ok "Setup Databses"
 msg_info "Setup Service"
 DB_NAME=guacamole_db
 DB_USER=guacamole_user
