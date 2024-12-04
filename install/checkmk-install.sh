@@ -25,15 +25,16 @@ echo "${RELEASE}" >"/opt/${APPLICATION}_version.txt"
 msg_ok "Setup Checkmk"
 
 
-msg_info "Setup Service"
+msg_info "Setup Service\n"
 read -r -p "What should your monitoring site be called?" SITENAME
-omd create ${SITENAME}
+$STD omd create ${SITENAME}
 PASS=$(openssl rand -base64 18 | tr -dc 'a-zA-Z0-9' | head -c13)
-htpasswd -m ~/etc/htpasswd cmkadmin ${PASS}
+su - $SITENAME -c "echo $PASS | cmk-passwd --stdin cmkadmin"
 {
     echo "Checkmk-Credentials"
     echo "Checkmk User: cmkadmin"
-    echo "SnipeIT Password: ${PASS}"
+    echo "Checkmk Password: ${PASS}"
+    echo "Checkmk Site: ${SITENAME}"
 } >> ~/checkmk.creds
 omd start ${SITENAME}
 msg_ok "Setup Service"
