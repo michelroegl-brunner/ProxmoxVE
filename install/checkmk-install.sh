@@ -24,9 +24,8 @@ $STD apt-get install -y ./check-mk-raw-${RELEASE}_0.bookworm_amd64.deb
 echo "${RELEASE}" >"/opt/${APPLICATION}_version.txt"
 msg_ok "Setup Checkmk"
 
-
-msg_info "Setup Service\n"
 read -r -p "What should your monitoring site be called?" SITENAME
+msg_info "Setup Service\n"
 $STD omd create ${SITENAME}
 PASS=$(openssl rand -base64 18 | tr -dc 'a-zA-Z0-9' | head -c13)
 su - $SITENAME -c "echo $PASS | cmk-passwd --stdin cmkadmin"
@@ -36,7 +35,7 @@ su - $SITENAME -c "echo $PASS | cmk-passwd --stdin cmkadmin"
     echo "Checkmk Password: ${PASS}"
     echo "Checkmk Site: ${SITENAME}"
 } >> ~/checkmk.creds
-omd start ${SITENAME}
+$STD omd start ${SITENAME}
 msg_ok "Setup Service"
 
 motd_ssh
