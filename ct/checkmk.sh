@@ -52,7 +52,29 @@ function update_script() {
 header_info
 check_container_storage
 check_container_resources
-if [[ ! -d /opt/snipe-it ]]; then msg_error "No ${APP} Installation Found!"; exit; fi
+if [[ ! -d /opt/omd ]]; then msg_error "No ${APP} Installation Found!"; exit; fi
+RELEASE=$(curl -s https://checkmk.com/download/archive | grep -oP 'handle="\K[^"]+' | head -n 1)
+if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
+SITE=$(grep -oP 'Checkmk Site:\s*\K.*' checkmk.creds)
+msg_info "Backup Site: ${SITE} to ${SITE}_BACKUP"
+omd stop $SITE &>/dev/null
+omd cp $SITE ${SITE}_BACKUP &>/dev/null
+msg_ok "Backup Site: ${SITE} to ${SITE}_BACKUP"
+
+msg_info "Updating ${APP} to v${RELEASE}"
+wget -q https://download.checkmk.com/checkmk/${RELEASE}/check-mk-raw-${RELEASE}_0.bookworm_amd64.deb
+$STD apt-get install -y ./check-mk-raw-${RELEASE}_0.bookworm_amd64.deb
+echo "${RELEASE}" >"/opt/${APPLICATION}_version.txt"
+omd su $SITE &>/dev/null
+omd update --conflict install &>/dev/null
+omd start &>/dev/null
+exit
+msg_ok "Updating ${APP} to v${RELEASE}"
+else
+  msg_ok "No update required. ${APP} is already at v${RELEASE}."
+fi
+exit
+}
 exit
 }
 

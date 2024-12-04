@@ -18,10 +18,11 @@ $STD apt-get install -y curl
 msg_ok "Install Dependencies"
 
 msg_info "Setup Checkmk"
-RELEASE=$(curl -s https://checkmk.com/download/archive | grep -oP 'handle="\K[^"]+' | head -n 1)
+#RELEASE=$(curl -s https://checkmk.com/download/archive | grep -oP 'handle="\K[^"]+' | head -n 1)
+RELEASE=2.3.0p20
 wget -q https://download.checkmk.com/checkmk/${RELEASE}/check-mk-raw-${RELEASE}_0.bookworm_amd64.deb
 $STD apt-get install -y ./check-mk-raw-${RELEASE}_0.bookworm_amd64.deb
-echo "${RELEASE}" >"/opt/${APPLICATION}_version.txt"
+echo "${RELEASE}" >"/opt/checkmk/${APPLICATION}_version.txt"
 msg_ok "Setup Checkmk"
 
 read -r -p "What should your monitoring site be called?" SITENAME
