@@ -64,9 +64,7 @@ msg_ok "Backup Site: ${SITE} to ${SITE}_BACKUP"
 msg_info "Updating ${APP} to v${RELEASE}"
 wget -q --directory-prefix=/opt  https://download.checkmk.com/checkmk/${RELEASE}/check-mk-raw-${RELEASE}_0.bookworm_amd64.deb
 apt-get install -y /opt/check-mk-raw-${RELEASE}_0.bookworm_amd64.deb &>/dev/null 
-omd su $SITE &>/dev/null
-omd update --conflict install &>/dev/null
-omd start &>/dev/null
+su - Test -c "omd --force -V 2.3.0p21.cre update --conflict install" &>/dev/null
 rm /opt/check-mk-raw-${RELEASE}_0.bookworm_amd64.deb &>/dev/null
 echo "${RELEASE}" >"/opt/${APP}_version.txt"
 exit
