@@ -75,8 +75,6 @@ else
 fi
 exit
 }
-exit
-}
 
 start
 build_container
