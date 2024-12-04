@@ -45,11 +45,11 @@ mkdir /opt/apache-guacamole
 mkdir /opt/apache-guacamole/tomcat9
 wget -q https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.97/bin/apache-tomcat-9.0.97.tar.gz
 $STD tar xzf apache-tomcat-9.0.97.tar.gz -C /opt/apache-guacamole/tomcat9 --strip-components=1
-#useradd -r -d /opt/tomcat9 -s /bin/false tomcat
-#chown -R tomcat: /opt/apache-guacamole/tomcat9/{logs,temp,webapps,work}
-#chown -R :tomcat /opt/apache-guacamole/tomcat9/
-#chmod -R g+r /opt/apache-guacamole/tomcat9/conf
-#chmod g+x /opt/apache-guacamole/tomcat9/conf
+useradd -r -d /opt/tomcat9 -s /bin/false tomcat
+chown -R tomcat: /opt/apache-guacamole/tomcat9/{logs,temp,webapps,work}
+chown -R :tomcat /opt/apache-guacamole/tomcat9/
+chmod -R g+r /opt/apache-guacamole/tomcat9/conf
+chmod g+x /opt/apache-guacamole/tomcat9/conf
 JAVA_HOME=$(update-alternatives --query javadoc | grep Value: | head -n1 | sed 's/Value: //' | sed 's@bin/javadoc$@@')
 cat <<EOF >/etc/systemd/system/tomcat.service
 [Unit]
