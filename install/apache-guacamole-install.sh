@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 #Copyright (c) 2021-2024 community-scripts ORG
 # Author: Michel Roegl-Brunner (michelroegl-brunner)
 # License: MIT
@@ -85,8 +84,8 @@ msg_info "Setup Apache Guacamole"
 mkdir -p /etc/guacamole/{extensions,lib}
 RELEASE_SERVER=$(curl -sL https://api.github.com/repos/apache/guacamole-server/tags | jq -r '.[0].name')
 mkdir /opt/apache-guacamole/apache-guacamole-server-${RELEASE_SERVER}
-wget -q -O apache-guacamole-server-${RELEASE_SERVER} https://api.github.com/repos/apache/guacamole-server/tarball/refs/tags/${REALESE_SERVER}
-$STD tar -xvf apache-guacamole-server-${RELEASE_SERVER} -C /opt/apache-guacamole/apache-guacamole-server-${REALESE_SERVER} --strip-components=1
+wget -q -O apache-guacamole-server-${RELEASE_SERVER} https://api.github.com/repos/apache/guacamole-server/tarball/refs/tags/${RELEASE_SERVER}
+$STD tar -xvf apache-guacamole-server-${RELEASE_SERVER} -C /opt/apache-guacamole/apache-guacamole-server-${RELEASE_SERVER} --strip-components=1
 cd /opt/apache-guacamole/apache-guacamole-server-${RELEASE_SERVER}
 $STD autoreconf -fi
 $STD ./configure --with-init-dir=/etc/init.d --enable-allow-freerdp-snapshots
@@ -94,7 +93,7 @@ $STD make
 $STD make install
 $STD ldconfig
 RELEASE_CLIENT=$(curl -sL https://api.github.com/repos/apache/guacamole-client/tags | jq -r '.[0].name')
-wget -q -O /opt/apache-guacamole/tomcat9/webapps/guacamole.war https://downloads.apache.org/guacamole/${RELEASE_CLIENT}/binary/guacamole-${REALESE_CLIENT}.war
+wget -q -O /opt/apache-guacamole/tomcat9/webapps/guacamole.war https://downloads.apache.org/guacamole/${RELEASE_CLIENT}/binary/guacamole-${RELEASE_CLIENT}.war
 msg_ok "Setup Apache Guacamole"
 
 msg_info "Setup Databas"
