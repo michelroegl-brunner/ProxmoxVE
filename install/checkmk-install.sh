@@ -13,6 +13,9 @@ setting_up_container
 network_check
 update_os
 
+msg_info "Install Dependencies"
+apg-get install -y curl
+msg_ok "Install Dependencies
 
 msg_info "Setup Checkmk"
 RELEASE=curl -s https://checkmk.com/download/archive | grep -oP 'handle="\K[^"]+' | head -n 1
