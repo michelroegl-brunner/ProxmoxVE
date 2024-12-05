@@ -55,7 +55,7 @@ $STD git checkout dev
 $STD git pull
 wget -q O- https://get.pnpm.io/install.sh | sh -
 source /root/.bashrc
-pnpm install 
+$STD pnpm install 
 else
 $STD npm ci 
 fi
