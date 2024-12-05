@@ -53,8 +53,12 @@ if [[ $DEV == "y" ]]; then
 $STD git fetch origin dev:dev
 $STD git checkout dev
 $STD git pull
+wget -q O- https://get.pnpm.io/install.sh | sh -
+source /root/.bashrc
+pnpm install 
+else
+$STD npm ci 
 fi
-$STD pnpm ci --include=dev
 msg_ok "Setup Zigbee2MQTT"
 
 msg_info "Creating Service"
