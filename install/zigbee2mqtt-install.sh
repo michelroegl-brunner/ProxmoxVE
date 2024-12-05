@@ -53,7 +53,7 @@ if [[ $DEV == "y" ]]; then
 $STD git fetch origin dev:dev
 $STD git checkout dev
 $STD git pull
-$STD wget -qO- https://get.pnpm.io/install.sh | sh -
+$STD bash -c "$(wget -qO- https://get.pnpm.io/install.sh)" 
 source /root/.bashrc
 $STD pnpm install 
 else
