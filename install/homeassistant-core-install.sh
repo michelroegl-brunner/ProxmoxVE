@@ -44,7 +44,7 @@ $STD apt-get install -y \
      software-properties-common
 $STD add-apt-repository -y ppa:deadsnakes/ppa
 $STD apt-get update
-$STD apt-install -y python3.13-dev
+$STD apt-get install -y python3.13-dev
 msg_ok "Installed Dependencies"
 
 msg_info "Installing UV"
