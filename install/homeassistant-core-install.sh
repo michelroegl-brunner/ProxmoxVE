@@ -14,8 +14,6 @@ network_check
 update_os
 
 msg_info "Installing Dependencies (Patience)"
-$STD add-apt-repository -y ppa:deadsnakes/ppa
-$STD apt-get update
 $STD apt-get install -y \
      git \
      curl \
@@ -43,7 +41,10 @@ $STD apt-get install -y \
      libmariadb-dev-compat \
      libatlas-base-dev \
      pip \
-     python3.13-dev
+     software-properties-common
+$STD add-apt-repository -y ppa:deadsnakes/ppa
+$STD apt-get update
+$STD apt-install -y python3.13-dev
 msg_ok "Installed Dependencies"
 
 msg_info "Installing UV"
