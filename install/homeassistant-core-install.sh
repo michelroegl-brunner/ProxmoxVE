@@ -14,6 +14,8 @@ network_check
 update_os
 
 msg_info "Installing Dependencies (Patience)"
+$STD add-apt-repository -y ppa:deadsnakes/ppa
+$STD apt-get update
 $STD apt-get install -y \
      git \
      curl \
