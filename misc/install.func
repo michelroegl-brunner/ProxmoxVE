@@ -197,6 +197,12 @@ EOF
   $STD apt-get -o Dpkg::Options::="--force-confold" -y dist-upgrade
   rm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED
   msg_ok "Updated Container OS"
+
+  if [ $VERBOSE == "yes" ]; then
+    echo $SPINNER_PID
+    echo ${SPINNER_PID}
+    if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
+  fi
 }
 
 # This function modifies the message of the day (motd) and SSH settings
