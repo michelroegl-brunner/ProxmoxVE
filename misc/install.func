@@ -70,19 +70,24 @@ error_handler() {
 
 # This function displays a spinner.
 spinner() {
-  local frames=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
-  local spin_i=0
-  local interval=0.1
+
+   if [ $VERBOSE != "yes" ]; then
+
+    local frames=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
+    local spin_i=0
+    local interval=0.1
   
-  printf "\e[?25l"
+    printf "\e[?25l"
   
-  local color="${YWB}"
+    local color="${YWB}"
   
-  while true; do
-     printf "\r ${color}%s${CL}" "${frames[spin_i]}"
+    while true; do
+      printf "\r ${color}%s${CL}" "${frames[spin_i]}"
       spin_i=$(( (spin_i + 1) % ${#frames[@]} ))
       sleep "$interval"
     done
+  fi
+  
   
 }
 
@@ -203,11 +208,7 @@ EOF
   rm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED
   msg_ok "Updated Container OS"
 
-  if [ $VERBOSE == "yes" ]; then
-    echo $SPINNER_PID
-    echo ${SPINNER_PID}
-    if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
-  fi
+ 
 }
 
 # This function modifies the message of the day (motd) and SSH settings
