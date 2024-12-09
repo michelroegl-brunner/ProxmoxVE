@@ -81,11 +81,14 @@ spinner() {
 
   local color="${YWB}"
 
-  while true; do
-    printf "\r ${color}%s${CL}" "${frames[spin_i]}"
-    spin_i=$(( (spin_i + 1) % ${#frames[@]} ))
-    sleep "$interval"
-  done
+  if [ $VERB -neq "yes" ]; then
+    
+    while true; do
+      printf "\r ${color}%s${CL}" "${frames[spin_i]}"
+      spin_i=$(( (spin_i + 1) % ${#frames[@]} ))
+      sleep "$interval"
+    done
+  fi
 }
 
 # This function displays an informational message with a yellow color.
@@ -161,9 +164,7 @@ header_info() {
   apt-get install -y figlet &> /dev/null
   ascii_art=$(figlet -f slant "$APP")
   clear
-  cat <<EOF
-$ascii_art
-EOF
+  
 }
 
 # This function checks if the script is running through SSH and prompts the user to confirm if they want to proceed or exit.
@@ -707,9 +708,9 @@ build_container() {
   TEMP_DIR=$(mktemp -d)
   pushd $TEMP_DIR >/dev/null
   if [ "$var_os" == "alpine" ]; then
-    export FUNCTIONS_FILE_PATH="$(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/develop/misc/alpine-install.func)"
+    export FUNCTIONS_FILE_PATH="$(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/PVE_DEV/misc/alpine-install.func)"
   else
-    export FUNCTIONS_FILE_PATH="$(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/develop/misc/install.func)"
+    export FUNCTIONS_FILE_PATH="$(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/PVE_DEV/misc/install.func)"
   fi
   export CACHER="$APT_CACHER"
   export CACHER_IP="$APT_CACHER_IP"
@@ -739,7 +740,7 @@ build_container() {
     $PW
   "
   # This executes create_lxc.sh and creates the container and .conf file
-  bash -c "$(wget -qLO - https://raw.githubusercontent.com/community-scripts/ProxmoxVE/develop/ct/create_lxc.sh)" || exit
+  bash -c "$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/PVE_DEV/ct/create_lxc.sh)" || exit
 
   LXC_CONFIG=/etc/pve/lxc/${CTID}.conf
   if [ "$CT_TYPE" == "0" ]; then
@@ -813,7 +814,7 @@ description() {
   DESCRIPTION=$(cat <<EOF
 <div align='center'>
   <a href='https://Helper-Scripts.com' target='_blank' rel='noopener noreferrer'>
-    <img src='https://raw.githubusercontent.com/community-scripts/ProxmoxVE/develop/misc/images/logo-81x112.png' alt='Logo' style='width:81px;height:112px;'/>
+    <img src='https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/PVE_DEV/misc/images/logo-81x112.png' alt='Logo' style='width:81px;height:112px;'/>
   </a>
 
   <h2 style='font-size: 24px; margin: 20px 0;'>${APP} LXC</h2>
