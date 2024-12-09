@@ -803,6 +803,8 @@ EOF'
   fi
   if [ $VERBOSE == "yes" ]; then
     echo $SPINNER_PID
+    echo ${SPINNER_PID}
+    if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
   fi
   
   lxc-attach -n "$CTID" -- bash -c "$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/PVE_DEV/install/$var_install.sh)" || exit
