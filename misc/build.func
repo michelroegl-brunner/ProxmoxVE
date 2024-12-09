@@ -802,7 +802,7 @@ EOF'
     pct exec "$CTID" -- ash -c "apk add bash >/dev/null"
   fi
   if [ $VERBOSE == "yes" ]; then
-    kill $SPINNER_PID
+    echo $SPINNER_PID
   fi
   
   lxc-attach -n "$CTID" -- bash -c "$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/PVE_DEV/install/$var_install.sh)" || exit
