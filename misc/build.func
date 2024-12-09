@@ -81,7 +81,7 @@ spinner() {
 
   local color="${YWB}"
 
-  if [ $VERB -neq "yes" ]; then
+  if [ $VERB != "yes" ]; then
     
     while true; do
       printf "\r ${color}%s${CL}" "${frames[spin_i]}"

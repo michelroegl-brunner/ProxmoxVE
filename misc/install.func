@@ -70,18 +70,18 @@ error_handler() {
 
 # This function displays a spinner.
 spinner() {
-  local frames=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
-  local spin_i=0
-  local interval=0.1
-  printf "\e[?25l"
+  #local frames=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
+  #local spin_i=0
+  #local interval=0.1
+  #printf "\e[?25l"
 
-  local color="${YWB}"
+  #local color="${YWB}"
   if [ $VERBOSE != "yes" ]; then
-    while true; do
-      printf "\r ${color}%s${CL}" "${frames[spin_i]}"
-      spin_i=$(( (spin_i + 1) % ${#frames[@]} ))
-      sleep "$interval"
-    done
+  #  while true; do
+  #   printf "\r ${color}%s${CL}" "${frames[spin_i]}"
+  #    spin_i=$(( (spin_i + 1) % ${#frames[@]} ))
+  #    sleep "$interval"
+  #  done
   fi
 }
 
