@@ -74,15 +74,14 @@ error_handler() {
 
 # This function displays a spinner.
 spinner() {
-  local frames=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
-  local spin_i=0
-  local interval=0.1
-  printf "\e[?25l"
+   if [ $VERB != "yes" ]; then   
+    local frames=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
+    local spin_i=0
+    local interval=0.1
+    printf "\e[?25l"
 
-  local color="${YWB}"
+    local color="${YWB}"
 
-  if [ $VERB != "yes" ]; then
-    
     while true; do
       printf "\r ${color}%s${CL}" "${frames[spin_i]}"
       spin_i=$(( (spin_i + 1) % ${#frames[@]} ))
@@ -802,7 +801,11 @@ http://dl-cdn.alpinelinux.org/alpine/latest-stable/community
 EOF'
     pct exec "$CTID" -- ash -c "apk add bash >/dev/null"
   fi
-  lxc-attach -n "$CTID" -- bash -c "$(wget -qLO - https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/install/$var_install.sh)" || exit
+  if [ $VERBOSE == "yes" ]; then
+    kill $SPINNER_PID
+  fi
+  
+  lxc-attach -n "$CTID" -- bash -c "$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/PVE_DEV/install/$var_install.sh)" || exit
 
 }
 
