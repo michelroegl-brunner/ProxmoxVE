@@ -181,6 +181,11 @@ network_check() {
 # This function updates the Container OS by running apt-get update and upgrade
 update_os() {
   msg_info "Updating Container OS"
+  if [ $VERBOSE == "yes" ]; then
+    echo $SPINNER_PID
+    echo ${SPINNER_PID}
+    if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
+  fi
   if [[ "$CACHER" == "yes" ]]; then
     echo "Acquire::http::Proxy-Auto-Detect \"/usr/local/bin/apt-proxy-detect.sh\";" >/etc/apt/apt.conf.d/00aptproxy
     cat <<EOF >/usr/local/bin/apt-proxy-detect.sh
