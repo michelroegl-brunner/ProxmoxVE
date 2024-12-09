@@ -76,12 +76,13 @@ spinner() {
   printf "\e[?25l"
 
   local color="${YWB}"
-
-  while true; do
-    printf "\r ${color}%s${CL}" "${frames[spin_i]}"
-    spin_i=$(( (spin_i + 1) % ${#frames[@]} ))
-    sleep "$interval"
-  done
+  if [ $VERBOSE != "yes" ]; then
+    while true; do
+      printf "\r ${color}%s${CL}" "${frames[spin_i]}"
+      spin_i=$(( (spin_i + 1) % ${#frames[@]} ))
+      sleep "$interval"
+    done
+  fi
 }
 
 # This function displays an informational message with a yellow color.
