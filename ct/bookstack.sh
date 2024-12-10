@@ -74,11 +74,14 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   unzip -q v${RELEASE}.zip
   mv BookStack-${RELEASE}/* /opt/bookstack
   mv /opt/.env /opt/bookstack/.env
-  chown $USER:www-data /opt/bookstack/.env
   cd /opt/bookstack
   COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev  &>/dev/null
   php artisan key:generate --force &>/dev/null
   php artisan migrate --force &>/dev/null
+  chown www-data:www-data -R /opt/bookstack /opt/bookstack/bootstrap/cache /opt/bookstack/public/uploads /opt/bookstack/storage 
+  chmod -R 755 /opt/bookstack /opt/bookstack/bootstrap/cache /opt/bookstack/public/uploads /opt/bookstack/storage 
+  chmod -R 775 /opt/bookstack/storage /opt/bookstack/bootstrap/cache /opt/bookstack/public/uploads
+  chmod -R 640 /opt/bookstack/.env 
   echo "${RELEASE}" >/opt/${APP}_version.txt
   msg_ok "Updated ${APP}"
 
