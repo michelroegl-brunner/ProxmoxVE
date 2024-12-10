@@ -69,7 +69,7 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   cp /opt/bookstack/.env /opt/.env
   tar -czf /opt/bookstack-backup.tar.gz /opt/bookstack/.env /opt/bookstack/public/uploads /opt/bookstack/storage/uploads /opt/bookstack/themes
   mysqldump -u root bookstack > /opt/bookstack.backup.sql
-  rm -rf /opt/bokstack
+  rm -rf /opt/bookstack/
   wget -q "https://github.com/BookStackApp/BookStack/archive/refs/tags/v${RELEASE}.zip"
   unzip -q v${RELEASE}.zip
   mv BookStack-${RELEASE}/* /opt/bookstack
