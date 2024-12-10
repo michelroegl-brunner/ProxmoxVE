@@ -68,12 +68,12 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   cp /opt/bookstack/.env /opt/.env
   wget -q "https://github.com/BookStackApp/BookStack/archive/refs/tags/v${RELEASE}.zip"
   unzip -q v${RELEASE}.zip
-  mv BookStack-${RELEASE} /opt/bookstack
+  mv BookStack-${RELEASE}/* /opt/bookstack
   mv /opt/.env /opt/bookstack/.env
-  cd /opt/bookstack
+  cd /cpt/bookstack
   COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev  &>/dev/null
-  php artisan key:generate &>/dev/null
-  php artisan migrate &>/dev/null
+  php artisan key:generate --force &>/dev/null
+  php artisan migrate --force &>/dev/null
   echo "${RELEASE}" >/opt/${APP}_version.txt
   msg_ok "Updated ${APP}"
 
