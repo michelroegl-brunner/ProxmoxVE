@@ -67,14 +67,14 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   msg_info "Updating ${APP} to ${RELEASE}"
 
   cp /opt/bookstack/.env /opt/.env
-  tar -czf /opt/bookstack-backup.tar.gz /opt/bookstack/.env /opt/bookstack/public/uploads /opt/bookstack/storage/uploads /opt/bookstack/themes
+  tar -czf /opt/bookstack-backup.tar.gz opt/bookstack/.env opt/bookstack/public/uploads opt/bookstack/storage/uploads opt/bookstack/themes
   mysqldump -u root bookstack > /opt/bookstack.backup.sql
   rm -rf /opt/bookstack/*
   wget -q "https://github.com/BookStackApp/BookStack/archive/refs/tags/v${RELEASE}.zip"
   unzip -q v${RELEASE}.zip
   mv BookStack-${RELEASE}/* /opt/bookstack
   mv /opt/.env /opt/bookstack/.env
-  chown $USER:www-data .env
+  chown $USER:www-data /opt/bookstack/.env
   cd /cpt/bookstack
   COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev  &>/dev/null
   php artisan key:generate --force &>/dev/null
