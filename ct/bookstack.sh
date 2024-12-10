@@ -73,10 +73,10 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   wget -q "https://github.com/BookStackApp/BookStack/archive/refs/tags/v${RELEASE}.zip"
   unzip -q v${RELEASE}.zip
   mv BookStack-${RELEASE}/* /opt/bookstack
-  mv /opt/bookstack-backup/.env /opt/bookstack/.env
-  mv /opt/bookstack-backup/public/uploads/* /opt/bookstack/public/uploads
-  mv /opt/bookstack-backup/storage/uploads/* /opt/bookstack/storage/uploads
-  mv /opt/bookstack-backup/themes/* /opt/bookstack/themes
+  cp /opt/bookstack-backup/.env /opt/bookstack/.env
+  cp /opt/bookstack-backup/public/uploads/* /opt/bookstack/public/uploads
+  cp /opt/bookstack-backup/storage/uploads/* /opt/bookstack/storage/uploads
+  cp /opt/bookstack-backup/themes/* /opt/bookstack/themes
   cd /opt/bookstack
   COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev  &>/dev/null
   php artisan key:generate --force &>/dev/null
