@@ -65,7 +65,7 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   msg_ok "Services Stopped"
   msg_info "Updating ${APP} to ${RELEASE}"
   cp -r /opt/bookstack/ /opt/bookstack-backup 
-  tar -czf /opt/bookstack-backup.tar.gz /opt/bookstack/.env /opt/bookstack/public/uploads /opt/bookstack/storage/uploads /opt/bookstack/themes &>/dev/null
+  tar -czf /opt/bookstack_backup_${RELEASE}.tar.gz /opt/bookstack/.env /opt/bookstack/public/uploads /opt/bookstack/storage/uploads /opt/bookstack/themes &>/dev/null
   mysqldump -u root bookstack > /opt/bookstack_backup_${RELEASE}.sql
   rm -rf /opt/bookstack/*
   wget -q "https://github.com/BookStackApp/BookStack/archive/refs/tags/v${RELEASE}.zip"
@@ -90,8 +90,10 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   msg_ok "Started Apache2"
   msg_info "Cleaning Up"
   cd /root/
-  rm -rf BookStack-${RELEASE}.zip
-  msg_ok "Cleaned"
+  rm -rf /opt/bookstack-backup
+  rm -rf ${RELEASE}.zip
+  rm -rf BookStack-${RELEASE}
+  msg_ok "Cleaned" 
   msg_ok "Updated Successfully"
 else
   msg_ok "No update required. ${APP} is already at ${RELEASE}"
