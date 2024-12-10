@@ -62,13 +62,13 @@ RELEASE=$(curl -s https://api.github.com/repos/BookStackApp/BookStack/releases/l
 if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
 
   msg_info "Stopping Apache2"
-  systemctl stop apache2t 
+  systemctl stop apache2 
   msg_ok "Services Stopped"
 
   msg_info "Updating ${APP} to ${RELEASE}"
-  cp -r /opt/bookstack/ /opt/bookstack-backup 
-  tar -czf /opt/bookstack_backup_${RELEASE}.tar.gz /opt/bookstack/.env /opt/bookstack/public/uploads /opt/bookstack/storage/uploads /opt/bookstack/themes &>/dev/null
-  mysqldump -u root bookstack > /opt/bookstack_backup_${RELEASE}.sql
+  mv /opt/bookstack/ /opt/bookstack-backup 
+  tar -czf /opt/bookstack-backup_${RELEASE}.tar.gz /opt/bookstack/.env /opt/bookstack/public/uploads /opt/bookstack/storage/uploads /opt/bookstack/themes &>/dev/null
+  mysqldump -u root bookstack > /opt/bookstack-backup_${RELEASE}.sql
   rm -rf /opt/bookstack/*
   wget -q "https://github.com/BookStackApp/BookStack/archive/refs/tags/v${RELEASE}.zip"
   unzip -q v${RELEASE}.zip
@@ -88,7 +88,7 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   echo "${RELEASE}" >/opt/${APP}_version.txt
   msg_ok "Updated ${APP}"
 
-  msg_info "Starting Apache2 "
+  msg_info "Starting Apache2"
   systemctl start apache2
   msg_ok "Started Apache2"
 
@@ -98,7 +98,7 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   rm -rf ${RELEASE}.zip
   rm -rf BookStack-${RELEASE}
   msg_ok "Cleaned" 
-  
+
   msg_ok "Updated Successfully"
 else
   msg_ok "No update required. ${APP} is already at ${RELEASE}"
