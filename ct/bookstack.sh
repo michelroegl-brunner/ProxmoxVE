@@ -63,9 +63,7 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   msg_info "Stopping Apache2"
   systemctl stop apache2
   msg_ok "Services Stopped"
-
   msg_info "Updating ${APP} to ${RELEASE}"
-
   cp -r /opt/bookstack/ /opt/bookstack-backup 
   tar -czf /opt/bookstack-backup.tar.gz /opt/bookstack/.env /opt/bookstack/public/uploads /opt/bookstack/storage/uploads /opt/bookstack/themes &>/dev/null
   mysqldump -u root bookstack > /opt/bookstack_backup_${RELEASE}.sql
@@ -87,11 +85,9 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   chmod -R 640 /opt/bookstack/.env 
   echo "${RELEASE}" >/opt/${APP}_version.txt
   msg_ok "Updated ${APP}"
-
-  msg_info "Starting Apache2"
+  msg_info "Starting Apache2 "
   systemctl start apache2
   msg_ok "Started Apache2"
-
   msg_info "Cleaning Up"
   cd /root/
   rm -rf BookStack-${RELEASE}.zip
