@@ -16,7 +16,6 @@ cat <<"EOF"
 /_____/\____/\____/_/|_/____/\__/\__,_/\___/_/|_|  
 
 EOF
-bash -c "$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/dev/ct/bookstack.sh)"
 }
 header_info
 echo -e "Loading..."
