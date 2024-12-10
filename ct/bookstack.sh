@@ -65,11 +65,16 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   msg_ok "Services Stopped"
 
   msg_info "Updating ${APP} to ${RELEASE}"
+
   cp /opt/bookstack/.env /opt/.env
+  tar -czf /opt/bookstack-backup.tar.gz .env public/uploads storage/uploads themes
+  mysqldump -u root bookstack > /opt/bookstack.backup.sql
+  rm -rf /opt/bokstack
   wget -q "https://github.com/BookStackApp/BookStack/archive/refs/tags/v${RELEASE}.zip"
   unzip -q v${RELEASE}.zip
   mv BookStack-${RELEASE}/* /opt/bookstack
   mv /opt/.env /opt/bookstack/.env
+  chown $USER:www-data .env
   cd /cpt/bookstack
   COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev  &>/dev/null
   php artisan key:generate --force &>/dev/null
@@ -82,6 +87,7 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   msg_ok "Started Apache2"
 
   msg_info "Cleaning Up"
+  cd /root/
   rm -rf v${RELEASE}.zip
   msg_ok "Cleaned"
   msg_ok "Updated Successfully"
