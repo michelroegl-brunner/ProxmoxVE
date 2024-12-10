@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/dev/misc/build.func)
 # Copyright (c) 2021-2024 community-scripts ORG
-# Author: MickLesk (Canbiz)
-# License: MIT
+#  Author: MickLesk (Canbiz)
+#  License: MIT
 # https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 # Source: https://github.com/BookStackApp/BookStack
 
