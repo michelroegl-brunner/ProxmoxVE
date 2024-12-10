@@ -15,7 +15,8 @@ cat <<"EOF"
  / /_/ / /_/ / /_/ / ,< (__  ) /_/ /_/ / /__/ ,<   
 /_____/\____/\____/_/|_/____/\__/\__,_/\___/_/|_|  
 
-EOFbash -c "$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/dev/ct/bookstack.sh)"
+EOF
+bash -c "$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/dev/ct/bookstack.sh)"
 }
 header_info
 echo -e "Loading..."
