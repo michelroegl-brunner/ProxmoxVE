@@ -70,6 +70,7 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   unzip -q v${RELEASE}.zip
   mv BookStack-${RELEASE} /opt/bookstack
   mv /opt/.env /opt/bookstack/.env
+  cd /opt/bookstack
   COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev  &>/dev/null
   php artisan key:generate &>/dev/null
   php artisan migrate &>/dev/null
