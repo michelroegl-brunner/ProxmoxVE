@@ -15,7 +15,7 @@ cat <<"EOF"
  / /_/ / /_/ / /_/ / ,< (__  ) /_/ /_/ / /__/ ,<   
 /_____/\____/\____/_/|_/____/\__/\__,_/\___/_/|_|  
 
-EOF
+EOFbash -c "$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/dev/ct/bookstack.sh)"
 }
 header_info
 echo -e "Loading..."
@@ -67,7 +67,7 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   msg_info "Updating ${APP} to ${RELEASE}"
 
   cp /opt/bookstack/.env /opt/.env
-  tar -czf /opt/bookstack-backup.tar.gz opt/bookstack/.env opt/bookstack/public/uploads opt/bookstack/storage/uploads opt/bookstack/themes
+  tar -czf /opt/bookstack-backup.tar.gz /opt/bookstack/.env /opt/bookstack/public/uploads /opt/bookstack/storage/uploads /opt/bookstack/themes
   mysqldump -u root bookstack > /opt/bookstack.backup.sql
   rm -rf /opt/bookstack/*
   wget -q "https://github.com/BookStackApp/BookStack/archive/refs/tags/v${RELEASE}.zip"
