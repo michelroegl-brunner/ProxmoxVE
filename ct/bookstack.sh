@@ -93,10 +93,9 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   msg_ok "Started Apache2"
 
   msg_info "Cleaning Up"
-  cd /root/
   rm -rf /opt/bookstack-backup
-  rm -rf ${RELEASE}.zip
-  rm -rf BookStack-${RELEASE}
+  rm -rf ~/${RELEASE}.zip
+  rm -rf ~/BookStack-${RELEASE}
   msg_ok "Cleaned" 
 
   msg_ok "Updated Successfully"
