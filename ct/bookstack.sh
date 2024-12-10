@@ -60,9 +60,11 @@ check_container_resources
 if [[ ! -d /opt/bookstack ]]; then msg_error "No ${APP} Installation Found!"; exit; fi
 RELEASE=$(curl -s https://api.github.com/repos/BookStackApp/BookStack/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
 if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
+
   msg_info "Stopping Apache2"
-  systemctl stop apache2
+  systemctl stop apache2t 
   msg_ok "Services Stopped"
+
   msg_info "Updating ${APP} to ${RELEASE}"
   cp -r /opt/bookstack/ /opt/bookstack-backup 
   tar -czf /opt/bookstack_backup_${RELEASE}.tar.gz /opt/bookstack/.env /opt/bookstack/public/uploads /opt/bookstack/storage/uploads /opt/bookstack/themes &>/dev/null
@@ -85,15 +87,18 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   chmod -R 640 /opt/bookstack/.env 
   echo "${RELEASE}" >/opt/${APP}_version.txt
   msg_ok "Updated ${APP}"
+
   msg_info "Starting Apache2 "
   systemctl start apache2
   msg_ok "Started Apache2"
+
   msg_info "Cleaning Up"
   cd /root/
   rm -rf /opt/bookstack-backup
   rm -rf ${RELEASE}.zip
   rm -rf BookStack-${RELEASE}
   msg_ok "Cleaned" 
+  
   msg_ok "Updated Successfully"
 else
   msg_ok "No update required. ${APP} is already at ${RELEASE}"
