@@ -64,13 +64,10 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   systemctl stop apache2
   msg_ok "Services Stopped"
   msg_info "Updating ${APP} to ${RELEASE}"
-  cp -r /opt/bookstack/ /opt/bookstack-backup 
-  tar -czf /opt/bookstack_backup_${RELEASE}.tar.gz /opt/bookstack/.env /opt/bookstack/public/uploads /opt/bookstack/storage/uploads /opt/bookstack/themes &>/dev/null
-  mysqldump -u root bookstack > /opt/bookstack_backup_${RELEASE}.sql
-  rm -rf /opt/bookstack/*
+  mv /opt/bookstack /opt/bookstack-backup 
   wget -q "https://github.com/BookStackApp/BookStack/archive/refs/tags/v${RELEASE}.zip"
   unzip -q v${RELEASE}.zip
-  mv BookStack-${RELEASE}/* /opt/bookstack
+  mv BookStack-${RELEASE}/ /opt/bookstack
   cp /opt/bookstack-backup/.env /opt/bookstack/.env
   cp -r /opt/bookstack-backup/public/uploads/ /opt/bookstack/public/uploads
   cp -r /opt/bookstack-backup/storage/uploads/ /opt/bookstack/storage/uploads
@@ -92,7 +89,6 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   cd /root/
   rm -rf /opt/bookstack-backup
   rm -rf ${RELEASE}.zip
-  rm -rf BookStack-${RELEASE}
   msg_ok "Cleaned" 
   msg_ok "Updated Successfully"
 else
