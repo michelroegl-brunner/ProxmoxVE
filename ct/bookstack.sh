@@ -63,11 +63,11 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   msg_info "Stopping Apache2"
   systemctl stop apache2
   msg_ok "Services Stopped"
-  msg_info "Updating ${APP} to ${RELEASE}"
+  msg_info "Updating ${APP} to v${RELEASE}"
   mv /opt/bookstack /opt/bookstack-backup 
-  wget -q "https://github.com/BookStackApp/BookStack/archive/refs/tags/v${RELEASE}.zip"
-  unzip -q v${RELEASE}.zip
-  mv BookStack-${RELEASE}/ /opt/bookstack
+  wget -q --directory-prefix=/root/ "https://github.com/BookStackApp/BookStack/archive/refs/tags/v${RELEASE}.zip"
+  unzip -q ~/v${RELEASE}.zip
+  mv ~/BookStack-${RELEASE} /opt/bookstack
   cp /opt/bookstack-backup/.env /opt/bookstack/.env
   cp -r /opt/bookstack-backup/public/uploads/ /opt/bookstack/public/uploads
   cp -r /opt/bookstack-backup/storage/uploads/ /opt/bookstack/storage/uploads
@@ -82,17 +82,16 @@ if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_v
   chmod -R 640 /opt/bookstack/.env 
   echo "${RELEASE}" >/opt/${APP}_version.txt
   msg_ok "Updated ${APP}"
-  msg_info "Starting Apache2"
+  msg_info "Starting Apache2 "
   systemctl start apache2
   msg_ok "Started Apache2"
   msg_info "Cleaning Up"
-  cd /root/
   rm -rf /opt/bookstack-backup
-  rm -rf ${RELEASE}.zip
+  rm -rf ~/v${RELEASE}.zip
   msg_ok "Cleaned" 
   msg_ok "Updated Successfully"
 else
-  msg_ok "No update required. ${APP} is already at ${RELEASE}"
+  msg_ok "No update required. ${APP} is already at v${RELEASE}"
 fi
 exit
 }
