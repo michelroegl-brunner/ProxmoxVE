@@ -9,7 +9,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 APP="zammad"
 var_tags="ticket-system"
 var_cpu="2"
-var_ram="2048"
+var_ram="4096"
 var_disk="4"
 var_os="debian"
 var_version="12"
