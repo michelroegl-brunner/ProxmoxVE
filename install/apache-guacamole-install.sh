@@ -43,8 +43,9 @@ msg_ok "Installed Dependencies"
 msg_info "Setup Apache Tomcat"
 mkdir /opt/apache-guacamole
 mkdir /opt/apache-guacamole/tomcat9
-wget -q https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.97/bin/apache-tomcat-9.0.97.tar.gz
-$STD tar xzf apache-tomcat-9.0.97.tar.gz -C /opt/apache-guacamole/tomcat9 --strip-components=1
+RELEASE=$(wget -qO- https://dlcdn.apache.org/tomcat/tomcat-9/ | grep -oP '(?<=href=")v[^"/]+(?=/")' | sed 's/^v//')
+wget -q https://dlcdn.apache.org/tomcat/tomcat-9/v${RELEASE}/bin/apache-tomcat-${RELEASE}.tar.gz
+$STD tar xzf apache-tomcat-${RELEASE}.tar.gz -C /opt/apache-guacamole/tomcat9 --strip-components=1
 useradd -r -d /opt/tomcat9 -s /bin/false tomcat
 chown -R tomcat: /opt/apache-guacamole/tomcat9/{logs,temp,webapps,work}
 chown -R :tomcat /opt/apache-guacamole/tomcat9/
