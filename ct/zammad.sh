@@ -1,28 +1,25 @@
 #!/usr/bin/env bash
 source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/DEV/misc/build.func)
-
-#Copyright (c) 2021-2024 community-scripts ORG
+# Copyright (c) 2021-2024 community-scripts ORG
 # Author: Michel Roegl-Brunner (michelroegl-brunner)
-# License: MIT
-# https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
-function header_info {
-clear
-cat <<"EOF"
- _____                                       __
-/__  /  ____ _____ ___  ____ ___  ____ _____/ /
-  / /  / __ `/ __ `__ \/ __ `__ \/ __ `/ __  / 
- / /__/ /_/ / / / / / / / / / / / /_/ / /_/ /  
-/____/\__,_/_/ /_/ /_/_/ /_/ /_/\__,_/\__,_/   
-EOF
-}
-header_info
-echo -e "Loading..."
-APP="Zammad"
-var_disk="8"
+# License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
+# Source: https://zammad.com/
+
+# App Default Values
+APP="zammad"
+var_tags="ticket-system"
 var_cpu="2"
-var_ram="4096"
+var_ram="2048"
+var_disk="4"
 var_os="debian"
 var_version="12"
+var_unprivileged="1"
+
+# App Output & Base Settings
+header_info "$APP"
+base_settings
+
+# Core
 variables
 color
 catch_errors
@@ -73,3 +70,6 @@ build_container
 description
 
 msg_ok "Completed Successfully!\n"
+echo -e "${CREATING}${GN}${APP} setup has been successfully initialized!${CL}"
+echo -e "${INFO}${YW} Access it using the following URL:${CL}"
+echo -e "${TAB}${GATEWAY}${BGN}http://${IP}${CL}"
