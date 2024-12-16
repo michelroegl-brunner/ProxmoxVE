@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="Mylar3"
-TAGS="torrent;downloader;comic"
+var_tags="torrent;downloader;comic"
 var_cpu="1"
 var_ram="512"
 var_disk="4"

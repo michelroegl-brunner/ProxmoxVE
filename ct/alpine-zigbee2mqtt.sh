@@ -6,7 +6,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="Alpine-Zigbee2MQTT"
-TAGS="alpine;zigbee;mqtt;smarthome"
+var_tags="alpine;zigbee;mqtt;smarthome"
 var_disk="0.3"
 var_cpu="1"
 var_ram="256"

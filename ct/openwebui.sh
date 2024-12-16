@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="Open WebUI"
-TAGS="ai;interface"
+var_tags="ai;interface"
 var_cpu="4"
 var_ram="4096"
 var_disk="16"

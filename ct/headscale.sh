@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="Headscale"
-TAGS="tailscale"
+var_tags="tailscale"
 var_cpu="1"
 var_ram="512"
 var_disk="2"

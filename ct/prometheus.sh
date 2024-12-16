@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="Prometheus"
-TAGS="monitoring"
+var_tags="monitoring"
 var_cpu="1"
 var_ram="2048"
 var_disk="4"

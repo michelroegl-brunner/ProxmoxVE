@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="Jellyseerr"
-TAGS="media"
+var_tags="media"
 var_cpu="4"
 var_ram="4096"
 var_disk="8"

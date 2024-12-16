@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="MySpeed"
-TAGS="tracking"
+var_tags="tracking"
 var_cpu="1"
 var_ram="1024"
 var_disk="4"

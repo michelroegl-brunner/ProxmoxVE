@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="InfluxDB"
-TAGS="database"
+var_tags="database"
 var_cpu="2"
 var_ram="2048"
 var_disk="8"

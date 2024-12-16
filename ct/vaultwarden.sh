@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="Vaultwarden"
-TAGS="password-manager"
+var_tags="password-manager"
 var_cpu="4"
 var_ram="6144"
 var_disk="6"

@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="MeTube"
-TAGS="media;youtube"
+var_tags="media;youtube"
 var_cpu="1"
 var_ram="1024"
 var_disk="10"

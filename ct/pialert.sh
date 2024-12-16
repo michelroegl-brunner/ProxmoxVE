@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="PiAlert"
-TAGS="network"
+var_tags="network"
 var_cpu="1"
 var_ram="512"
 var_disk="3"

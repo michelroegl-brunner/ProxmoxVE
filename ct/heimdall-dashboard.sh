@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="Heimdall-Dashboard"
-TAGS="dashboard"
+var_tags="dashboard"
 var_cpu="1"
 var_ram="512"
 var_disk="2"

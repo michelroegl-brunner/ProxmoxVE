@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="Zigbee2MQTT"
-TAGS="smarthome;zigbee;mqtt"
+var_tags="smarthome;zigbee;mqtt"
 var_cpu="2"
 var_ram="1024"
 var_disk="4"

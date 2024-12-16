@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="Kubo"
-TAGS="sharing"
+var_tags="sharing"
 var_cpu="2"
 var_ram="4096"
 var_disk="4"

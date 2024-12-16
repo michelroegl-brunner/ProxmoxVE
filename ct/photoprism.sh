@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="PhotoPrism"
-TAGS="media;photo"
+var_tags="media;photo"
 var_cpu="2"
 var_ram="3072"
 var_disk="8"

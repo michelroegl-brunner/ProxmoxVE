@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="Matterbridge"
-TAGS="matter;smarthome"
+var_tags="matter;smarthome"
 var_cpu="1"
 var_ram="1024"
 var_disk="4"

@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="n8n"
-TAGS="automation"
+var_tags="automation"
 var_cpu="2"
 var_ram="2048"
 var_disk="6"

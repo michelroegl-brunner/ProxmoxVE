@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="Tianji"
-TAGS="monitoring"
+var_tags="monitoring"
 var_cpu="4"
 var_ram="4096"
 var_disk="12"

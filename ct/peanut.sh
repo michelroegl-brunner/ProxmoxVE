@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="PeaNUT"
-TAGS="network;ups;"
+var_tags="network;ups;"
 var_cpu="2"
 var_ram="2048"
 var_disk="4"

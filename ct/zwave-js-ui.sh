@@ -7,7 +7,7 @@ source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE
 
 # App Default Values
 APP="Zwave-JS-UI"
-TAGS="smarthome;zwave"
+var_tags="smarthome;zwave"
 var_cpu="2"
 var_ram="1024"
 var_disk="4"
