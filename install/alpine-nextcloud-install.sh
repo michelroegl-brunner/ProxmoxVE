@@ -140,6 +140,7 @@ msg_ok "Installed Nextcloud"
 
 msg_info "Adding Additional Nextcloud Packages"
 $STD apk add nextcloud-default-apps
+$STD apk add nextcloud-occ
 $STD apk add nextcloud-activity
 $STD apk add nextcloud-admin_audit
 $STD apk add nextcloud-comments
