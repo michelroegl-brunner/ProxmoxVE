@@ -1,9 +1,35 @@
+# Coding Standards for Proxmox VE Helper-Scripts
 
-# Shell Script Coding Standards
+**Welcome to the Coding Standards Guide!** 
+📜 This document outlines the essential coding standards for all our scripts and JSON files. Adhering to these standards ensures that our codebase remains consistent, readable, and maintainable. By following these guidelines, we can improve collaboration, reduce errors, and enhance the overall quality of our project.
 
-This document defines coding standards for writing shell scripts, derived from [/instll/snipeit-instal.sh](https://github.com/community-scripts/ProxmoxVE/blob/main/install/snipeit-install.sh) as an example. These guidelines ensure that scripts are consistent, maintainable, and easy to debug.
+### Why Coding Standards Matter
+
+Coding standards are crucial for several reasons:
+
+1. **Consistency**: Consistent code is easier to read, understand, and maintain. It helps new team members quickly get up to speed and reduces the learning curve.
+2. **Readability**: Clear and well-structured code is easier to debug and extend. It allows developers to quickly identify and fix issues.
+3. **Maintainability**: Code that follows a standard structure is easier to refactor and update. It ensures that changes can be made with minimal risk of introducing new bugs.
+4. **Collaboration**: When everyone follows the same standards, it becomes easier to collaborate on code. It reduces friction and misunderstandings during code reviews and merges.
+
+### Scope of This Document
+
+This document covers the coding standards for the following types of files in our project:
+
+- **`*-install.sh` Scripts**: These scripts are responsible for the installation of applications and are located in the `/install` directory.
+- **`*-ct.sh` Scripts**: These scripts handle the creation and updating of containers and are found in the `/ct` directory.
+- **JSON Files**: These files store structured data and are located in the `/json` directory.
+
+Each section provides detailed guidelines on various aspects of coding, including shebang usage, comments, variable naming, function naming, indentation, error handling, command substitution, quoting, script structure, and logging. Additionally, examples are provided to illustrate the application of these standards.
+
+By following the coding standards outlined in this document, we ensure that our scripts and JSON files are of high quality, making our project more robust and easier to manage. Please refer to this guide whenever you create or update scripts and JSON files to maintain a high standard of code quality across the project. 📚🔍
+
+Let's work together to keep our codebase clean, efficient, and maintainable! 💪🚀
 
 ---
+
+# ***-install.sh Scripts**
+ `*-install.sh` scripts found in the `/install` directory. These scripts are responsible for the installation of the desired Application. For this guide we take `/install/snipeit-install.sh` as example.
 
 ## 1. **File Header**
 
