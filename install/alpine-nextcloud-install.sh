@@ -50,6 +50,8 @@ echo -e "Nextcloud Database Username: \e[32m$DB_USER\e[0m" >>~/nextcloud.creds
 echo -e "Nextcloud Database Password: \e[32m$DB_PASS\e[0m" >>~/nextcloud.creds
 echo -e "Nextcloud Database Name: \e[32m$DB_NAME\e[0m" >>~/nextcloud.creds
 $STD apk add nextcloud-mysql mariadb mariadb-client
+sed -i 's|mysql_install_db --user=mysql --datadir=/var/lib/mysql|mariadb-install-db --user=mysql --datadir=/var/lib/mysql|' /etc/init.d/mariadb
+sed -i 's|command="/usr/bin/mysqld_safe"|command="/usr/bin/mariadbd-safe"|' /etc/init.d/mariadb
 $STD mariadb-install-db --user=mysql --datadir=/var/lib/mysql
 $STD service mariadb start
 $STD rc-update add mariadb
