@@ -135,7 +135,8 @@ server {
 }
 EOF
 sed -i -e 's|memory_limit = 128M|memory_limit = 512M|; $aapc.enable_cli=1' /etc/php82/php.ini
-sed -i -E '/^php_admin_(flag|value)\[opcache/s/^/;/' /etc/php83/php-fpm.d/nextcloud.conf
+mv /etc/php83/php-fpm.d/nextcloud.conf /etc/php82/php-fpm.d/nextcloud.conf
+sed -i -E '/^php_admin_(flag|value)\[opcache/s/^/;/' /etc/php82/php-fpm.d/nextcloud.conf
 msg_ok "Installed Nextcloud"
 
 msg_info "Adding Additional Nextcloud Packages"
@@ -165,6 +166,7 @@ $STD rc-service redis start
 $STD rc-update add redis default
 $STD rc-service php-fpm82 start
 chown -R nextcloud:www-data /var/log/nextcloud/
+chown -R nextcloud:www-data /usr/share/webapps/nextcloud/
 $STD rc-service php-fpm82 restart
 $STD rc-service nginx start
 $STD rc-service nextcloud start
