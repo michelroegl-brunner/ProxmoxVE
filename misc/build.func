@@ -319,7 +319,7 @@ advanced_settings() {
 
   # Setting Default Tag for Advanced Settings
   TAGS="community-script;"
-  echo -e "${HOST}${BOLD}${DGN}Proxmox Host: ${BGN}$(hostname)${CL}"
+  
   CT_TYPE=""
   while [ -z "$CT_TYPE" ]; do
     if CT_TYPE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "CONTAINER TYPE" --radiolist "Choose Type" 10 58 2 \
@@ -583,6 +583,7 @@ advanced_settings() {
     clear
     header_info
     echo -e "${ADVANCED}${BOLD}${RD}Using Advanced Settings${CL}"
+    echo -e "${HOST}${BOLD}${DGN}Proxmox Host: ${BGN}$(hostname)${CL}"
     advanced_settings
   fi
 }
