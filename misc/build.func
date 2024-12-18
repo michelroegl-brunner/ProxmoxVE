@@ -8,7 +8,7 @@ variables() {
   NSAPP=$(echo ${APP,,} | tr -d ' ') # This function sets the NSAPP variable by converting the value of the APP variable to lowercase and removing any spaces.
   var_install="${NSAPP}-install"     # sets the var_install variable by appending "-install" to the value of NSAPP.
   INTEGER='^[0-9]+([.][0-9]+)?$'     # it defines the INTEGER regular expression pattern.
-}
+  }
 
 # This function sets various color variables using ANSI escape codes for formatting text in the terminal.
 color() {
@@ -241,7 +241,7 @@ echo_default() {
   fi
 
   # Output the selected values with icons
-  echo -e "${HOST}${BOLD}${DGN}Hostname: ${BGN}$HOSTNAME${CL}"
+  echo -e "${HOST}${BOLD}${DGN}Hostname: ${BGN}$(hostname)${CL}"
   echo -e "${OS}${BOLD}${DGN}Operating System: ${BGN}$var_os${CL}"
   echo -e "${OSVERSION}${BOLD}${DGN}Version: ${BGN}$var_version${CL}"
   echo -e "${CONTAINERTYPE}${BOLD}${DGN}Container Type: ${BGN}$CT_TYPE_DESC${CL}"
