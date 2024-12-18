@@ -215,7 +215,7 @@ base_settings() {
   TAGS="community-script;"
   
   # Override default settings with variables from ct script
-  CT_TYPE=${var_privileged:-$CT_TYPE}
+  CT_TYPE=${var_unprivileged:-$CT_TYPE}
   DISK_SIZE=${var_disk:-$DISK_SIZE}
   CORE_COUNT=${var_cpu:-$CORE_COUNT}
   RAM_SIZE=${var_ram:-$RAM_SIZE}
@@ -622,7 +622,7 @@ install_script() {
         ;;
       2)
         header_info
-        echo -e "${DEFAULT}${BOLD}${BL}Using Default Settings (${SEARCH} Verbose)${CL}"
+        echo -e "${DEFAULT}${BOLD}${BL}Using Default Settings (${SEARCH}${BOLD}${BL} Verbose)${CL}"
         VERB="yes"
         base_settings "$VERB"  
         echo_default
