@@ -34,6 +34,7 @@ color() {
   CROSS="${TAB}✖️${TAB}${CL}"
   INFO="${TAB}💡${TAB}${CL}"
   OS="${TAB}🖥️${TAB}${CL}"
+  HOST="${TAB}🏢${TAB}${CL}"
   OSVERSION="${TAB}🌟${TAB}${CL}"
   CONTAINERTYPE="${TAB}📦${TAB}${CL}" 
   DISKSIZE="${TAB}💾${TAB}${CL}"
@@ -173,7 +174,7 @@ header_info() {
   ascii_art=$(figlet -f slant -w "$term_width" "$APP")
   clear
   cat <<EOF
-$ascii_art
+  $ascii_art
 EOF
 }
 
@@ -240,6 +241,7 @@ echo_default() {
   fi
 
   # Output the selected values with icons
+  echo -e "${HOST}${BOLD}${DGN}Hostname: ${BGN}$HOSTNAME${CL}"
   echo -e "${OS}${BOLD}${DGN}Operating System: ${BGN}$var_os${CL}"
   echo -e "${OSVERSION}${BOLD}${DGN}Version: ${BGN}$var_version${CL}"
   echo -e "${CONTAINERTYPE}${BOLD}${DGN}Container Type: ${BGN}$CT_TYPE_DESC${CL}"
