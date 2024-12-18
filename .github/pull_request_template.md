@@ -4,16 +4,24 @@
 
 ---
 
+
+
 ## ✍️ Description
 Provide a summary of the changes made and/or reference the issue being addressed.
 
  
 
-- - -
+---
 **_Please remove unneeded lines!_**
 - Related Issue: # (issue number, if applicable)  
 - Related PR: # (if applicable)  
-- Related Discussion: []()(if applicable)  
+- Related Discussion: []()(if applicable)
+
+>[!IMPORTANT]
+> Only for new Scripts!
+>Please provide the link to your Repository so the Script can be tested
+
+`bash -c "$(wget -qLO - https://raw.githubusercontent.com/[USER]/[REPO]/refs/heads/[BRANCH]/ct/APP.sh)"`
 
 ---
 
