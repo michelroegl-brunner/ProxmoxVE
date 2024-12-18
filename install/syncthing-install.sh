@@ -21,7 +21,7 @@ $STD apt-get install -y gnupg
 msg_ok "Installed Dependencies"
 
 msg_info "Installing Syncthing"
-curl -sL -o /usr/share/keyrings/syncthing-archive-keyring.gpg https://syncthing.net/release-key.gpg
+curl -fsSL -o /usr/share/keyrings/syncthing-archive-keyring.gpg https://syncthing.net/release-key.gpg
 sh -c 'echo "deb [signed-by=/usr/share/keyrings/syncthing-archive-keyring.gpg] https://apt.syncthing.net/ syncthing stable" > /etc/apt/sources.list.d/syncthing.list'
 $STD apt-get update
 $STD apt-get install -y syncthing
@@ -29,9 +29,9 @@ $STD systemctl enable syncthing@root.service
 systemctl start syncthing@root.service
 sleep 5
 if [ -f "/root/.local/state/syncthing/config.xml" ]; then
-    sed -i "{s/127.0.0.1:8384/0.0.0.0:8384/g}" /root/.local/state/syncthing/config.xml
-else
-    sed -i "{s/127.0.0.1:8384/0.0.0.0:8384/g}" /root/.config/syncthing/config.xml
+    sed -i "s/127.0.0.1:8384/0.0.0.0:8384/g" /root/.local/state/syncthing/config.xml
+elif [ -f "/root/.config/syncthing/config.xml" ]; then
+    sed -i "s/127.0.0.1:8384/0.0.0.0:8384/g" /root/.config/syncthing/config.xml
 fi
 systemctl restart syncthing@root.service
 msg_ok "Installed Syncthing"
