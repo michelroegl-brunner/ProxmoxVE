@@ -241,7 +241,7 @@ echo_default() {
   fi
 
   # Output the selected values with icons
-  echo -e "${HOST}${BOLD}${DGN}Hostname: ${BGN}$(hostname)${CL}"
+  echo -e "${HOST}${BOLD}${DGN}Proxmox Host: ${BGN}$(hostname)${CL}"
   echo -e "${OS}${BOLD}${DGN}Operating System: ${BGN}$var_os${CL}"
   echo -e "${OSVERSION}${BOLD}${DGN}Version: ${BGN}$var_version${CL}"
   echo -e "${CONTAINERTYPE}${BOLD}${DGN}Container Type: ${BGN}$CT_TYPE_DESC${CL}"
@@ -319,7 +319,7 @@ advanced_settings() {
 
   # Setting Default Tag for Advanced Settings
   TAGS="community-script;"
-  echo -e "${HOST}${BOLD}${DGN}Hostname: ${BGN}$(hostname)${CL}"
+  echo -e "${HOST}${BOLD}${DGN}Proxmox Host: ${BGN}$(hostname)${CL}"
   CT_TYPE=""
   while [ -z "$CT_TYPE" ]; do
     if CT_TYPE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "CONTAINER TYPE" --radiolist "Choose Type" 10 58 2 \
