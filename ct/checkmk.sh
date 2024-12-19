@@ -28,9 +28,23 @@ function update_script() {
   header_info
   check_container_storage
   check_container_resources
-  if [[ ! -d /opt/checkmk ]]; then
+  if [[ ! -f /opt/checkmk_version.txt ]]; then
     msg_error "No ${APP} Installation Found!"
     exit
+  fi
+  RELEASE=$(curl -fsSL https://api.github.com/repos/checkmk/checkmk/tags | grep "name" | awk '{print substr($2, 3, length($2)-4) }' | grep -v "*-rc" | tail -n +2 | head -n 1)
+  if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
+    msg_info "Updating ${APP} to v${RELEASE}"
+    omd stop monitoring && omd cp monitoring monitoring_backup
+    wget -q https://download.checkmk.com/checkmk/${RELEASE}/check-mk-raw-${RELEASE}_0.bookworm_amd64.deb -O /opt/checkmk.deb
+    apt-get install -y /opt/checkmk.deb &>/dev/null
+    omd --force -V ${RELEASE}.cre update --conflict=install &>/dev/null
+    omd start monitoring &>/dev/null
+    omd rm monitoring_backup &>/dev/null
+    rm -rf /opt/checkmk.deb
+    msg_ok "Updated ${APP} to v${RELEASE}"
+  else
+    msg_ok "No update required. ${APP} is already at v${RELEASE}."
   fi
  
   exit

@@ -21,15 +21,16 @@ $STD apt-get install -y \
 msg_ok "Installed Dependencies"
 
 msg_info "Install Checkmk"
-RELEASE=$(curl -fsSL https://api.github.com/repos/checkmk/checkmk/tags | grep "name" | awk '{print substr($2, 3, length($2)-4) }' | grep -v "*-rc" | tail -n +2 | head -n 1)
+#RELEASE=$(curl -fsSL https://api.github.com/repos/checkmk/checkmk/tags | grep "name" | awk '{print substr($2, 3, length($2)-4) }' | grep -v "*-rc" | tail -n +2 | head -n 1)
+RELEASE="2.3.0p12"
 wget -q https://download.checkmk.com/checkmk/${RELEASE}/check-mk-raw-${RELEASE}_0.bookworm_amd64.deb -O /opt/checkmk.deb
 $STD apt-get install -y /opt/checkmk.deb
+echo "${RELEASE}" >"/opt/checkmk_version.txt"
 msg_ok "Installed Checkmk"
 
 msg_info "Creating Service"
 PASSWORD=$(omd create monitoring | grep "password:" | awk '{print $NF}')
-su - monitoring
-omd start &>/dev/null 
+$STD omd start &>/dev/null 
 {
     echo "Application-Credentials"
     echo "Username: cmkadmin"
@@ -41,7 +42,7 @@ motd_ssh
 customize
 
 msg_info "Cleaning up"
-rm -rf /opt/v${RELEASE}.zip
+rm -rf /opt/checkmk.deb
 $STD apt-get -y autoremove
 $STD apt-get -y autoclean
 msg_ok "Cleaned"
