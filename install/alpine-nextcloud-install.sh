@@ -104,7 +104,7 @@ server {
         return 301 https://$host$request_uri;
         server_name localhost;
         client_max_body_size 16G;
-        astcgi_read_timeout 120s
+        fastcgi_read_timeout 120s;
 }
 server {
         listen       443 ssl http2;
@@ -129,7 +129,7 @@ server {
                 fastcgi_pass unix:/run/nextcloud/fastcgi.sock; # From the nextcloud-initscript package
                 fastcgi_index index.php;
                 include fastcgi.conf;
-                astcgi_read_timeout 120s
+                fastcgi_read_timeout 120s;
                 client_max_body_size 16G;
         }
         location ^~ /.well-known/carddav { return 301 /remote.php/dav/; }
