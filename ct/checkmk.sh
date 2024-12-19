@@ -41,6 +41,7 @@ function update_script() {
     omd --force -V ${RELEASE}.cre update --conflict=install &>/dev/null
     omd start monitoring &>/dev/null
     omd rm monitoring_backup &>/dev/null
+    omd cleanup &>/dev/null
     rm -rf /opt/checkmk.deb
     msg_ok "Updated ${APP} to v${RELEASE}"
   else
