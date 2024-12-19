@@ -41,8 +41,8 @@ function update_script() {
     msg_info "Updating ${APP} to v${RELEASE}"
     mv /opt/bookstack /opt/bookstack-backup
     wget -q --directory-prefix=/opt "https://github.com/BookStackApp/BookStack/archive/refs/tags/v${RELEASE}.zip"
-    unzip -q /opt/v${RELEASE}.zip -d /opt
-    mv opt/BookStack-${RELEASE} /opt/bookstack
+    mv /opt/BookStack-${RELEASE} /opt/bookstack
+    cp /opt/bookstack-backup/.env /opt/bookstack/.env
     cp /opt/bookstack-backup/.env /opt/bookstack/.env
     cp -r /opt/bookstack-backup/public/uploads/ /opt/bookstack/public/uploads
     cp -r /opt/bookstack-backup/storage/uploads/ /opt/bookstack/storage/uploads
