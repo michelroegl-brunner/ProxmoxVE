@@ -39,7 +39,7 @@ function update_script() {
     omd cp monitoring monitoringbackup &>/dev/null
     wget -q https://download.checkmk.com/checkmk/${RELEASE}/check-mk-raw-${RELEASE}_0.bookworm_amd64.deb -O /opt/checkmk.deb
     dpkg -i /opt/checkmk.deb &>/dev/null
-    omd --force -V ${RELEASE}.cre update --conflict=install &>/dev/null
+    omd --force -V ${RELEASE}.cre update --conflict=install monitoring &>/dev/null
     omd start monitoring &>/dev/null
     omd rm monitoringbackup &>/dev/null
     omd cleanup &>/dev/null
