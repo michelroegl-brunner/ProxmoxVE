@@ -254,7 +254,7 @@ EOF
     systemctl restart $(basename $(dirname $GETTY_OVERRIDE) | sed 's/\.d//')
     msg_ok "Customized Container"
   fi
-  if [[ AUTOUPDATE == "yes" ]]; then
+  if [[ $AUTOUPDATE == "yes" ]]; then
     touch /opt/autoupdate_lxc
     echo "0 0 * * * /usr/bin/update" >/etc/cron.d/autoupdate_lxc
   fi
