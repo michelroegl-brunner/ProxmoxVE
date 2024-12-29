@@ -231,6 +231,11 @@ motd_ssh() {
 
   # Disable default MOTD scripts
   chmod -x /etc/update-motd.d/*
+
+  if [[ "${SSH_ROOT}" == "yes" ]]; then
+    sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin yes/g" /etc/ssh/sshd_config
+    systemctl restart sshd
+  fi
 }
 
 # This function customizes the container by modifying the getty service and enabling auto-login for the root user
@@ -248,6 +253,6 @@ EOF
     systemctl restart $(basename $(dirname $GETTY_OVERRIDE) | sed 's/\.d//')
     msg_ok "Customized Container"
   fi
-  echo "bash -c \"\$(wget -qLO - https://github.com/community-scripts/ProxmoxVE/raw/main/ct/${app}.sh)\"" >/usr/bin/update
+  echo "bash -c \"\$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/DEV/ct/${app}.sh)\"" >/usr/bin/update
   chmod +x /usr/bin/update
 }
