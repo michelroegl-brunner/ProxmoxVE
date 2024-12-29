@@ -745,13 +745,15 @@ start() {
   fi
 
   if ! command -v pveversion >/dev/null 2>&1; then
-    if ! (whiptail --backtitle "Proxmox VE Helper Scripts" --title "${APP} LXC UPDATE" --yesno "Support/Update functions for ${APP} LXC.  Proceed?" 10 58); then
-      clear
-      exit_script
-      exit
+    if ! ( -f /opt/autoupdate_lxc ); then 
+      if ! (whiptail --backtitle "Proxmox VE Helper Scripts" --title "${APP} LXC UPDATE" --yesno "Support/Update functions for ${APP} LXC.  Proceed?" 10 58); then
+        clear
+        exit_script
+        exit
+      fi
+      SPINNER_PID=""
+      update_script
     fi
-    SPINNER_PID=""
-    update_script
   fi
 }
 
