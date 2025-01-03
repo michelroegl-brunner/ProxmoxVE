@@ -132,7 +132,6 @@ setting_up_container() {
   fi
   rm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED
   systemctl disable -q --now systemd-networkd-wait-online.service
-  
   msg_ok "Set up Container OS"
   msg_ok "Network Connected: ${BL}$(hostname -I)"
 }
@@ -254,11 +253,6 @@ EOF
     systemctl restart $(basename $(dirname $GETTY_OVERRIDE) | sed 's/\.d//')
     msg_ok "Customized Container"
   fi
-  if [[ $AUTOUPDATE == "yes" ]]; then
-    touch /opt/autoupdate_lxc
-    echo "0 0 * * * /usr/bin/update" >/etc/cron.d/autoupdate_lxc
-  fi
-
-  echo "bash -c \"\$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/DEV/ct/${app}.sh)\"" >/usr/bin/update
+  echo "bash -c \"\$(wget -qLO - https://github.com/community-scripts/ProxmoxVE/raw/main/ct/${app}.sh)\"" >/usr/bin/update
   chmod +x /usr/bin/update
 }

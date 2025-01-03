@@ -625,12 +625,6 @@ advanced_settings() {
     VERB="no"
   fi
   echo -e "${SEARCH}${BOLD}${DGN}Verbose Mode: ${BGN}$VERB${CL}"
-  if (whiptail --backtitle "Proxmox VE Helper Scripts" --defaultno --title "AUTO UPDATE" --yesno "Enable Auto Update?" 10 58); then
-    AUTOUPDATE="yes"
-  else
-    AUTOUPDATE="no"
-  fi
-  echo -e "${INFO}${BOLD}${DGN}Auto Update Mode: ${BGN}$AUTOUPDATE${CL}"
 
   if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "ADVANCED SETTINGS COMPLETE" --yesno "Ready to create ${APP} LXC?" 10 58); then
     echo -e "${CREATING}${BOLD}${RD}Creating a ${APP} LXC using the above advanced settings${CL}"
@@ -751,16 +745,13 @@ start() {
   fi
 
   if ! command -v pveversion >/dev/null 2>&1; then
-    if ! [ -f /opt/autoupdate_lxc ]; then
-      if ! (whiptail --backtitle "Proxmox VE Helper Scripts" --title "${APP} LXC UPDATE" --yesno "Support/Update functions for ${APP} LXC.  Proceed?" 10 58); then
-        clear
-        exit_script
-        exit
-      fi
+    if ! (whiptail --backtitle "Proxmox VE Helper Scripts" --title "${APP} LXC UPDATE" --yesno "Support/Update functions for ${APP} LXC.  Proceed?" 10 58); then
+      clear
+      exit_script
+      exit
     fi
     SPINNER_PID=""
     update_script
-    
   fi
 }
 
@@ -790,7 +781,6 @@ build_container() {
   export app="$NSAPP"
   export PASSWORD="$PW"
   export VERBOSE="$VERB"
-  export AUTOUPDATE="$AUTOUPDATE"
   export SSH_ROOT="${SSH}"
   export CTID="$CT_ID"
   export CTTYPE="$CT_TYPE"
@@ -885,7 +875,7 @@ description() {
   DESCRIPTION=$(cat <<EOF
 <div align='center'>
   <a href='https://Helper-Scripts.com' target='_blank' rel='noopener noreferrer'>
-    <img src='https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/images/logo-81x112.png' alt='Logo' style='width:81px;height:112px;'/>
+    <img src='https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/DEV/misc/images/logo-81x112.png' alt='Logo' style='width:81px;height:112px;'/>
   </a>
 
   <h2 style='font-size: 24px; margin: 20px 0;'>${APP} LXC</h2>

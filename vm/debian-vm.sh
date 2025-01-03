@@ -418,7 +418,7 @@ qm resize $VMID scsi0 4G >/dev/null
   DESCRIPTION=$(cat <<EOF
 <div align='center'>
   <a href='https://Helper-Scripts.com' target='_blank' rel='noopener noreferrer'>
-    <img src='https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/images/logo-81x112.png' alt='Logo' style='width:81px;height:112px;'/>
+    <img src='https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/DEV/misc/images/logo-81x112.png' alt='Logo' style='width:81px;height:112px;'/>
   </a>
 >>>>>>> 49d8ed135c486be8fbc95472d14de5c247158b2e
 
