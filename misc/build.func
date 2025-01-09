@@ -63,7 +63,7 @@ restore_backup() {
   if [[ -n "$latest_file" ]]; then
     msg_error "Restoring Backup due to script failure: $latest_file"
     rm -rf "$APP_PATH/*"
-    tar -xzf "/opt/$latest_file" -C "$APP_PATH"
+    tar -xzf "/opt/$latest_file" -C "$APP_PATH" &>/dev/null
   else
     msg_error "No tarball found matching the format Y-m-d.tar.gz in $DIRECTORY"
   fi
@@ -78,7 +78,7 @@ catch_errors() {
 backup_data() {
   APP_PATH=${var_apppath:-$APP_PATH}
   UPDATE="yes"
-  tar -zcf "/opt/$(date '+%Y-%m-%d').tar.gz" $APP_PATH
+  tar -zcf "/opt/$(date '+%Y-%m-%d').tar.gz" $APP_PATH &>/dev/null
 }
 
 
@@ -91,7 +91,7 @@ error_handler() {
   if [ "$UPDATE" == "yes" ]; then
     restore_backup
   fi
-  
+
   local exit_code="$?"
   local line_number="$1"
   local command="$2"
