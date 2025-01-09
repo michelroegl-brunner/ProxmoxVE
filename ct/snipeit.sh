@@ -34,6 +34,9 @@ function update_script() {
   fi
   RELEASE=$(curl -s https://api.github.com/repos/snipe/snipe-it/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
   if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
+    APP_PATH="/opt/snipe-it"
+    backup_data
+
     msg_info "Updating ${APP} to v${RELEASE}"
     apt-get update &>/dev/null
     apt-get -y upgrade &>/dev/null
@@ -47,7 +50,7 @@ function update_script() {
     cp -r /opt/snipe-it-backup/storage/private_uploads /opt/snipe-it/storage/private_uploads
     cd /opt/snipe-it/
     export COMPOSER_ALLOW_SUPERUSER=1
-    composer install --no-dev --prefer-source &>/dev/null
+    composer instal --no-dev --prefer-source &>/dev/null
     composer dump-autoload &>/dev/null
     php artisan migrate --force &>/dev/null
     php artisan config:clear &>/dev/null
@@ -57,7 +60,7 @@ function update_script() {
     chown -R www-data: /opt/snipe-it
     chmod -R 755 /opt/snipe-it
     rm -rf /opt/v${RELEASE}.zip
-    rm -rf /opt/snipe-it-backup
+    rm -rf /opt/snipe-it-backup    
     msg_ok "Updated ${APP} LXC"
   else
     msg_ok "No update required. ${APP} is already at v${RELEASE}."
