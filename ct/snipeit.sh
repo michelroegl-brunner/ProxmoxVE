@@ -14,7 +14,7 @@ var_disk="4"
 var_os="debian"
 var_version="12"
 var_unprivileged="1"
-APP_PATH="/opt/snipe-it"
+var_apppath="/opt/snipe-it"
 
 # App Output & Base Settings
 header_info "$APP"
