@@ -401,7 +401,7 @@ qm set $VMID \
   -ide2 ${STORAGE}:cloudinit \
   -boot order=scsi0 \
   -serial0 socket \
-  -description "<div align='center'><a href='https://Helper-Scripts.com'><img src='https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/images/logo-81x112.png'/></a>
+  -description "<div align='center'><a href='https://Helper-Scripts.com'><img src='https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/update_dev/misc/images/logo-81x112.png'/></a>
 
   # Ubuntu 24.04 VM
 
