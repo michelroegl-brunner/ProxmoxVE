@@ -14,6 +14,7 @@ var_disk="4"
 var_os="debian"
 var_version="12"
 var_unprivileged="1"
+APP_PATH="/opt/snipe-it"
 
 # App Output & Base Settings
 header_info "$APP"
@@ -32,11 +33,11 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
+  backup_data
+  
   RELEASE=$(curl -s https://api.github.com/repos/snipe/snipe-it/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
   if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
-    APP_PATH="/opt/snipe-it"
-    backup_data
-
+    
     msg_info "Updating ${APP} to v${RELEASE}"
     apt-get update &>/dev/null
     apt-get -y upgrade &>/dev/null
