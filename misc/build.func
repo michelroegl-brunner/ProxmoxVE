@@ -65,7 +65,7 @@ restore_backup() {
     rm -rf "$APP_PATH/*"
     tar -xzf "/opt/$latest_file" -C "$APP_PATH" &>/dev/null
   else
-    msg_error "No tarball found matching the format Y-m-d.tar.gz in $DIRECTORY"
+    msg_error "No tarball found matching the format Y-m-d.tar.gz in /opt/"
   fi
 }
 
