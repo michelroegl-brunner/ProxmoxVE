@@ -77,6 +77,7 @@ catch_errors() {
 }
 
 backup_data() {
+  msg_ok "Creating Backup"
   UPDATE="yes"
   backup_count=$(ls /opt/ | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}\.tar\.gz$' | wc -l)
   if [ "$backup_count" -gt 3 ]; then
@@ -84,6 +85,7 @@ backup_data() {
     rm -f "/opt/$oldest_file"
   fi
   APP_PATH=${var_apppath:-$APP_PATH}
+  msg_ok "Creating Backup [/opt/$(date '+%Y-%m-%d').tar.gz]"
   tar -zcf "/opt/$(date '+%Y-%m-%d').tar.gz" "${APP_PATH}" &>/dev/null
 }
 
@@ -92,9 +94,11 @@ backup_data() {
 error_handler() {
   if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
   printf "\e[?25h"
+  echo $UPDATE
   if [ "$UPDATE" == "yes" ]; then
     restore_backup
   fi
+
   local exit_code="$?"
   local line_number="$1"
   local command="$2"

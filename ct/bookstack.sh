@@ -32,7 +32,7 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-  
+  backup_data
   RELEASE=$(curl -s https://.ghub.com/repos/BookStackApp/BookStack/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
   if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
     msg_info "Stopping Apache2"
@@ -40,7 +40,7 @@ function update_script() {
     msg_ok "Services Stopped"
 
     msg_info "Updating ${APP} to v${RELEASE}"
-    backup_data
+    
     mv /opt/bookstack /opt/bookstack-backup
     wget -q --directory-prefix=/opt "https://github.com/BookStackApp/BookStack/archive/refs/tags/v${RELEASE}.zip"
     unzip -q /opt/v${RELEASE}.zip -d /opt
