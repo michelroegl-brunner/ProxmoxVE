@@ -34,8 +34,8 @@ function update_script() {
     exit
   fi
   backup_data
-  #FALS INTENIONAL
-  RELEASE=$(curl -s https://.github.com/repos/snipe/snipe-it/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
+  
+  RELEASE=$(curl -s https://api.github.com/repos/snipe/snipe-it/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
   if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
     
     msg_info "Updating ${APP} to v${RELEASE}"
@@ -46,7 +46,8 @@ function update_script() {
     wget -q "https://github.com/snipe/snipe-it/archive/refs/tags/v${RELEASE}.zip" &>/dev/null
     unzip -q v${RELEASE}.zip
     mv snipe-it-${RELEASE} /opt/snipe-it
-    cp /opt/snipe-it-backup/.env /opt/snipe-it/.env
+    #Fails Intentional
+    cp /opt/snipe-it-backup/.e /opt/snipe-it/.env
     cp -r /opt/snipe-it-backup/public/uploads/ /opt/snipe-it/public/uploads/
     cp -r /opt/snipe-it-backup/storage/private_uploads /opt/snipe-it/storage/private_uploads
     cd /opt/snipe-it/
