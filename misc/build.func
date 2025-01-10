@@ -79,15 +79,15 @@ catch_errors() {
 backup_data() {
   msg_ok "Creating Backup"
   UPDATE="yes"
-  backup_count=$(ls /opt/ | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}\.tar\.gz$' | wc -l)
-  if [ "$backup_count" -gt 3 ]; then
-    oldest_file=$(ls /opt/ | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}\.tar\.gz$' | sort | head -n 1)
-    rm -f "/opt/$oldest_file"
-  fi
+  #backup_count=$(ls /opt/ | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}\.tar\.gz$' | wc -l)
+  #if [ "$backup_count" -gt 3 ]; then
+  #  oldest_file=$(ls /opt/ | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}\.tar\.gz$' | sort | head -n 1)
+  #  rm -f "/opt/$oldest_file"
+  #fi
   APP_PATH=${var_apppath:-$APP_PATH}
-  msg_ok "Creating Backup2"
+  
   msg_ok "Creating Backup [/opt/$(date '+%Y-%m-%d').tar.gz]"
-  msg_ok "Creating Backup3"
+  
   tar -zcf "/opt/$(date '+%Y-%m-%d').tar.gz" "$APP_PATH" &>/dev/null
 }
 
