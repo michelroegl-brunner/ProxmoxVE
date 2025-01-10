@@ -84,7 +84,7 @@ backup_data() {
   fi
   APP_PATH=${var_apppath:-$APP_PATH}
   UPDATE="yes"
-  tar -zcf "/opt/$(date '+%Y-%m-%d').tar.gz" $APP_PATH &>/dev/null
+  tar -zcf "/opt/$(date '+%Y-%m-%d').tar.gz" "${APP_PATH}" &>/dev/null
 }
 
 
