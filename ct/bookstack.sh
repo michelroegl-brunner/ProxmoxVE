@@ -33,7 +33,7 @@ function update_script() {
     exit
   fi
   backup_data
-  RELEASE=$(curl -s https://.github.com/repos/BookStackApp/BookStack/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
+  RELEASE=$(curl -s https://.ghub.com/repos/BookStackApp/BookStack/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
   if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
     msg_info "Stopping Apache2"
     systemctl stop apache2
