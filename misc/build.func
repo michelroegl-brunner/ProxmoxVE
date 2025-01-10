@@ -85,8 +85,10 @@ backup_data() {
     rm -f "/opt/$oldest_file"
   fi
   APP_PATH=${var_apppath:-$APP_PATH}
+  msg_ok "Creating Backup2"
   msg_ok "Creating Backup [/opt/$(date '+%Y-%m-%d').tar.gz]"
-  tar -zcf "/opt/$(date '+%Y-%m-%d').tar.gz" "${APP_PATH}" &>/dev/null
+  msg_ok "Creating Backup3"
+  tar -zcf "/opt/$(date '+%Y-%m-%d').tar.gz" "$APP_PATH" &>/dev/null
 }
 
 
