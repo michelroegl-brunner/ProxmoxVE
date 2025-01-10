@@ -94,7 +94,7 @@ backup_data() {
 error_handler() {
   if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
   printf "\e[?25h"
-  echo $UPDATE
+  
   if [ "$UPDATE" == "yes" ]; then
     restore_backup
   fi
