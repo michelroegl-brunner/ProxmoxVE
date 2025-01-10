@@ -76,6 +76,7 @@ catch_errors() {
 }
 
 backup_data() {
+  UPDATE="yes"
   backup_count=$(ls /opt/ | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}\.tar\.gz$' | wc -l)
   if [ "$backup_count" -gt 3 ]; then
     oldest_file=$(ls /opt/ | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}\.tar\.gz$' | sort | head -n 1)
