@@ -76,22 +76,24 @@ catch_errors() {
 }
 
 backup_data() {
+  backup_count=$(ls /opt/ | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}\.tar\.gz$' | wc -l)
+  if [ "$backup_count" -gt 3 ]; then
+    oldest_file=$(ls /opt/ | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}\.tar\.gz$' | sort | head -n 1)
+    rm -f "/opt/$oldest_file"
+  fi
   APP_PATH=${var_apppath:-$APP_PATH}
   UPDATE="yes"
   tar -zcf "/opt/$(date '+%Y-%m-%d').tar.gz" $APP_PATH &>/dev/null
 }
 
 
-
 # This function is called when an error occurs. It receives the exit code, line number, and command that caused the error, and displays an error message.
 error_handler() {
   if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
   printf "\e[?25h"
-
   if [ "$UPDATE" == "yes" ]; then
     restore_backup
   fi
-
   local exit_code="$?"
   local line_number="$1"
   local command="$2"
