@@ -4,7 +4,7 @@
   "categories": [
     5
   ],
-  "date_created": "2024-12-27",
+  "date_created": "2025-01-15",
   "type": "ct",
   "updateable": true,
   "privileged": false,
@@ -14,21 +14,21 @@
   "logo": "https://github.com/gristlabs/grist-core/blob/main/static/img/logo-grist.png?raw=true",
   "description": "Grist is a modern, open source spreadsheet that goes beyond the grid",
   "install_methods": [
-      {
-          "type": "default",
-          "script": "ct/grist.sh",
-          "resources": {
-              "cpu": 1,
-              "ram": 1024,
-              "hdd": 4,
-              "os": "debian",
-              "version": "12"
-          }
+    {
+      "type": "default",
+      "script": "ct/grist.sh",
+      "resources": {
+        "cpu": 1,
+        "ram": 1024,
+        "hdd": 4,
+        "os": "debian",
+        "version": "12"
       }
+    }
   ],
   "default_credentials": {
-      "username": null,
-      "password": null
+    "username": null,
+    "password": null
   },
   "notes": []
 }
