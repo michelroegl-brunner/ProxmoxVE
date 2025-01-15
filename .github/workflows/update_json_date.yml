@@ -14,13 +14,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Set up Node.js (for JSON manipulation)
+    - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
-        node-version: 'latest'
+        node-version: 18
       run: |
         # Get the list of changed files in the pull request
         CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }})
