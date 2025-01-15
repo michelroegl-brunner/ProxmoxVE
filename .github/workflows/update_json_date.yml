@@ -17,11 +17,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Debug Git Information
-      run: |
-        echo "HEAD: $(git rev-parse HEAD)"
-        echo "BASE REF: ${{ github.event.pull_request.base.ref }}"
-        echo "HEAD REF: ${{ github.event.pull_request.head.ref }}"
     - name: Update JSON files
       run: |
         # Fetch the base branch for comparison
@@ -43,12 +38,14 @@ jobs:
             NAME="${BASH_REMATCH[1]}"
           elif [[ "$FILE" =~ ^install/(.*)-install\\.sh$ ]]; then
             NAME="${BASH_REMATCH[1]}"
+          if [[ "$FILE" =~ ^json/(.*)\\.json$ ]]; then
+            NAME="${BASH_REMATCH[1]}"
           else
             continue
           fi
 
           # Locate the corresponding JSON file
-          JSON_FILE="data/${NAME}.json" # Adjust the path as necessary
+          JSON_FILE="json/${NAME}.json" # Adjust the path as necessary
 
           if [[ -f "$JSON_FILE" ]]; then
             echo "Updating date_created in $JSON_FILE"
