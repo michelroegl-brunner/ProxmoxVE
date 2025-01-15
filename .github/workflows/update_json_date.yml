@@ -1,36 +1,53 @@
-name: Update JSON Date in PR
+name: Update JSON Date
 
 on:
   pull_request:
     paths:
-      - 'json/*.json'
-    types: [opened, synchronize, reopened]
+      - 'ct/*.sh'
+      - 'install/*-install.sh'
 
 jobs:
-  update_json:
+  update-json-date:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Configure Git user
-        run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
+    - name: Set up Node.js (for JSON manipulation)
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
 
-      - name: Make script executable
-        run: chmod +x .github/workflows/scripts/update_json_date.sh
+    - name: Update JSON files
+      run: |
+        # Get the list of changed files in the pull request
+        CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }})
 
-      - name: Run the update script
-        run: ./.github/workflows/scripts/update_json_date.sh
+        # Iterate through changed files
+        for FILE in $CHANGED_FILES; do
+          # Check if the file matches the script patterns
+          if [[ "$FILE" =~ ^ct/(.*)\.sh$ ]]; then
+            NAME="${BASH_REMATCH[1]}"
+          elif [[ "$FILE" =~ ^install/(.*)-install\.sh$ ]]; then
+            NAME="${BASH_REMATCH[1]}"
+          else
+            continue
+          fi
 
-      - name: Commit changes if updated
-        run: |
-          git add *.json
-          git diff --cached --quiet || git commit -m "Update JSON dates"
+          # Locate the corresponding JSON file
+          JSON_FILE="json/${NAME}.json" # Adjust the path as necessary
+
+          if [[ -f "$JSON_FILE" ]]; then
+            echo "Updating date_created in $JSON_FILE"
+
+            # Use jq to update the date_created field
+            jq --arg date "$(date +%Y-%m-%d)" '.date_created = $date' "$JSON_FILE" > tmp.json && mv tmp.json "$JSON_FILE"
+          else
+            echo "JSON file $JSON_FILE not found"
+          fi
+        done
+
 
       - name: Push changes with API keys
         env:
