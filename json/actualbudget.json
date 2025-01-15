@@ -8,7 +8,7 @@
     "type": "ct",
     "updateable": true,
     "privileged": false,
-    "interface_port": 5006,
+    "interface_port": 50,
     "documentation": "https://github.com/community-scripts/ProxmoxVE/discussions/807",
     "website": "https://actualbudget.org/",
     "logo": "https://raw.githubusercontent.com/actualbudget/actual/master/packages/desktop-client/public/maskable-512x512.png",
