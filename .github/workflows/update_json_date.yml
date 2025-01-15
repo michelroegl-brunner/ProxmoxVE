@@ -14,41 +14,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 18
-      run: |
-        # Get the list of changed files in the pull request
-        CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }})
+      - name: Checkout code 
+        uses: actions/checkout@v4
+      - name: Update JSON
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+        run: |
+          # Get the list of changed files in the pull request
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }})
 
-        # Iterate through changed files
-        for FILE in $CHANGED_FILES; do
-          # Check if the file matches the script patterns
-          if [[ "$FILE" =~ ^ct/(.*)\.sh$ ]]; then
-            NAME="${BASH_REMATCH[1]}"
-          elif [[ "$FILE" =~ ^install/(.*)-install\.sh$ ]]; then
-            NAME="${BASH_REMATCH[1]}"
-          else
-           if [[ "$FILE" =~ ^json/(.*)\.json$ ]]; then
-            NAME="${BASH_REMATCH[1]}"
-          else
-            continue
-          fi
+          # Iterate through changed files
+          for FILE in $CHANGED_FILES; do
+            # Check if the file matches the script patterns
+            if [[ "$FILE" =~ ^ct/(.*)\.sh$ ]]; then
+              NAME="${BASH_REMATCH[1]}"
+            elif [[ "$FILE" =~ ^install/(.*)-install\.sh$ ]]; then
+              NAME="${BASH_REMATCH[1]}"
+            else
+             if [[ "$FILE" =~ ^json/(.*)\.json$ ]]; then
+              NAME="${BASH_REMATCH[1]}"
+            else
+              continue
+            fi
 
-          # Locate the corresponding JSON file
-          JSON_FILE="json/${NAME}.json" # Adjust the path as necessary
+            # Locate the corresponding JSON file
+            JSON_FILE="json/${NAME}.json" # Adjust the path as necessary
 
-          if [[ -f "$JSON_FILE" ]]; then
-            echo "Updating date_created in $JSON_FILE"
+            if [[ -f "$JSON_FILE" ]]; then
+              echo "Updating date_created in $JSON_FILE"
 
-            # Use jq to update the date_created field
-            jq --arg date "$(date +%Y-%m-%d)" '.date_created = $date' "$JSON_FILE" > tmp.json && mv tmp.json "$JSON_FILE"
-          else
-            echo "JSON file $JSON_FILE not found"
-          fi
-        done
-
+              # Use jq to update the date_created field
+              jq --arg date "$(date +%Y-%m-%d)" '.date_created = $date' "$JSON_FILE" > tmp.json && mv tmp.json "$JSON_FILE"
+            else
+              echo "JSON file $JSON_FILE not found"
+            fi
+          done
 
       - name: Push changes with API keys
         env:
