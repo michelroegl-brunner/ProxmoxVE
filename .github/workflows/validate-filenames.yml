@@ -1,11 +1,13 @@
 name: Validate filenames
 
 on:
-  pull_request_target:
-    paths:
-      - "ct/*.sh"
-      - "install/*.sh"
-      - "json/*.json"
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
   check-files:
