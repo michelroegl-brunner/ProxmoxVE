@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 
 
 # App Default Values
