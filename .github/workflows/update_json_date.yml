@@ -1,0 +1,41 @@
+name: Update JSON Date in PR
+
+on:
+  pull_request:
+    paths:
+      - 'json/*.json'
+    types: [opened, synchronize, reopened]
+
+jobs:
+  update_json:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Configure Git user
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      - name: Make script executable
+        run: chmod +x .github/workflows/scripts/update_json_date.sh
+
+      - name: Run the update script
+        run: ./.github/workflows/scripts/update_json_date.sh
+
+      - name: Commit changes if updated
+        run: |
+          git add *.json
+          git diff --cached --quiet || git commit -m "Update JSON dates"
+
+      - name: Push changes with API keys
+        env:
+          JSON_API_ID: ${{ secrets.JSON_API_ID }}
+          JSON_API_KEY: ${{ secrets.JSON_API_KEY }}
+        run: |
+          git remote set-url origin https://$JSON_API_ID:$JSON_API_KEY@github.com/${{ github.repository }}.git
+          git push

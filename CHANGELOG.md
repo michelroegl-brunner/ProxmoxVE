@@ -16,6 +16,41 @@ All LXC instances created using this repository come pre-installed with Midnight
 > [!IMPORTANT]
 Do not break established syntax in this file, as it is automatically updated by a Github Workflow
 
+## 2025-01-15
+
+### Changed
+
+### 🚀 Updated Scripts
+
+- Fix: Add FFMPEG for OpenWebUI [@MickLesk](https://github.com/MickLesk) ([#1497](https://github.com/community-scripts/ProxmoxVE/pull/1497))
+
+## 2025-01-14
+
+### Changed
+
+### 💥 Breaking Changes
+
+- Update tianji-install.sh: Add OPENAI_API_KEY to .env [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#1480](https://github.com/community-scripts/ProxmoxVE/pull/1480))
+
+### ✨ New Scripts
+
+- New Script: Wordpress [@MickLesk](https://github.com/MickLesk) ([#1485](https://github.com/community-scripts/ProxmoxVE/pull/1485))
+- New Script: Opengist [@jd-apprentice](https://github.com/jd-apprentice) ([#1429](https://github.com/community-scripts/ProxmoxVE/pull/1429))
+
+### 🚀 Updated Scripts
+
+- Update lazylibrarian-install.sh: Add pypdf libary [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#1467](https://github.com/community-scripts/ProxmoxVE/pull/1467))
+- Update opengist-install.sh: Add git as dependencie [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#1471](https://github.com/community-scripts/ProxmoxVE/pull/1471))
+
+### 🌐 Website
+
+- [website] Update footer text [@rajatdiptabiswas](https://github.com/rajatdiptabiswas) ([#1466](https://github.com/community-scripts/ProxmoxVE/pull/1466))
+
+### 🧰 Maintenance
+
+- Hotfix build.func: Error when tags are empty [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#1492](https://github.com/community-scripts/ProxmoxVE/pull/1492))
+- [core] Update build.func: Fix bug with advanced tags [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#1473](https://github.com/community-scripts/ProxmoxVE/pull/1473))
+
 ## 2025-01-13
 
 ### Changed
