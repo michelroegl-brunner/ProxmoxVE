@@ -39,7 +39,7 @@ jobs:
             NAME="${BASH_REMATCH[1]}"
           elif [[ "$FILE" =~ ^install/(.*)-install\\.sh$ ]]; then
             NAME="${BASH_REMATCH[1]}"
-          if [[ "$FILE" =~ ^json/(.*)\\.json$ ]]; then
+          elif [[ "$FILE" =~ ^json/(.*)\\.json$ ]]; then
             NAME="${BASH_REMATCH[1]}"
           else
             continue
