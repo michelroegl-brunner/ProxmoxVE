@@ -5,7 +5,7 @@ on:
     paths:
       - 'ct/*.sh'
       - 'install/*-install.sh'
-      - 'json/+.json'
+      - 'json/*.json'
 
 jobs:
   update-json-date:
