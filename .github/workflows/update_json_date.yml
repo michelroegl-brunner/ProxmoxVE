@@ -16,8 +16,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-      with:
-        fetch-depth: 0 # Fetch the full history to access base commit
 
     - name: Debug Git Information
       run: |
@@ -63,10 +61,10 @@ jobs:
         done
 
 
-      - name: Push changes with API keys
-        env:
-          JSON_API_ID: ${{ secrets.JSON_API_ID }}
-          JSON_API_KEY: ${{ secrets.JSON_API_KEY }}
-        run: |
-          git remote set-url origin https://$JSON_API_ID:$JSON_API_KEY@github.com/${{ github.repository }}.git
-          git push
+    - name: Push changes with API keys
+      env:
+        JSON_API_ID: ${{ secrets.JSON_API_ID }}
+        JSON_API_KEY: ${{ secrets.JSON_API_KEY }}
+      run: |
+        git remote set-url origin https://$JSON_API_ID:$JSON_API_KEY@github.com/${{ github.repository }}.git
+        git push
