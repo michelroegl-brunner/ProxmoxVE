@@ -24,7 +24,6 @@ jobs:
         echo "HEAD: $(git rev-parse HEAD)"
         echo "BASE REF: ${{ github.event.pull_request.base.ref }}"
         echo "HEAD REF: ${{ github.event.pull_request.head.ref }}"
-
     - name: Update JSON files
       run: |
         # Fetch the base branch for comparison
