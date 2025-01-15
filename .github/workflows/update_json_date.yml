@@ -21,8 +21,6 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: 'latest'
-
-    - name: Update JSON files
       run: |
         # Get the list of changed files in the pull request
         CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }})
