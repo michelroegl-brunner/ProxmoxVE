@@ -1,11 +1,11 @@
 name: Update JSON Date
 
 on:
-  pull_request:
+  pull_request_target:
     paths:
-      - 'ct/*.sh'
-      - 'install/*-install.sh'
-      - 'json/*.json'
+      - "ct/*.sh"
+      - "install/*.sh"
+      - "json/*.json"
 
 jobs:
   update-json-date:
