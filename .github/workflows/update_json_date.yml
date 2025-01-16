@@ -15,11 +15,11 @@ jobs:
 
     steps:
     - name: Checkout PR Branch
-    - uses: actions/checkout@v4
+      uses: actions/checkout@v4
       with:
         ref: ${{ github.head_ref }}
     - name: Update Date in jason 
-    - run: |
+      run: |
         
         BASE_BRANCH=${{ github.event.pull_request.base.ref }}
         HEAD_BRANCH=${{ github.event.pull_request.head.ref }}
