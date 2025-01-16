@@ -32,7 +32,7 @@ jobs:
         git fetch origin $HEAD_BRANCH
 
         echo "Get the list of changed files between base and head branches"
-        CHANGED_FILES=$(git diff --name-only origin/$BASE_BRANCH HEAD)
+        CHANGED_FILES=$(git diff --name-only origin/$HEAD_BRANCH HEAD)
 
         echo "Changed files: $CHANGED_FILES"
 
