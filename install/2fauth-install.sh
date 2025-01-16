@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright (c) 2021-2025 community-scripts ORG
-# Author: jkrgr0
-# License: MIT
+# C
 # Source: https://docs.2fauth.app/
 
 # Import Functions und Setup

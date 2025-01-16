@@ -1,7 +1,4 @@
-#!/usr/bin/env bash
 
-
-# App Default Values
 APP="2FAuth"
 TAGS="2fa;authenticator"
 var_cpu="1"
