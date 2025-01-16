@@ -10,11 +10,34 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: List changed files
+      - name: Update JSON
         id: changed-files
         run: |
           FILES=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files --jq '.[].filename' | tr '\n' ' ')
-          echo "changed_files=${FILES}" 
+          echo "changed_files=${FILES}"
+          for FILE in $FILES; do
+            if [[ "$FILE" =~ /(.*)\.json ]]; then
+              NAME="${BASH_REMATCH[1]}"
+            else
+              echo "no new JSON in ${FILES}"
+              continue
+            fi
+          
+            JSON_FILE="json/${NAME}.json"
+            if [[ -f "$JSON_FILE" ]]; then
+              echo "Updating date_created in $JSON_FILE"
+              jq --arg date "$(date +%Y-%m-%d)" '.date_created = $date' "$JSON_FILE" > tmp.json && mv tmp.json "$JSON_FILE"
+            else
+              echo "JSON file $JSON_FILE not found"
+            fi
+          done
+             
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --exit-code || git commit -am "Updating Dates in affected JSON files."
+          git push 
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
