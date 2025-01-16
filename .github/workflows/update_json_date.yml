@@ -39,13 +39,10 @@ jobs:
             continue
           fi
           
-          # Locate the corresponding JSON file
-          JSON_FILE="json/${NAME}.json" # Adjust the path as necessary
+          JSON_FILE="json/${NAME}.json"
 
           if [[ -f "$JSON_FILE" ]]; then
             echo "Updating date_created in $JSON_FILE"
-
-            # Use jq to update the date_created field
             jq --arg date "$(date +%Y-%m-%d)" '.date_created = $date' "$JSON_FILE" > tmp.json && mv tmp.json "$JSON_FILE"
           else
             echo "JSON file $JSON_FILE not found"
