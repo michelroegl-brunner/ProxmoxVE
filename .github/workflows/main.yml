@@ -1,0 +1,21 @@
+name: List PR Files
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    
+jobs:
+  list-files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: List changed files
+        id: changed-files
+        run: |
+          FILES=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files --jq '.[].filename' | tr '\n' ' ')
+          echo "changed_files=${FILES}" 
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
