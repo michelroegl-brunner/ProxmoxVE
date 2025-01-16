@@ -33,7 +33,7 @@ jobs:
         CHANGED_FILES=$(git diff --name-only origin/$BASE_BRANCH HEAD)
         echo "$(git branch)   ---> After Compare"
         echo "Changed files: $CHANGED_FILES"
-        git pull $HEAD_BRANCH
+       
         # Iterate through changed files
         for FILE in $CHANGED_FILES; do
           echo "In Loop befor if"
