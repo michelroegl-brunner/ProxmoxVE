@@ -10,7 +10,8 @@ jobs:
     - name: Checkout PR Branch
       uses: actions/checkout@v4
       with:
-        ref: ${{ github.ref_name }}
+        fetch-depth: 0
+        ref: ${{ github.event.pull_request.head.ref }}
       
 
     - name: Update JSON
