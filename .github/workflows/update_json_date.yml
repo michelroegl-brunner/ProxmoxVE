@@ -34,7 +34,7 @@ jobs:
           if [[ "$FILE" =~ /(.*)\.sh ]]; then
             NAME="${BASH_REMATCH[1]}"
           elif [[ "$FILE" =~ /([^/]+)-[^/]+\.sh ]]; then
-            NAME="$(echo "BASH_REMATCH[1]" | sed 's/-install//')"
+            NAME="$(echo ${BASH_REMATCH[1]} | sed 's/-install//')"
           elif [[ "$FILE" =~ /(.*)\.json ]]; then
             NAME="${BASH_REMATCH[1]}"
           else
