@@ -42,6 +42,7 @@ jobs:
           elif [[ "$FILE" =~ ^json/(.*)\\.json$ ]]; then
             NAME="${BASH_REMATCH[1]}"
           else
+            echo "no Match on $FILE"
             continue
           fi
           echo "After if in loop"
@@ -57,15 +58,9 @@ jobs:
             echo "JSON file $JSON_FILE not found"
           fi
         done
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "Update Date in .json"
+        git push
 
-
-    - name: Push changes with API keys
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ github.head_ref }}
-    - run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Update Date in .json"
-          git push
