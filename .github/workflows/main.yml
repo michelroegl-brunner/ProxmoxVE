@@ -15,6 +15,7 @@ jobs:
     - name: Update JSON
       id: changed-files
       run: |
+          echo $(git branch)
           FILES=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files --jq '.[].filename' | tr '\n' ' ')
           echo "changed_files=${FILES}"
           for FILE in $FILES; do
