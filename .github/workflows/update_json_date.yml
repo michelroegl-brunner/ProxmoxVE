@@ -24,14 +24,14 @@ jobs:
       
     - name: Update JSON files
       run: |
-        # Fetch the base branch for comparison
+        echo  "Fetch the base branch for comparison"
         BASE_BRANCH=${{ github.event.pull_request.base.ref }}
         HEAD_BRANCH=${{ github.event.pull_request.head.ref }}
 
-        # Fetch the base branch to ensure it's locally available
+        echo "Fetch the base branch to ensure it's locally available"
         git fetch origin $HEAD_BRANCH
 
-        # Get the list of changed files between base and head branches
+        echo "Get the list of changed files between base and head branches"
         CHANGED_FILES=$(git diff --name-only origin/$BASE_BRANCH HEAD)
 
         echo "Changed files: $CHANGED_FILES"
