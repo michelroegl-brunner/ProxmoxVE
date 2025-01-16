@@ -2,8 +2,7 @@
 source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
-# License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
-# Source: https://cassandra.apache.org/_/index.html
+# License: MIT | https://githu
 
 # App Default Values
 APP="Apache-Cassandra"
