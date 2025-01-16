@@ -2,9 +2,7 @@ name: List PR Files
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    paths:
-      - "json/*.json"
-    
+        
 jobs:
   list-files:
     runs-on: ubuntu-latest
@@ -30,12 +28,10 @@ jobs:
               echo "Updating date_created in $JSON_FILE"
               jq --arg date "$(date +%Y-%m-%d)" '.date_created = $date' "$JSON_FILE" > tmp.json && mv tmp.json "$JSON_FILE"
             else
-              echo "JSON file $JSON_FILE not found"
+              echo "JSON file $FILES not found"
             fi
           done
              
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git diff --exit-code || git commit -am "Updating Dates in affected JSON files."
