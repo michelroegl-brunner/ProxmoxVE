@@ -28,8 +28,8 @@ jobs:
         BASE_BRANCH=${{ github.event.pull_request.base.ref }}
         HEAD_BRANCH=${{ github.event.pull_request.head.ref }}
 
-        echo "Fetch the base branch to ensure it's locally available"
-        git fetch origin $HEAD_BRANCH
+        echo "Fetch the base branch ($BASE_BRANCH) to ensure it's locally available. (HEAD_BRANCH: $HEAD_BRANCH"
+        git fetch origin $BASE_BRANCH
 
         echo "Get the list of changed files between base and head branches"
         CHANGED_FILES=$(git diff --name-only origin/$HEAD_BRANCH HEAD)
