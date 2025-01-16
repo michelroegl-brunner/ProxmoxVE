@@ -1,4 +1,4 @@
-name: Update JSON Date
+name: Check Script
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -12,7 +12,7 @@ jobs:
       with:
         ref: ${{ github.head_ref }}
 
-    - name: Update JSON
+    - name: Get changed files
       id: changed-files
       run: |
           FILES=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files --jq '.[].filename' | tr '\n' ' ')
