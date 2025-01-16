@@ -9,8 +9,7 @@ jobs:
     steps:
     - name: Checkout PR Branch
       uses: actions/checkout@v4
-      with:
-         ref: ${{ github.event.pull_request.head.ref }}
+      
 
     - name: Update JSON
       id: changed-files
