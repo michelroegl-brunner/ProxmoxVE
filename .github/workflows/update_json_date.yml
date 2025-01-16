@@ -32,11 +32,11 @@ jobs:
         for FILE in $CHANGED_FILES; do
           echo "In Loop befor if"
           # Check if the file matches the script patterns
-          if [[ "$FILE" =~ (?<=ct\/)(.*?)(?=\.sh) ]]; then
+          if [[ "$FILE" =~ /(.*)\.sh ]]; then
             NAME="${BASH_REMATCH[1]}"
-          elif [[ "$FILE" =~ ^install/(.*)-install\\.sh$ ]]; then
+          elif [[ "$FILE" =~ /([^/]+)-[^/]+\.sh$ ]]; then
             NAME="${BASH_REMATCH[1]}"
-          elif [[ "$FILE" =~ ^json/(.*)\\.json$ ]]; then
+          elif [[ "$FILE" =~ /(.*)\.json ]]; then
             NAME="${BASH_REMATCH[1]}"
           else
             echo "no Match on $FILE"
