@@ -2,6 +2,8 @@ name: List PR Files
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    paths:
+      - "json/*.json"
     
 jobs:
   list-files:
