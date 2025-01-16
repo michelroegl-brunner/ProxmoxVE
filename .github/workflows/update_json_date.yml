@@ -15,13 +15,8 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
-        
-    - name: Print current branch
-      run: echo "$(git branch)"
-      
-    - name: Update JSON files
-      run: |
+    - uses: actions/checkout@v4
+    - run: |
         echo  "Fetch the base branch for comparison"
         BASE_BRANCH=${{ github.event.pull_request.base.ref }}
         HEAD_BRANCH=${{ github.event.pull_request.head.ref }}
@@ -58,11 +53,11 @@ jobs:
           fi
         done
         echo "$(git branch)    ---> Before PUSH"
-        git pull origin $HEAD_BRANCH
+        
 
         git config user.name "github-actions[bot]"
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git add .
         git commit -m "Update Date in $JSON_FILE.json"
-        git push origin HEAD:$HEAD_BRANCH
+        git push 
 
