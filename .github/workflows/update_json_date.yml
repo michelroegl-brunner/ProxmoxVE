@@ -21,11 +21,9 @@ jobs:
         echo  "Fetch the base branch for comparison"
         BASE_BRANCH=${{ github.event.pull_request.base.ref }}
         HEAD_BRANCH=${{ github.event.pull_request.head.ref }}
-
-        echo "Fetch the base branch ($BASE_BRANCH) to ensure it's locally available. (HEAD_BRANCH: $HEAD_BRANCH"
-        git fetch origin $BASE_BRANCH
-
-        echo "Get the list of changed files between base and head branches"
+        
+        git fetch origin $BASE_BRANCH       
+        
         CHANGED_FILES=$(git diff --name-only origin/$BASE_BRANCH HEAD)
         
         echo "Changed files: $CHANGED_FILES"
@@ -36,6 +34,7 @@ jobs:
           # Check if the file matches the script patterns
           if [[ $FILE =~ /([^/]+)[-.] ]]; then
             NAME="${BASH_REMATCH[1]}"
+            echo "Found $NAME"
           else
             echo "no Match on $FILE"
             continue
