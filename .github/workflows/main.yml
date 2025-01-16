@@ -1,4 +1,4 @@
-name: List PR Files
+name: Update JSON Date
 on:
   pull_request:
     types: [opened, synchronize, reopened]
