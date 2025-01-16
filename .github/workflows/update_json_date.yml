@@ -64,5 +64,5 @@ jobs:
         JSON_API_ID: ${{ secrets.JSON_API_ID }}
         JSON_API_KEY: ${{ secrets.JSON_API_KEY }}
       run: |
-        git remote set-url origin https://$JSON_API_ID:$JSON_API_KEY@github.com/${{ github.repository }}.git
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
         git push
