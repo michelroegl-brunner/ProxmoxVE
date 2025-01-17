@@ -126,4 +126,4 @@ info "Successfully Transferred Data."
 
 # Use to copy all data from a Podman Home Assistant LXC to a Docker Home Assistant LXC.
 # run from the Proxmox Shell
-# bash -c "$(wget -qLO - fs/heads/develop/misc/copy-data/podman-home-assistant-copy-data-home-assistant-container.sh)"
+# bash -c "$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/copy-data/podman-home-assistant-copy-data-home-assistant-container.sh)"

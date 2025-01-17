@@ -1,6 +1,6 @@
 <div align="center">
   <a href="#">
-    <img src="fs/heads/develop/misc/images/logo.png" height="100px" />
+    <img src="https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/images/logo.png" height="100px" />
  </a>
 </div>
 <h2 align="center">User Submitted Guides </h2>
