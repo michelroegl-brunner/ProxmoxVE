@@ -381,7 +381,7 @@ exit_script() {
 
 # This function allows the user to configure advanced settings for the script.
 advanced_settings() {
-
+  CONFIG_FILE="/opt/community-scripts/.settings"
   if CONFIG_FILE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set absolute path to config file" 8 58 $CONFIG_FILE --title "CONFIG FILE" 3>&1 1>&2 2>&3); then
     if [ ! -f "$CONFIG_FILE" ]; then
     echo -e "${CROSS}${RD} Config file not found.${CL}"
