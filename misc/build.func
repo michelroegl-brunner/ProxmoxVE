@@ -727,6 +727,47 @@ advanced_settings() {
   fi
 }
 
+
+config_file(){
+
+  CONFIG_FILE="/opt/community-scripts/settings.conf"
+  whiptail --backtitle "Proxmox VE Helper Scripts" --msgbox --title "Here is an instructional tip:" "To make a selection, use the Spacebar." 8 58
+  whiptail --backtitle "Proxmox VE Helper Scripts" --msgbox --title "Default distribution for $APP" "${var_os} ${var_version} \n \nIf the default Linux distribution is not adhered to, script support will be discontinued. \n" 10 58
+  whiptail --backtitle "Proxmox VE Helper Scripts" --msgbox --title "Specifie wich config file to use, fill out missing option or use defaults." 10 58
+
+
+  if CONFIG_FILE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set absolute path to config file" 8 58 $CONFIG_FILE --title "CONFIG FILE" 3>&1 1>&2 2>&3); then
+    if [ ! -f "$CONFIG_FILE" ]; then
+    echo -e "${CROSS}${RD} Config file not found.${CL}"
+    exit_script
+  fi
+  else
+    exit_script
+  fi
+
+  # Load the config file
+  source "$CONFIG_FILE"
+  
+
+  # Check if the required variables are set
+  if [ -z "$var_os" ] || [ -z "$var_version" ] || [ -z "$var_unprivileged" ] || [ -z "$var_disk" ] || [ -z "$var_cpu" ] || [ -z "$var_ram" ]; then
+    echo -e "${CROSS}${RD} Required variables are not set in the config file.${CL}"
+    exit 1
+  fi
+
+  # Display the values from the config file
+  echo -e "${OS}${BOLD}${DGN}Operating System: ${BGN}$var_os${CL}"
+  echo -e "${OSVERSION}${BOLD}${DGN}Version: ${BGN}$var_version${CL}"
+  echo -e "${CONTAINERTYPE}${BOLD}${DGN}Container Type: ${BGN}$var_unprivileged${CL}"
+  echo -e "${DISKSIZE}${BOLD}${DGN}Disk Size: ${BGN}$var_disk GB${CL}"
+  echo -e "${CPUCORE}${BOLD}${DGN}CPU Cores: ${BGN}$var_cpu${CL}"
+  echo -e "${RAMSIZE}${BOLD}${DGN}RAM Size: ${BGN}$var_ram MiB${CL}"
+  echo -e "${CREATING}${BOLD}${BL}Creating a ${APP} LXC using the above settings${CL}"
+  echo -e "  "
+
+}
+
+
 install_script() {
   pve_check
   shell_check
@@ -747,7 +788,8 @@ install_script() {
       "1" "Default Settings" \
       "2" "Default Settings (with verbose)" \
       "3" "Advanced Settings" \
-      "4" "Exit" --nocancel --default-item "1" 3>&1 1>&2 2>&3)
+      "4" "Use Config File" \
+      "5" "Exit" --nocancel --default-item "1" 3>&1 1>&2 2>&3)
 
     if [ $? -ne 0 ]; then
       echo -e "${CROSS}${RD} Menu canceled. Exiting.${CL}"
@@ -778,6 +820,12 @@ install_script() {
         break
         ;;
       4)
+        header_info
+        echo -e "${INFO}${HOLD} ${GN}Using Config File on node $PVEHOST_NAME${CL}"
+        config_file
+        break
+        ;;
+      5)
         echo -e "${CROSS}${RD}Exiting.${CL}"
         exit 0
         ;;
