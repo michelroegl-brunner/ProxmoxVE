@@ -885,6 +885,7 @@ config_file(){
 
   if [[ ! -z "$APT_CACHER_IP" ]]; then
     if [[ "$APT_CACHER_IP" =~ $ip_regex ]]; then
+          APT_CACHER="${APT_CACHER_IP:+yes}"
           echo -e "${GATEWAY}${BOLD}${DGN}Gateway IP Address: ${BGN}$APT_CAHER_IP${CL}"
         else
           msg_error "Invalid IP Address format for APT-Cacher: ${APT_CAHER_IP}"
@@ -944,11 +945,17 @@ config_file(){
     echo -e "${ROOTSSH}${BOLD}${DGN}Root SSH Access: ${BGN}$SSH${CL}"
     if [[ ! -z "$SSH_AUTHORIZED_KEY" ]]; then
       echo -e "${ROOTSSH}${BOLD}${DGN}SSH Authorized Key: ${BGN}$SSH_AUTHORIZED_KEY${CL}"
+    else
+      echo -e "${ROOTSSH}${BOLD}${DGN}SSH Authorized Key: ${BGN}None${CL}"
     fi
+  else
+    echo -e "${ROOTSSH}${BOLD}${DGN}Root SSH Access: ${BGN}$SSH${CL}"
   fi
 
   if [[ "$VERB" == "yes" ]]; then
     echo -e "${SEARCH}${BOLD}${DGN}Verbose Mode: ${BGN}$VERB${CL}"
+  else
+    echo -e "${SEARCH}${BOLD}${DGN}Verbose Mode: ${BGN}No${CL}"
   fi
 
   if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "ADVANCED SETTINGS WITH CONFIG FILE COMPLETE" --yesno "Ready to create ${APP} LXC?" 10 58); then
