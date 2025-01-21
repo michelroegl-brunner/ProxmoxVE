@@ -801,7 +801,7 @@ config_file(){
   echo -e "${CONTAINERTYPE}${BOLD}${DGN}Container Type: ${BGN}$CT_TYPE_DESC${CL}"
 
   if [[ ! -z "$PW" ]]; then
-    echo "$PW"
+    
     if [[ "$PW" == *" "* ]]; then
       msg_error "Password cannot be empty"
       exit_script
