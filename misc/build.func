@@ -898,24 +898,36 @@ config_file(){
   if [[ ! -z "$MTU" ]]; then
     echo -e "${DEFAULT}${BOLD}${DGN}Interface MTU Size: ${BGN}$MTU${CL}"
   else
-    msg_error "MTU Size cannot be empty"
-    exit_script
+    MTU=""
+    echo -e "${DEFAULT}${BOLD}${DGN}Interface MTU Size: ${BGN}Default{CL}"
+    
   fi
 
   if [[ ! -z "$SD" ]]; then
-    echo -e "${SEARCH}${BOLD}${DGN}DNS Search Domain: ${BGN}$SX${CL}"
+    echo -e "${SEARCH}${BOLD}${DGN}DNS Search Domain: ${BGN}$SD${CL}"
+    SD="-searchdomain=$SD"
+  else
+    SD=""
+    echo -e "${SEARCH}${BOLD}${DGN}DNS Search Domain: ${BGN}HOST${CL}"
   fi
 
+
   if [[ ! -z "$NS" ]]; then
-    echo -e "${NETWORK}${BOLD}${DGN}DNS Server IP Address: ${BGN}$NX${CL}"
+    echo -e "${NETWORK}${BOLD}${DGN}DNS Server IP Address: ${BGN}$NS${CL}"
+    NS="-nameserver=$NS"
+  else
+    NS=""
+    echo -e "${SEARCH}${BOLD}${DGN}DNS Search Domain: ${BGN}HOST${CL}"
   fi
 
   if [[ ! -z "$MAC" ]]; then
     echo -e "${MACADDRESS}${BOLD}${DGN}MAC Address: ${BGN}$MAC${CL}"
+    AC=",hwaddr=$MAC"
   fi
 
   if [[ ! -z "$VLAN" ]]; then
     echo -e "${VLANTAG}${BOLD}${DGN}Vlan: ${BGN}$VLAN${CL}"
+    VLAN=",tag=$VLAN"
   fi
 
   if [[ ! -z "$TAGS" ]]; then
