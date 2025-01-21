@@ -944,7 +944,7 @@ config_file(){
   if [[ "$SSH" == "yes" ]]; then
     echo -e "${ROOTSSH}${BOLD}${DGN}Root SSH Access: ${BGN}$SSH${CL}"
     if [[ ! -z "$SSH_AUTHORIZED_KEY" ]]; then
-      echo -e "${ROOTSSH}${BOLD}${DGN}SSH Authorized Key: ${BGN}$SSH_AUTHORIZED_KEY${CL}"
+      echo -e "${ROOTSSH}${BOLD}${DGN}SSH Authorized Key: ${BGN}********************${CL}"
     else
       echo -e "${ROOTSSH}${BOLD}${DGN}SSH Authorized Key: ${BGN}None${CL}"
     fi
