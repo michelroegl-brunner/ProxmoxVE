@@ -752,44 +752,14 @@ config_file(){
   if CONFIG_FILE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set absolute path to config file" 8 58 $CONFIG_FILE --title "CONFIG FILE" 3>&1 1>&2 2>&3); then
     if [[ ! -f "$CONFIG_FILE" ]]; then
       echo -e "${CROSS}${RD} Config file not found, using the default values.${CL}"
+      base_settings
 
     else
       echo -e "${INFO}${BOLD}${DGN}Using config File: ${BGN}$CONFIG_FILE${CL}"
+      base_settings
+      source "$CONFIG_FILE"
     fi
   fi
-  #use base_settings befor apllying config file  
-  CT_TYPE="1"
-  DISK_SIZE="4"
-  CORE_COUNT="1"
-  RAM_SIZE="1024"
-  VERBOSE="${1:-no}"
-  PW=""
-  CT_ID=$NEXTID
-  HN=$NSAPP
-  BRG="vmbr0"
-  NET="dhcp"
-  GATE=""
-  APT_CACHER=""
-  APT_CACHER_IP=""
-  DISABLEIP6="no"
-  MTU=""
-  SD=""
-  NS=""
-  MAC=""
-  VLAN=""
-  SSH="no"
-  SSH_AUTHORIZED_KEY=""
-  TAGS="community-script;"
-
-  # Override default settings with variables from ct script
-  CT_TYPE=${var_unprivileged:-$CT_TYPE}
-  DISK_SIZE=${var_disk:-$DISK_SIZE}
-  CORE_COUNT=${var_cpu:-$CORE_COUNT}
-  RAM_SIZE=${var_ram:-$RAM_SIZE}
-  VERB=${var_verbose:-$VERBOSE}
-  TAGS="${TAGS}${var_tags:-}"
-  # Load the config file   
-  source "$CONFIG_FILE"
 
   if [[ "$var_os" == "debian" ]]; then
     echo -e "${OS}${BOLD}${DGN}Operating System: ${BGN}$var_os${CL}"
