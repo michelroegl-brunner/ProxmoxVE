@@ -751,8 +751,8 @@ config_file(){
   CONFIG_FILE="/opt/community-scripts/.settings"
   if CONFIG_FILE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set absolute path to config file" 8 58 $CONFIG_FILE --title "CONFIG FILE" 3>&1 1>&2 2>&3); then
     if [[ ! -f "$CONFIG_FILE" ]]; then
-      echo -e "${CROSS}${RD} Config file not found.${CL}"
-      
+      echo -e "${CROSS}${RD} Config file not found, creating a empty one and using the default values.${CL}"
+      touch /opt/community-scripts/.settings
     else
       echo -e "${INFO}${BOLD}${DGN}Using config File: ${BGN}$CONFIG_FILE${CL}"
     fi
@@ -791,25 +791,25 @@ config_file(){
   # Load the config file   
   source "$CONFIG_FILE"
 
-  if [ "$var_os" == "debian" ]; then
+  if [[ "$var_os" == "debian" ]]; then
     echo -e "${OS}${BOLD}${DGN}Operating System: ${BGN}$var_os${CL}"
-    if [ "$var_version" == "11" ]; then
+    if [[ "$var_version" == "11" ]]; then
       echo -e "${OSVERSION}${BOLD}${DGN}Version: ${BGN}$var_version${CL}"
-    elif [ "$var_version" == "12" ]; then
+    elif [[ "$var_version" == "12" ]]; then
       echo -e "${OSVERSION}${BOLD}${DGN}Version: ${BGN}$var_version${CL}"
     else
       msg_error "Unknown setting for var_version, should be 11 or 12, was ${var_version}"
       exit_script
     fi
-  elif [ "$var_os" == "ubuntu" ]; then
+  elif [[ "$var_os" == "ubuntu" ]]; then
     echo -e "${OS}${BOLD}${DGN}Operating System: ${BGN}$var_os${CL}"
-    if [ "$var_version" == "20.04" ]; then
+    if [[ "$var_version" == "20.04" ]]; then
       echo -e "${OSVERSION}${BOLD}${DGN}Version: ${BGN}$var_version${CL}"
-    elif [ "$var_version" == "22.04" ]; then
+    elif [[ "$var_version" == "22.04" ]]; then
       echo -e "${OSVERSION}${BOLD}${DGN}Version: ${BGN}$var_version${CL}"
-    elif [ "$var_version" == "24.04" ]; then
+    elif [[ "$var_version" == "24.04" ]]; then
       echo -e "${OSVERSION}${BOLD}${DGN}Version: ${BGN}$var_version${CL}"
-    elif [ "$var_version" == "24.10" ]; then
+    elif [[ "$var_version" == "24.10" ]]; then
       echo -e "${OSVERSION}${BOLD}${DGN}Version: ${BGN}$var_version${CL}"
     else
       msg_error "Unknown setting for var_version, should be 20.04, 22.04, 24.04 or 24.10, was ${var_version}"
@@ -820,9 +820,9 @@ config_file(){
     exit_script
   fi
 
-  if [ "$CT_TYPE" -eq 0 ]; then
+  if [[ "$CT_TYPE" -eq 0 ]]; then
     CT_TYPE_DESC="Privileged"
-  elif [ "$CT_TYPE" -eq 1 ]; then
+  elif [[ "$CT_TYPE" -eq 1 ]]; then
     CT_TYPE_DESC="Unprivileged"  
   else
     msg_error "Unknown setting for CT_TYPE, should be 1 or 0, was ${CT_TYPE}"
@@ -830,11 +830,11 @@ config_file(){
   fi
   echo -e "${CONTAINERTYPE}${BOLD}${DGN}Container Type: ${BGN}$CT_TYPE_DESC${CL}"
 
-  if [ -z "$PW" ]; then
+  if [[ -z "$PW" ]]; then
     if [[ "$PW" == *" "* ]]; then
       msg_error "Password cannot be empty"
       exit_script
-    elif [ ${#PW} -lt 5 ]; then
+    elif [[ ${#PW} -lt 5 ]]; then
       msg_error "Password must be at least 5 characters long"
       exit_script
     else
@@ -844,7 +844,7 @@ config_file(){
   fi
   echo -e "${CONTAINERID}${BOLD}${DGN}Container ID: ${BGN}$CT_ID${CL}"
 
-  if [ ! -z "$CT_NAME" ]; then
+  if [[ ! -z "$CT_NAME" ]]; then
     HN=$(echo ${CT_NAME,,} | tr -d ' ')
     echo -e "${HOSTNAME}${BOLD}${DGN}Hostname: ${BGN}$HN${CL}"
   else
@@ -852,28 +852,28 @@ config_file(){
     exit_script
   fi
 
-  if [ ! -z "$DISK_SIZE" ]; then
+  if [[ ! -z "$DISK_SIZE" ]]; then
     echo -e "${DISKSIZE}${BOLD}${DGN}Disk Size: ${BGN}${DISK_SIZE} GB${CL}"
   else
     msg_error "Disk Size cannot be empty"
     exit_script
   fi
 
-  if [ ! -z "$CORE_COUNT" ]; then
+  if [[ ! -z "$CORE_COUNT" ]]; then
     echo -e "${CPUCORE}${BOLD}${DGN}CPU Cores: ${BGN}${CORE_COUNT}${CL}"
   else
     msg_error "CPU Cores cannot be empty"
     exit_script
   fi
 
-  if [ ! -z "$RAM_SIZE" ]; then
+  if [[ ! -z "$RAM_SIZE" ]]; then
     echo -e "${RAMSIZE}${BOLD}${DGN}RAM Size: ${BGN}${RAM_SIZE} MiB${CL}"
   else
     msg_error "RAM Size cannot be empty"
     exit_script
   fi
 
-  if [ ! -z "$BRG" ]; then
+  if [[ ! -z "$BRG" ]]; then
     echo -e "${BRIDGE}${BOLD}${DGN}Bridge: ${BGN}$BRG${CL}"
   else
     msg_error "Bridge cannot be empty"
@@ -909,51 +909,51 @@ config_file(){
   fi
   
 
-  if [ ! -z "$APT_CACHER_IP" ]; then
+  if [[ ! -z "$APT_CACHER_IP" ]]; then
     echo -e "${NETWORK}${BOLD}${DGN}APT-Cacher IP Address: ${BGN}${APT_CACHER_IP:-Default}${CL}"
   fi
 
-  if [ "$DISABLEIP6" == "yes" ]; then
+  if [[ "$DISABLEIP6" == "yes" ]]; then
     echo -e "${DISABLEIPV6}${BOLD}${DGN}Disable IPv6: ${BGN}Yes${CL}"
   else
     echo -e "${DISABLEIPV6}${BOLD}${DGN}Disable IPv6: ${BGN}No${CL}"
   fi
 
-  if [ ! -z "$MTU" ]; then
+  if [[ ! -z "$MTU" ]]; then
     echo -e "${DEFAULT}${BOLD}${DGN}Interface MTU Size: ${BGN}$MTU${CL}"
   else
     msg_error "MTU Size cannot be empty"
     exit_script
   fi
 
-  if [ ! -z "$SD" ]; then
+  if [[ ! -z "$SD" ]]; then
     echo -e "${SEARCH}${BOLD}${DGN}DNS Search Domain: ${BGN}$SX${CL}"
   fi
 
-  if [ ! -z "$NS" ]; then
+  if [[ ! -z "$NS" ]]; then
     echo -e "${NETWORK}${BOLD}${DGN}DNS Server IP Address: ${BGN}$NX${CL}"
   fi
 
-  if [ ! -z "$MAC" ]; then
+  if [[ ! -z "$MAC" ]]; then
     echo -e "${MACADDRESS}${BOLD}${DGN}MAC Address: ${BGN}$MAC${CL}"
   fi
 
-  if [ ! -z "$VLAN" ]; then
+  if [[ ! -z "$VLAN" ]]; then
     echo -e "${VLANTAG}${BOLD}${DGN}Vlan: ${BGN}$VLAN${CL}"
   fi
 
-  if [ ! -z "$TAGS" ]; then
+  if [[ ! -z "$TAGS" ]]; then
     echo -e "${NETWORK}${BOLD}${DGN}Tags: ${BGN}$TAGS${CL}"
   fi
 
-  if [ "$SSH" == "yes" ]; then
+  if [[ "$SSH" == "yes" ]]; then
     echo -e "${ROOTSSH}${BOLD}${DGN}Root SSH Access: ${BGN}$SSH${CL}"
-    if [ ! -z "$SSH_AUTHORIZED_KEY" ]; then
+    if [[ ! -z "$SSH_AUTHORIZED_KEY" ]]; then
       echo -e "${ROOTSSH}${BOLD}${DGN}SSH Authorized Key: ${BGN}$SSH_AUTHORIZED_KEY${CL}"
     fi
   fi
 
-  if [ "$VERB" == "yes" ]; then
+  if [[ "$VERB" == "yes" ]]; then
     echo -e "${SEARCH}${BOLD}${DGN}Verbose Mode: ${BGN}$VERB${CL}"
   fi
 
