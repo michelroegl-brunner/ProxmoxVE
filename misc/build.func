@@ -818,8 +818,7 @@ config_file(){
   fi
   echo -e "${CONTAINERID}${BOLD}${DGN}Container ID: ${BGN}$CT_ID${CL}"
 
-  if [[ ! -z "$CT_NAME" ]]; then
-    HN=$(echo ${CT_NAME,,} | tr -d ' ')
+  if [[ ! -z "$HN" ]]; then
     echo -e "${HOSTNAME}${BOLD}${DGN}Hostname: ${BGN}$HN${CL}"
   else
     msg_error "Hostname cannot be empty"
