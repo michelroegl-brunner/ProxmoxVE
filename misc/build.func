@@ -374,7 +374,7 @@ echo_default() {
 
 # This function is called when the user decides to exit the script. It clears the screen and displays an exit message.
 exit_script() {
-  clear
+  
   echo -e "\n${CROSS}${RD}User exited script${CL}\n"
   exit
 }
@@ -752,6 +752,7 @@ config_file(){
   if CONFIG_FILE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set absolute path to config file" 8 58 $CONFIG_FILE --title "CONFIG FILE" 3>&1 1>&2 2>&3); then
     if [[ ! -f "$CONFIG_FILE" ]]; then
       echo -e "${CROSS}${RD} Config file not found, using the default values.${CL}"
+
     else
       echo -e "${INFO}${BOLD}${DGN}Using config File: ${BGN}$CONFIG_FILE${CL}"
     fi
