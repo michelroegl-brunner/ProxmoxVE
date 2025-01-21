@@ -923,7 +923,7 @@ config_file(){
     NS="-nameserver=$NS"
   else
     NS=""
-    echo -e "${SEARCH}${BOLD}${DGN}DNS Search Domain: ${BGN}HOST${CL}"
+    echo -e "${NETWORK}${BOLD}${DGN}DNS Server IP Address: ${BGN}HOST${CL}"
   fi
 
   if [[ ! -z "$MAC" ]]; then
