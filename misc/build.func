@@ -750,7 +750,7 @@ config_file(){
 
   CONFIG_FILE="/opt/community-scripts/.settings"
   if CONFIG_FILE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set absolute path to config file" 8 58 $CONFIG_FILE --title "CONFIG FILE" 3>&1 1>&2 2>&3); then
-    if [ ! -f "$CONFIG_FILE" ]; then
+    if [[ ! -f "$CONFIG_FILE" ]]; then
       echo -e "${CROSS}${RD} Config file not found.${CL}"
       
     else
