@@ -801,6 +801,7 @@ config_file(){
   echo -e "${CONTAINERTYPE}${BOLD}${DGN}Container Type: ${BGN}$CT_TYPE_DESC${CL}"
 
   if [[ -z "$PW" ]]; then
+    echo "$PW"
     if [[ "$PW" == *" "* ]]; then
       msg_error "Password cannot be empty"
       exit_script
@@ -811,6 +812,9 @@ config_file(){
       echo -e "${VERIFYPW}${BOLD}${DGN}Root Password: ${BGN}********${CL}"
     fi
     PW="-password $PW"
+  else
+    PW=""
+    echo -e "${VERIFYPW}${BOLD}${DGN}Root Password: ${BGN}Automatic Login${CL}"
   fi
   echo -e "${CONTAINERID}${BOLD}${DGN}Container ID: ${BGN}$CT_ID${CL}"
 
