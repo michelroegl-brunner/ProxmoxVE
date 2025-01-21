@@ -884,7 +884,12 @@ config_file(){
   
 
   if [[ ! -z "$APT_CACHER_IP" ]]; then
-    echo -e "${NETWORK}${BOLD}${DGN}APT-Cacher IP Address: ${BGN}${APT_CACHER_IP}${CL}"
+    if [[ "$APT_CAHER_IP" =~ $ip_regex ]]; then
+          echo -e "${GATEWAY}${BOLD}${DGN}Gateway IP Address: ${BGN}$APT_CAHER_IP${CL}"
+        else
+          msg_error "Invalid IP Address format for APT-Cacher: ${APT_CAHER_IP}"
+          exit_script
+        fi
   fi
 
   if [[ "$DISABLEIP6" == "yes" ]]; then
