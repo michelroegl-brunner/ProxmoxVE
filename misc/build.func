@@ -883,13 +883,16 @@ config_file(){
   
 
   if [[ ! -z "$APT_CACHER_IP" ]]; then
-    echo -e "${NETWORK}${BOLD}${DGN}APT-Cacher IP Address: ${BGN}${APT_CACHER_IP:-Default}${CL}"
+    echo -e "${NETWORK}${BOLD}${DGN}APT-Cacher IP Address: ${BGN}${APT_CACHER_IP}${CL}"
   fi
 
   if [[ "$DISABLEIP6" == "yes" ]]; then
     echo -e "${DISABLEIPV6}${BOLD}${DGN}Disable IPv6: ${BGN}Yes${CL}"
-  else
+  elif [[ "$DISABLEIP6" == "no" ]]; then
     echo -e "${DISABLEIPV6}${BOLD}${DGN}Disable IPv6: ${BGN}No${CL}"
+  else
+    msg_error "Disable IPv6 needs to be 'yes' or 'no'"
+    exit_script
   fi
 
   if [[ ! -z "$MTU" ]]; then
