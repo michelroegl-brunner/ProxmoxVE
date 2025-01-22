@@ -40,7 +40,7 @@ msg_info "Installing Actual Budget"
 RELEASE=$(curl -s https://api.github.com/repos/actualbudget/actual/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
 cd /opt
 #$STD git clone https://github.com/actualbudget/actual-server.git /opt/actualbudget
-wget -q https://codeload.github.com/actualbudget/actual-server/legacy.tar.gz/refs/tags/${RELEASE}
+wget -q https://github.com/actualbudget/actual-server/archive/refs/tags/v${RELEASE}.tar.gz
 #$STD curl -L -o actual-server.tar.gz https://github.com/actualbudget/actual-server/archive/refs/tags/v${RELEASE}.tar.gz
 tar -xzf v${RELEASE}.tar.gz
 mv *ctual-server-* /opt/actualbudget
