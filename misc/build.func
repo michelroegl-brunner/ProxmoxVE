@@ -791,8 +791,8 @@ post_to_api() {
 }
 EOF
 )
-
-    echo "Sending JSON to API:"
+    msg_ok "Posted Data to API"
+    
     echo "$JSON_PAYLOAD"
 
     # Send POST request
@@ -950,6 +950,9 @@ build_container() {
   else
     export FUNCTIONS_FILE_PATH="$(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/install.func)"
   fi
+
+  post_to_api
+
   export CACHER="$APT_CACHER"
   export CACHER_IP="$APT_CACHER_IP"
   export tz="$timezone"
@@ -1042,7 +1045,6 @@ EOF'
     pct exec "$CTID" -- ash -c "apk add bash >/dev/null"
   fi
 
-  post_to_api
 
   lxc-attach -n "$CTID" -- bash -c "$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/install/$var_install.sh)" || exit
 
