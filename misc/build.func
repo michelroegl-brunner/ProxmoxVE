@@ -770,6 +770,49 @@ advanced_settings() {
   fi
 }
 
+post_to_api() {
+    local API_URL="http://10.5.146.10:8080/upload"
+
+   
+    # Create JSON payload
+    JSON_PAYLOAD=$(cat <<EOF
+{
+    "ct_type": $CT_TYPE,
+    "disk_size": $DISK_SIZE,
+    "core_count": $CORE_COUNT,
+    "ram_size": $RAM_SIZE,
+    "verbose": "$VERBOSE",
+    "ct_id": $CT_ID,
+    "hn": "$HN",
+    "disableip6": "$DISABLEIP6",
+    "ssh": "$SSH",
+    "tags": "$TAGS",
+    "nsapp": "$NSAPP"
+}
+EOF
+)
+
+    echo "Sending JSON to API:"
+    echo "$JSON_PAYLOAD"
+
+    # Send POST request
+    RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -X POST "$API_URL" \
+        -H "Content-Type: application/json" \
+        -d "$JSON_PAYLOAD")
+
+    # Check response code
+    if [ "$RESPONSE" -eq 201 ]; then
+        echo "✅ Data successfully stored"
+    else
+        echo "❌ API request failed with HTTP code $RESPONSE"
+        cat response.txt
+    fi
+
+    # Clean up
+    rm response.txt
+}
+
+
 install_script() {
   pve_check
   shell_check
@@ -998,6 +1041,9 @@ http://dl-cdn.alpinelinux.org/alpine/latest-stable/community
 EOF'
     pct exec "$CTID" -- ash -c "apk add bash >/dev/null"
   fi
+
+  post_to_api
+
   lxc-attach -n "$CTID" -- bash -c "$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/install/$var_install.sh)" || exit
 
 }
