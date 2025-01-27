@@ -772,9 +772,8 @@ advanced_settings() {
 
 post_to_api() {
     local API_URL="http://api.htl-braunau.at/upload"
-
    
-    # Create JSON payload
+    
     JSON_PAYLOAD=$(cat <<EOF
 {
     "ct_type": $CT_TYPE,
@@ -791,19 +790,13 @@ post_to_api() {
 }
 EOF
 )
-    msg_ok "Posted Data to API"
-    
-    echo "$JSON_PAYLOAD"
-
-    # Send POST request
+   
     RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -X POST "$API_URL" \
         -H "Content-Type: application/json" \
         -d "$JSON_PAYLOAD")
 
     # Check response code
-    if [ "$RESPONSE" -eq 201 ]; then
-        msg_ok "Data successfully stored"
-    else
+    if [ ! "$RESPONSE" -eq 201 ]; then
         msg_error "API request failed with HTTP code $RESPONSE"
         cat response.txt
     fi
