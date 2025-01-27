@@ -802,9 +802,9 @@ EOF
 
     # Check response code
     if [ "$RESPONSE" -eq 201 ]; then
-        echo "✅ Data successfully stored"
+        msg_ok "Data successfully stored"
     else
-        echo "❌ API request failed with HTTP code $RESPONSE"
+        msg_error "API request failed with HTTP code $RESPONSE"
         cat response.txt
     fi
 
