@@ -44,6 +44,7 @@ interface DataModel {
   tags: string;
   nsapp: string;
   created_at: string;
+  method: string;
 }
 
 const DataFetcher: React.FC = () => {
@@ -174,6 +175,7 @@ const DataFetcher: React.FC = () => {
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('ssh')}>SSH</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('verbose')}>Verbose</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('tags')}>Tags</th>
+                <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('method')}>Method</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('created_at')}>Created At</th>
               </tr>
             </thead>
@@ -190,6 +192,7 @@ const DataFetcher: React.FC = () => {
                   <td className="px-4 py-2 border-b">{item.ssh}</td>
                   <td className="px-4 py-2 border-b">{item.verbose}</td>
                   <td className="px-4 py-2 border-b">{item.tags.replace(/;/g, ' ')}</td>
+                  <td className="px-4 py-2 border-b">{item.method}</td>
                   <td className="px-4 py-2 border-b">{formatDate(item.created_at)}</td>
                 </tr>
               ))}
