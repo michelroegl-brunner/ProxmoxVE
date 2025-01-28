@@ -773,6 +773,8 @@ advanced_settings() {
 
 post_to_api() {
     local API_URL="http://api.community-scripts.org/upload"
+
+    msg_ok "Sending data to API ${API_URL}"
    
     JSON_PAYLOAD=$(cat <<EOF
 {
