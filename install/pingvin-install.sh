@@ -14,11 +14,12 @@ network_check
 update_os
 
 msg_info "Installing Dependencies"
-$STD apt-get install -y curl
-$STD apt-get install -y sudo
-$STD apt-get install -y mc
-$STD apt-get install -y git
-$STD apt-get install -y gnupg
+$STD apt-get install -y \
+  curl \
+  sudo \
+  mc \
+  git \
+  gnupg
 msg_ok "Installed Dependencies"
 
 msg_info "Setting up Node.js Repository"
@@ -34,11 +35,14 @@ $STD npm install pm2 -g
 msg_ok "Installed Node.js"
 
 msg_info "Installing Pingvin Share (Patience)"
-git clone -q https://github.com/stonith404/pingvin-share /opt/pingvin-share
-cd /opt/pingvin-share
-$STD git fetch --tags
-$STD git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
-cd backend
+cd /opt
+RELEASE=$(curl -s https://api.github.com/repos/stonith404/pingvin-share/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
+echo "${RELEASE}" >"/opt/${APPLICATION}_version.txt"
+wget -q "https://github.com/stonith404/pingvin-share/archive/refs/tags/v${RELEASE}.zip"
+unzip -q v${RELEASE}.zip
+echo "${RELEASE}" >"/opt/pingvin_version.txt"
+mv pingvin-share-${RELEASE} /opt/pingvin-share
+cd /opt/pingvin-share/backend
 $STD npm install
 $STD npm run build
 $STD pm2 start --name="pingvin-share-backend" npm -- run prod
@@ -57,6 +61,7 @@ motd_ssh
 customize
 
 msg_info "Cleaning up"
+rm -rf /opt/v${RELEASE}.zip
 $STD apt-get -y autoremove
 $STD apt-get -y autoclean
 msg_ok "Cleaned"
