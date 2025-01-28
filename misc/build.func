@@ -1,6 +1,7 @@
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # Co-Author: MickLesk
+# Co-Author: michelroegl-brunner
 # License: MIT
 # https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 
@@ -10,6 +11,7 @@ variables() {
   INTEGER='^[0-9]+([.][0-9]+)?$'     # it defines the INTEGER regular expression pattern.
   PVEHOST_NAME=$(hostname) # gets the Proxmox Hostname and sets it to Uppercase
   DIAGNOSTICS="yes" # sets the DIAGNOSTICS variable to "yes", used for the API call.
+  METHOD="default" # sets the METHOD variable to "default", used for the API call.
 }
 
 # This function sets various color variables using ANSI escape codes for formatting text in the terminal.
@@ -145,6 +147,52 @@ pve_check() {
     sleep 2
     exit
 fi
+}
+
+# When a node is running tens of containers, it's possible to exceed the kernel's cryptographic key storage allocations. 
+# These are tuneable, so verify if the currently deployment is approaching the limits, advise the user on how to tune the limits, and exit the script.
+# https://cleveruptime.com/docs/files/proc-key-users | https://docs.kernel.org/security/keys/core.html
+maxkeys_check() {
+  # Read kernel parameters
+  per_user_maxkeys=$(cat /proc/sys/kernel/keys/maxkeys 2>/dev/null || echo 0)
+  per_user_maxbytes=$(cat /proc/sys/kernel/keys/maxbytes 2>/dev/null || echo 0)
+
+  # Exit if kernel parameters are unavailable
+  if [[ "$per_user_maxkeys" -eq 0 || "$per_user_maxbytes" -eq 0 ]]; then
+    echo -e "${CROSS}${RD} Error: Unable to read kernel parameters. Ensure proper permissions.${CL}"
+    exit 1
+  fi
+
+  # Fetch key usage for user ID 100000 (typical for containers)
+  used_lxc_keys=$(awk '/100000:/ {print $2}' /proc/key-users 2>/dev/null || echo 0)
+  used_lxc_bytes=$(awk '/100000:/ {split($5, a, "/"); print a[1]}' /proc/key-users 2>/dev/null || echo 0)
+
+  # Calculate thresholds and suggested new limits
+  threshold_keys=$((per_user_maxkeys - 100))
+  threshold_bytes=$((per_user_maxbytes - 1000))
+  new_limit_keys=$((per_user_maxkeys * 2))
+  new_limit_bytes=$((per_user_maxbytes * 2))
+
+  # Check if key or byte usage is near limits
+  failure=0
+  if [[ "$used_lxc_keys" -gt "$threshold_keys" ]]; then
+    echo -e "${CROSS}${RD} Warning: Key usage is near the limit (${used_lxc_keys}/${per_user_maxkeys}).${CL}"
+    echo -e "${INFO} Suggested action: Set ${GN}kernel.keys.maxkeys=${new_limit_keys}${CL} in ${BOLD}/etc/sysctl.d/98-community-scripts.conf${CL}."
+    failure=1
+  fi
+  if [[ "$used_lxc_bytes" -gt "$threshold_bytes" ]]; then
+    echo -e "${CROSS}${RD} Warning: Key byte usage is near the limit (${used_lxc_bytes}/${per_user_maxbytes}).${CL}"
+    echo -e "${INFO} Suggested action: Set ${GN}kernel.keys.maxbytes=${new_limit_bytes}${CL} in ${BOLD}/etc/sysctl.d/98-community-scripts.conf${CL}."
+    failure=1
+  fi
+
+  # Provide next steps if issues are detected
+  if [[ "$failure" -eq 1 ]]; then
+    echo -e "${INFO} To apply changes, run: ${BOLD}service procps force-reload${CL}"
+    exit 1
+  fi
+
+  echo -e "${CM}${GN} All kernel key limits are within safe thresholds.${CL}"
 }
 
 # This function checks the system architecture and exits if it's not "amd64".
@@ -417,8 +465,7 @@ advanced_settings() {
         else
           exit_script
         fi
-      fi
-      if [ "$var_default_version" == "22.04" ]; then
+      elif [ "$var_default_version" == "22.04" ]; then
         if var_version=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "UBUNTU VERSION" --radiolist "Choose Version" 10 58 4 \
           "20.04" "Focal" OFF \
           "22.04" "Jammy" ON \
@@ -431,9 +478,8 @@ advanced_settings() {
         else
           exit_script
         fi
-      fi
-      if [ "$var_default_version" == "24.04" ]; then
-        if var_version=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "UBUNTU VERSION" --radiolist "Choose Version" 10 58 4 \
+      elif [ "$var_default_version" == "24.04" ]; then
+	        if var_version=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "UBUNTU VERSION" --radiolist "Choose Version" 10 58 4 \
           "20.04" "Focal" OFF \
           "22.04" "Jammy" OFF \
           "24.04" "Noble" ON \
@@ -444,9 +490,8 @@ advanced_settings() {
           fi
         else
           exit_script
-        fi
-      fi
-      if [ "$var_default_version" == "24.10" ]; then
+        fi   
+      else
         if var_version=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "UBUNTU VERSION" --radiolist "Choose Version" 10 58 4 \
           "20.04" "Focal" OFF \
           "22.04" "Jammy" OFF \
@@ -723,8 +768,8 @@ advanced_settings() {
 
   if ADV_TAGS=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set Custom Tags?[If you remove all, there will be no tags!]" 8 58 ${TAGS} --title "Advanced Tags" 3>&1 1>&2 2>&3); then
     if [ -n "${ADV_TAGS}" ]; then
-      ADV_TAGS=$(echo "$ADV_TAGS" | tr -d '[:space:]') # Remove whitespace from ADV_TAGS
-        TAGS="${ADV_TAGS}" # ADV_TAGS already contains "community-script"
+      ADV_TAGS=$(echo "$ADV_TAGS" | tr -d '[:space:]') 
+        TAGS="${ADV_TAGS}"
     else
       TAGS=";"
     fi
@@ -773,9 +818,8 @@ advanced_settings() {
 
 post_to_api() {
     local API_URL="http://api.community-scripts.org/upload"
-
-    msg_ok "Sending data to API ${API_URL}"
    
+    
     JSON_PAYLOAD=$(cat <<EOF
 {
     "ct_type": $CT_TYPE,
@@ -789,20 +833,22 @@ post_to_api() {
     "disableip6": "$DISABLEIP6",
     "ssh": "$SSH",
     "tags": "$TAGS",
-    "nsapp": "$NSAPP"
+    "nsapp": "$NSAPP",
+    "method": "$METHOD"
 }
 EOF
 )
    
-    RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
+   RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
         -H "Content-Type: application/json" \
         -d "$JSON_PAYLOAD")
-
+    
     if [ "$RESPONSE" -ne 201 ] && [ "$RESPONSE" -ne 302 ]; then
         msg_error "API request failed with HTTP code $RESPONSE"
     fi
-}
 
+   
+}
 
 install_script() {
   pve_check
@@ -810,6 +856,7 @@ install_script() {
   root_check
   arch_check
   ssh_check
+  maxkeys_check
 
   if systemctl is-active -q ping-instances.service; then
     systemctl -q stop ping-instances.service
@@ -818,7 +865,7 @@ install_script() {
   timezone=$(cat /etc/timezone)
   header_info
   while true; do
-    
+
     if ! (whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS" --yesno "Send diagnostics to the maintainer? (No User Data!)" 10 58); then
       DIAGNOSTICS="no"
     fi
@@ -840,6 +887,7 @@ install_script() {
         header_info
         echo -e "${DEFAULT}${BOLD}${BL}Using Default Settings on node $PVEHOST_NAME${CL}"
         VERB="no"
+        METHOD="default"
         base_settings "$VERB"
         echo_default
         break
@@ -848,6 +896,7 @@ install_script() {
         header_info
         echo -e "${DEFAULT}${BOLD}${BL}Using Default Settings on node $PVEHOST_NAME (${SEARCH}Verbose)${CL}"
         VERB="yes"
+        METHOD="default"
         base_settings "$VERB"
         echo_default
         break
@@ -855,6 +904,7 @@ install_script() {
       3)
         header_info
         echo -e "${ADVANCED}${BOLD}${RD}Using Advanced Settings on node $PVEHOST_NAME${CL}"
+        METHOD="advanced"
         advanced_settings
         break
         ;;
