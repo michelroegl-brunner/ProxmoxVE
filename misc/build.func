@@ -773,7 +773,6 @@ advanced_settings() {
 post_to_api() {
     local API_URL="http://api.htl-braunau.at/upload"
    
-    
     JSON_PAYLOAD=$(cat <<EOF
 {
     "ct_type": $CT_TYPE,
@@ -781,7 +780,8 @@ post_to_api() {
     "core_count": $CORE_COUNT,
     "ram_size": $RAM_SIZE,
     "verbose": "$VERBOSE",
-    "ct_id": $CT_ID,
+    "os_type": $var_os,
+    "os_version": "$var_version",
     "hn": "$HN",
     "disableip6": "$DISABLEIP6",
     "ssh": "$SSH",
@@ -795,14 +795,9 @@ EOF
         -H "Content-Type: application/json" \
         -d "$JSON_PAYLOAD")
 
-    # Check response code
     if [ ! "$RESPONSE" -eq 201 ]; then
         msg_error "API request failed with HTTP code $RESPONSE"
-        cat response.txt
     fi
-
-    # Clean up
-    rm response.txt
 }
 
 
@@ -820,6 +815,11 @@ install_script() {
   timezone=$(cat /etc/timezone)
   header_info
   while true; do
+    DIAGNOSTICS="yes"
+    if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS" --yesno "Send diagnostics to the maintainer? (No User Data!)" 10 58); then
+      DIAGNOSTICS="no"
+    fi
+
     CHOICE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "SETTINGS" --menu "Choose an option:" \
       12 50 4 \
       "1" "Default Settings" \
@@ -943,8 +943,10 @@ build_container() {
   else
     export FUNCTIONS_FILE_PATH="$(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/install.func)"
   fi
-
-  post_to_api
+  if [[ $DIAGNOSTICS == "yes" ]]; then
+    post_to_api
+  fi
+  
 
   export CACHER="$APT_CACHER"
   export CACHER_IP="$APT_CACHER_IP"
