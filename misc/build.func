@@ -835,7 +835,7 @@ post_to_api() {
     "ssh": "$SSH",
     "tags": "$TAGS",
     "nsapp": "$NSAPP",
-    "method": "$METHOD"
+    "method": "$METHOD",
     "pve_version": "$pve_version"
 }
 EOF
@@ -901,11 +901,10 @@ install_script() {
 DIAGNOSTICS=yes
 EOF
       DIAGNOSTICS="yes"
-      msg_ok "Send Diagnostics, file found: $DIAGNOSTICS"
       fi
     else
       DIAGNOSTICS=$(awk -F '=' '/^DIAGNOSTICS/ {print $2}' /usr/local/community-scripts/.diagnostics)
-      msg_ok "Send Diagnostics: $DIAGNOSTICS"
+      
     fi
 
    
