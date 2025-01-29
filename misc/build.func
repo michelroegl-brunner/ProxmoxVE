@@ -890,7 +890,7 @@ EOF
       DIAGNOSTICS="yes"
       else
         cat <<EOF>/usr/local/community-scripts/.diagnostics
-DIAGNOSTICS=yes
+DIAGNOSTICS=no
 
 #This file is used to store the diagnostics settings for the Community-Scripts API.
 #https://github.com/community-scripts/ProxmoxVE/discussions/
@@ -917,7 +917,6 @@ DIAGNOSTICS=yes
 #"pve_version"
 #If you have any concerns, please review the source code at /misc/build.func
 EOF
-
       DIAGNOSTICS="no"
       fi
     else
@@ -985,7 +984,7 @@ install_script() {
         break
         ;;
       4)
-        if whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS SETTINGS" --yesno "Send Diagnostics of LXC Installation?" 10 58; then
+        if whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS SETTINGS" --yesno "Send Diagnostics of LXC Installation?\nCurrent setting: ${DIAGNOSTICS}" 10 58; then
           sed -i 's/^DIAGNOSTICS=.*/DIAGNOSTICS=yes/' /usr/local/community-scripts/.diagnostics
         else
           sed -i 's/^DIAGNOSTICS=.*/DIAGNOSTICS=no/' /usr/local/community-scripts/.diagnostics
