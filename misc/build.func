@@ -818,7 +818,8 @@ advanced_settings() {
 
 post_to_api() {
     local API_URL="http://api.community-scripts.org/upload"
-    local $pve_version=$(pveversion | awk -F'[/ ]' '{print $2}')
+    local pve_version="not found"
+    pve_version=$(pveversion | awk -F'[/ ]' '{print $2}')
     
     JSON_PAYLOAD=$(cat <<EOF
 {
