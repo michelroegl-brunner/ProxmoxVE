@@ -818,7 +818,7 @@ advanced_settings() {
 
 post_to_api() {
     local API_URL="http://api.community-scripts.org/upload"
-   
+    local $pve_version=$(pveversion | awk -F'[/ ]' '{print $2}')
     
     JSON_PAYLOAD=$(cat <<EOF
 {
@@ -835,7 +835,7 @@ post_to_api() {
     "tags": "$TAGS",
     "nsapp": "$NSAPP",
     "method": "$METHOD"
-    "pve_version": "$(pveversion | awk -F'[/ ]' '{print $2}')"
+    "pve_version": "$pve_version"
 }
 EOF
 )
