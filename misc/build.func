@@ -870,6 +870,7 @@ install_script() {
     if ! [ -d "/usr/local/community-scripts" ]; then
       mkdir -p /usr/local/community-scripts
     fi
+
     if ! [ -f "/usr/local/community-scripts/.diagnostics" ]; then
       if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS" --yesno "Send Diagnostics of LXC Installation?" 10 58); then
           cat <<EOF>/usr/local/community-scripts/.diagnostics
@@ -898,6 +899,8 @@ install_script() {
 #If you have any concerns, please review the source code at /misc/build.func
 DIAGNOSTICS=yes
 EOF
+      DIAGNOSTICS=$(awk -F '=' '/^DIAGNOSTICS/ {print $2}' /usr/local/community-scripts/.diagnostics)
+      msg_ok "Send Diagnostics: $DIAGNOSTICS"
       fi
     else
       DIAGNOSTICS=$(awk -F '=' '/^DIAGNOSTICS/ {print $2}' /usr/local/community-scripts/.diagnostics)
