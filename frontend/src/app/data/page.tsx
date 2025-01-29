@@ -45,6 +45,7 @@ interface DataModel {
   nsapp: string;
   created_at: string;
   method: string;
+  pve_version: string;
 }
 
 const DataFetcher: React.FC = () => {
@@ -138,33 +139,43 @@ const DataFetcher: React.FC = () => {
 
   return (
     <div className="p-6 mt-20">
+      <h1 className="text-2xl font-bold mb-4 text-center">Created LXCs</h1>
       <div className="mb-4 flex space-x-4">
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          className="mb-4 p-2 border"
-        />
+        <div>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="p-2 border"
+          />
+          <label className="text-sm text-gray-600 mt-1 block">Search by keyword</label>
+        </div>
+        <div>
+          <DatePicker
+            selected={startDate}
+            onChange={date => setStartDate(date)}
+            selectsStart
+            startDate={startDate}
+            endDate={endDate}
+            placeholderText="Start date"
+            className="p-2 border"
+          />
+          <label className="text-sm text-gray-600 mt-1 block">Set a start date</label>
+        </div>
 
-        <DatePicker
-          selected={startDate}
-          onChange={date => setStartDate(date)}
-          selectsStart
-          startDate={startDate}
-          endDate={endDate}
-          placeholderText="Start date"
-          className="p-2 border"
-        />
-        <DatePicker
-          selected={endDate}
-          onChange={date => setEndDate(date)}
-          selectsEnd
-          startDate={startDate}
-          endDate={endDate}
-          placeholderText="End date"
-          className="p-2 border"
-        />
+        <div>
+          <DatePicker
+            selected={endDate}
+            onChange={date => setEndDate(date)}
+            selectsEnd
+            startDate={startDate}
+            endDate={endDate}
+            placeholderText="End date"
+            className="p-2 border"
+          />
+          <label className="text-sm text-gray-600 mt-1 block">Set a end date</label>
+        </div>
       </div>
       <div className="mb-4 flex justify-between items-center">
         <p className="text-lg font-bold">{filteredData.length} results found</p>
@@ -191,6 +202,7 @@ const DataFetcher: React.FC = () => {
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('verbose')}>Verbose</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('tags')}>Tags</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('method')}>Method</th>
+                <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('pve_version')}>PVE Version</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('created_at')}>Created At</th>
               </tr>
             </thead>
@@ -208,6 +220,7 @@ const DataFetcher: React.FC = () => {
                   <td className="px-4 py-2 border-b">{item.verbose}</td>
                   <td className="px-4 py-2 border-b">{item.tags.replace(/;/g, ' ')}</td>
                   <td className="px-4 py-2 border-b">{item.method}</td>
+                  <td className="px-4 py-2 border-b">{item.pve_version}</td>
                   <td className="px-4 py-2 border-b">{formatDate(item.created_at)}</td>
                 </tr>
               ))}
