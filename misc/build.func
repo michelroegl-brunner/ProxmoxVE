@@ -998,8 +998,7 @@ install_script() {
             sed -i 's/^DIAGNOSTICS=.*/DIAGNOSTICS=yes/' /usr/local/community-scripts/diagnostics
             whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS SETTINGS" --msgbox "Diagnostics settings changed to ${DIAGNOSTICS}." 8 58
           fi
-        fi
-        
+        fi        
         ;;
       5)
         echo -e "${CROSS}${RD}Exiting.${CL}"
