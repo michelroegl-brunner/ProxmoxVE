@@ -866,16 +866,48 @@ install_script() {
   header_info
   while true; do
 
-    if ! (whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS" --yesno "Send diagnostics to the maintainer? (No User Data!)" 10 58); then
-      DIAGNOSTICS="no"
+    if ! [ -f "/usr/local/community-scripts" ]; then
+      if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS" --yesno "Send Diagnostics of LXC Installation?" 10 58); then
+          cat <EOF>>/usr/local/community-scripts
+          DIAGNOSTICS="yes"
+          #Your diagnostics will be sent to the Community-Scripts API for troubleshooting/statistical purposes.
+          #You can review the data at https://community-scripts.github.io/ProxmoxVE/data
+          #If you do not wish to send diagnostics, please set the variable 'DIAGNOSTICS' to "no" in /usr/local/community-scripts, or use the menue.
+          #This will disable the diagnostics feature.
+          #To send diagnostics, set the variable 'DIAGNOSTICS' to "yes" in /usr/local/community-scripts, or use the menue.
+          #This will enable the diagnostics feature.
+          #The following information will be sent:
+          #"ct_type"
+          #"disk_size"
+          #"core_count"
+          #"ram_size"
+          #"verbose"
+          #"os_type"
+          #"os_version"
+          #"hn"
+          #"disableip6"
+          #"ssh"
+          #"tags"
+          #"nsapp"
+          #"method"
+          #"pve_version"
+          #If you have any concerns, please review the source code at /misc/build.func
+          EOF
+      fi
+    else
+      DIAGNOSTICS=$(awk -F '=' '/^DIAGNOSTIGS/ {print $2}' /usr/local/community-scripts)
+      msg_ok "Send Diagnostics: $DIAGNOSTICS"
     fi
 
+   
+
     CHOICE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "SETTINGS" --menu "Choose an option:" \
-      12 50 4 \
+      14 50 4 \
       "1" "Default Settings" \
       "2" "Default Settings (with verbose)" \
       "3" "Advanced Settings" \
-      "4" "Exit" --nocancel --default-item "1" 3>&1 1>&2 2>&3)
+      "4" "Diagnostig Settings" \
+      "5" "Exit" --nocancel --default-item "1" 3>&1 1>&2 2>&3)
 
     if [ $? -ne 0 ]; then
       echo -e "${CROSS}${RD} Menu canceled. Exiting.${CL}"
@@ -909,6 +941,13 @@ install_script() {
         break
         ;;
       4)
+        if whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS SETTINGS" --yesno "Send Diagnostics of LXC Installation?" 10 58; then
+          sed -i 's/^DIAGNOSTICS=.*/DIAGNOSTICS=yes/' /usr/local/community-scripts
+        else
+          sed -i 's/^DIAGNOSTICS=.*/DIAGNOSTICS=no/' /usr/local/community-scripts
+        fi
+        ;;
+      5)
         echo -e "${CROSS}${RD}Exiting.${CL}"
         exit 0
         ;;
