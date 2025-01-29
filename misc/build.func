@@ -835,6 +835,7 @@ post_to_api() {
     "tags": "$TAGS",
     "nsapp": "$NSAPP",
     "method": "$METHOD"
+    "pve_version": "$(pveversion | awk -F'[/ ]' '{print $2}')"
 }
 EOF
 )
