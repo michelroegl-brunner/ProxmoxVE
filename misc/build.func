@@ -867,7 +867,9 @@ install_script() {
   timezone=$(cat /etc/timezone)
   header_info
   while true; do
-
+    if ! [ -d "/usr/local/community-scripts" ]; then
+      mkdir -p /usr/local/community-scripts
+    fi
     if ! [ -f "/usr/local/community-scripts/.diagnostics" ]; then
       if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS" --yesno "Send Diagnostics of LXC Installation?" 10 58); then
           cat <<EOF>/usr/local/community-scripts/.diagnostics
