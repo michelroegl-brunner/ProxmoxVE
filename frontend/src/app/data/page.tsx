@@ -55,7 +55,8 @@ const DataFetcher: React.FC = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: keyof DataModel | null, direction: 'ascending' | 'descending' }>({ key: 'id', direction: 'ascending' });
-
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -118,12 +119,18 @@ const DataFetcher: React.FC = () => {
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
     const day = date.getDate();
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
     const timezoneOffset = dateString.slice(-6);
-    return `${year}.${month}.${day} ${hours}:${minutes}:${seconds} ${timezoneOffset} GMT`;
+    return `${day}.${month}.${year} ${hours}:${minutes} ${timezoneOffset} GMT`;
   };
+
+  const handleItemsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setItemsPerPage(Number(event.target.value));
+    setCurrentPage(1);
+  };
+
+  const paginatedData = sortedData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -159,7 +166,15 @@ const DataFetcher: React.FC = () => {
           className="p-2 border"
         />
       </div>
-      <p className="text-lg font-bold mb-4">{sortedData.length} results found</p>
+      <div className="mb-4 flex justify-between items-center">
+        <p className="text-lg font-bold">{filteredData.length} results found</p>
+        <select value={itemsPerPage} onChange={handleItemsPerPageChange} className="p-2 border">
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={50}>50</option>
+        </select>
+      </div>
       <div className="overflow-x-auto">
         <div className="overflow-y-auto lg:overflow-y-visible">
           <table className="min-w-full table-auto border-collapse">
@@ -180,7 +195,7 @@ const DataFetcher: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {sortedData.map((item, index) => (
+              {paginatedData.map((item, index) => (
                 <tr key={index}>
                   <td className="px-4 py-2 border-b">{item.nsapp}</td>
                   <td className="px-4 py-2 border-b">{item.os_type}</td>
@@ -199,6 +214,23 @@ const DataFetcher: React.FC = () => {
             </tbody>
           </table>
         </div>
+      </div>
+      <div className="mt-4 flex justify-between items-center">
+        <button
+          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="p-2 border"
+        >
+          Previous
+        </button>
+        <span>Page {currentPage}</span>
+        <button
+          onClick={() => setCurrentPage(prev => (prev * itemsPerPage < sortedData.length ? prev + 1 : prev))}
+          disabled={currentPage * itemsPerPage >= sortedData.length}
+          className="p-2 border"
+        >
+          Next
+        </button>
       </div>
     </div>
   );
