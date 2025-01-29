@@ -840,7 +840,6 @@ post_to_api() {
 }
 EOF
 )
-  echo -e "$JSON_PAYLOAD"
    
    RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
         -H "Content-Type: application/json" \
@@ -853,28 +852,16 @@ EOF
    
 }
 
-install_script() {
-  pve_check
-  shell_check
-  root_check
-  arch_check
-  ssh_check
-  maxkeys_check
-
-  if systemctl is-active -q ping-instances.service; then
-    systemctl -q stop ping-instances.service
-  fi
-  NEXTID=$(pvesh get /cluster/nextid)
-  timezone=$(cat /etc/timezone)
-  header_info
-  while true; do
-    if ! [ -d "/usr/local/community-scripts" ]; then
+diagnostics_check(){
+  if ! [ -d "/usr/local/community-scripts" ]; then
       mkdir -p /usr/local/community-scripts
     fi
 
     if ! [ -f "/usr/local/community-scripts/.diagnostics" ]; then
       if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS" --yesno "Send Diagnostics of LXC Installation?" 10 58); then
           cat <<EOF>/usr/local/community-scripts/.diagnostics
+DIAGNOSTICS=yes
+
 #This file is used to store the diagnostics settings for the Community-Scripts API.
 #Your diagnostics will be sent to the Community-Scripts API for troubleshooting/statistical purposes.
 #You can review the data at https://community-scripts.github.io/ProxmoxVE/data
@@ -898,7 +885,6 @@ install_script() {
 #"method"
 #"pve_version"
 #If you have any concerns, please review the source code at /misc/build.func
-DIAGNOSTICS=yes
 EOF
       DIAGNOSTICS="yes"
       fi
@@ -907,10 +893,28 @@ EOF
       
     fi
 
-   
+}
+
+install_script() {
+  pve_check
+  shell_check
+  root_check
+  arch_check
+  ssh_check
+  maxkeys_check
+  diagnostics_check
+
+  if systemctl is-active -q ping-instances.service; then
+    systemctl -q stop ping-instances.service
+  fi
+  NEXTID=$(pvesh get /cluster/nextid)
+  timezone=$(cat /etc/timezone)
+  header_info
+  while true; do
+      
 
     CHOICE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "SETTINGS" --menu "Choose an option:" \
-      14 50 4 \
+      16 50 4 \
       "1" "Default Settings" \
       "2" "Default Settings (with verbose)" \
       "3" "Advanced Settings" \
@@ -951,9 +955,12 @@ EOF
       4)
         if whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS SETTINGS" --yesno "Send Diagnostics of LXC Installation?" 10 58; then
           sed -i 's/^DIAGNOSTICS=.*/DIAGNOSTICS=yes/' /usr/local/community-scripts/.diagnostics
+          DIAG_SETTINGS="yes"
         else
           sed -i 's/^DIAGNOSTICS=.*/DIAGNOSTICS=no/' /usr/local/community-scripts/.diagnostics
+          DIAG_SETTINGS="no"
         fi
+        whiptail --backtitle "Proxmox VE Helper Scripts" --msgbox "Diagnostics settings set to ${DIAG_SETTING}." 8 58
         ;;
       5)
         echo -e "${CROSS}${RD}Exiting.${CL}"
