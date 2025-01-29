@@ -899,7 +899,7 @@ install_script() {
 #If you have any concerns, please review the source code at /misc/build.func
 DIAGNOSTICS=yes
 EOF
-      DIAGNOSTICS=$(awk -F '=' '/^DIAGNOSTICS/ {print $2}' /usr/local/community-scripts/.diagnostics)
+      DIAGNOSTICS="yes"
       msg_ok "Send Diagnostics: $DIAGNOSTICS"
       fi
     else
