@@ -900,7 +900,7 @@ install_script() {
 DIAGNOSTICS=yes
 EOF
       DIAGNOSTICS="yes"
-      msg_ok "Send Diagnostics: $DIAGNOSTICS"
+      msg_ok "Send Diagnostics, file found: $DIAGNOSTICS"
       fi
     else
       DIAGNOSTICS=$(awk -F '=' '/^DIAGNOSTICS/ {print $2}' /usr/local/community-scripts/.diagnostics)
