@@ -858,7 +858,7 @@ diagnostics_check(){
     fi
 
     if ! [ -f "/usr/local/community-scripts/diagnostics" ]; then
-      if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS" --yesno "Send Diagnostics of LXC Installation?" 10 58); then
+      if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS" --yesno "Send Diagnostics of LXC Installation?\n\n (This only transmits data without user data, just RAM, CPU, LXC name, ...)" 10 58); then
           cat <<EOF>/usr/local/community-scripts/diagnostics
 DIAGNOSTICS=yes
 
@@ -984,12 +984,18 @@ install_script() {
         break
         ;;
       4)
-        if whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS SETTINGS" --yesno "Send Diagnostics of LXC Installation?\nCurrent setting: ${DIAGNOSTICS}" 10 58; then
-          sed -i 's/^DIAGNOSTICS=.*/DIAGNOSTICS=yes/' /usr/local/community-scripts/diagnostics
-          DIAGNOSTICS="yes"
+        if [[ $DIAGNOSTICS == "yes" ]]; then
+          if whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS SETTINGS" --yesno "Send Diagnostics of LXC Installation?\n\nCurrent setting: ${DIAGNOSTICS}" 10 58 \
+          --yes-button "No" --no-button "Back" ; then
+            DIAGNOSTICS="no"
+            sed -i 's/^DIAGNOSTICS=.*/DIAGNOSTICS=no/' /usr/local/community-scripts/diagnostics
+          fi
         else
-          sed -i 's/^DIAGNOSTICS=.*/DIAGNOSTICS=no/' /usr/local/community-scripts/diagnostics
-          DIAGNOSTICS="no"
+          if whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS SETTINGS" --yesno "Send Diagnostics of LXC Installation?\n\nCurrent setting: ${DIAGNOSTICS}" 10 58 \
+          --yes-button "Yes" --no-button "Back" ; then
+            DIAGNOSTICS="yes"
+            sed -i 's/^DIAGNOSTICS=.*/DIAGNOSTICS=yes/' /usr/local/community-scripts/diagnostics
+          fi
         fi
         whiptail --backtitle "Proxmox VE Helper Scripts" --title "DIAGNOSTICS SETTINGS" --msgbox "Diagnostics settings changed to ${DIAGNOSTICS}." 8 58
         ;;
