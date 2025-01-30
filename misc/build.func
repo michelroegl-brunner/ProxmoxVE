@@ -1267,7 +1267,11 @@ EOF
   fi
 }
 
+trap_wrapper() {
+    post_update_to_api "done" "$1" "$2"
+}
 
-trap post_update_to_api "done" EXIT
-trap post_update_to_api "failed" SIGINT 
-trap post_update_to_api "failed" SIGTERM
+
+trap 'trap_wrapper "$1" "$2"' EXIT
+trap 'trap_wrapper "$1" "$2"' SIGINT
+trap 'trap_wrapper "$1" "$2"' SIGTERM
