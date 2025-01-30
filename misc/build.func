@@ -73,6 +73,7 @@ error_handler() {
   local exit_code="$?"
   local line_number="$1"
   local command="$2"
+  post_update_to_api "failed" "$exit_code $command $line_number"
   local error_message="${RD}[ERROR]${CL} in line ${RD}$line_number${CL}: exit code ${RD}$exit_code${CL}: while executing command ${YW}$command${CL}"
   echo -e "\n$error_message\n"
 }
@@ -841,7 +842,7 @@ post_to_api() {
     "nsapp": "$NSAPP",
     "method": "$METHOD",
     "pve_version": "$pve_version",
-    "status": "failed",
+    "status": "installing",
     "random_id": "$RANDOM_UUID"
 }
 EOF
@@ -865,8 +866,9 @@ post_update_to_api() {
 
     JSON_PAYLOAD=$(cat <<EOF
 {
-    "status": "done",
-    "random_id": "$RANDOM_UUID"
+    "status": "$1",
+    "random_id": "$RANDOM_UUID",
+    "error": "$2"
 }
 EOF
 )
@@ -1263,6 +1265,6 @@ EOF
   fi
 
   if [[ $DIAGNOSTICS == "yes" ]]; then
-    post_update_to_api
+    post_update_to_api "done"
   fi
 }
