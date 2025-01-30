@@ -23,7 +23,6 @@ interface DataModel {
   created_at: string;
   method: string;
   pve_version: string;
-  status: string;
 }
 
 
@@ -160,12 +159,6 @@ const DataFetcher: React.FC = () => {
           />
           <label className="text-sm text-gray-600 mt-1 block">Set a end date</label>
         </div>
-        <button
-          onClick={() => setShowChart((prev) => !prev)}
-          className="p-2 bg-blue-500 text-white rounded"
-          >
-          {showChart ? "Hide Chart" : "Show Chart"}
-        </button>
       </div>
       <ApplicationChart data={filteredData} />
       <div className="mb-4 flex justify-between items-center">
@@ -182,7 +175,6 @@ const DataFetcher: React.FC = () => {
           <table className="min-w-full table-auto border-collapse">
             <thead>
               <tr>
-                <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('status')}>Status</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('nsapp')}>Application</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('os_type')}>OS</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('os_version')}>OS Version</th>
@@ -201,7 +193,6 @@ const DataFetcher: React.FC = () => {
             <tbody>
               {paginatedData.map((item, index) => (
                 <tr key={index}>
-                  <td className="px-4 py-2 border-b">{item.status}</td>
                   <td className="px-4 py-2 border-b">{item.nsapp}</td>
                   <td className="px-4 py-2 border-b">{item.os_type}</td>
                   <td className="px-4 py-2 border-b">{item.os_version}</td>
