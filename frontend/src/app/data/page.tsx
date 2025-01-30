@@ -1,33 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Category } from "@/lib/types";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
-
-const defaultLogo = "/default-logo.png"; // Fallback logo path
-const MAX_DESCRIPTION_LENGTH = 100; // Set max length for description
-const MAX_LOGOS = 5; // Max logos to display at once
-
-const formattedBadge = (type: string) => {
-  switch (type) {
-    case "vm":
-      return <Badge className="text-blue-500/75 border-blue-500/75 badge">VM</Badge>;
-    case "ct":
-      return (
-        <Badge className="text-yellow-500/75 border-yellow-500/75 badge">LXC</Badge>
-      );
-    case "misc":
-      return <Badge className="text-green-500/75 border-green-500/75 badge">MISC</Badge>;
-  }
-  return null;
-};
+import { string } from "zod";
+import ApplicationChart from "../../components/ApplicationChart";
 
 interface DataModel {
   id: number;
@@ -46,7 +23,9 @@ interface DataModel {
   created_at: string;
   method: string;
   pve_version: string;
+  status: string;
 }
+
 
 const DataFetcher: React.FC = () => {
   const [data, setData] = useState<DataModel[]>([]);
@@ -55,14 +34,15 @@ const DataFetcher: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [sortConfig, setSortConfig] = useState<{ key: keyof DataModel | null, direction: 'ascending' | 'descending' }>({ key: 'id', direction: 'ascending' });
+  const [sortConfig, setSortConfig] = useState<{ key: keyof DataModel | null, direction: 'ascending' | 'descending' }>({ key: 'id', direction: 'descending' });
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showChart, setShowChart] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://api.htl-braunau.at/data/json");
+        const response = await fetch("https://api.htl-braunau.at/data/json");
         if (!response.ok) throw new Error("Failed to fetch data: ${response.statusText}");
         const result: DataModel[] = await response.json();
         setData(result);
@@ -102,9 +82,13 @@ const DataFetcher: React.FC = () => {
     return sortableData;
   }, [filteredData, sortConfig]);
 
-  const requestSort = (key: keyof DataModel) => {
+  const requestSort = (key: keyof DataModel | null) => {
     let direction: 'ascending' | 'descending' = 'ascending';
     if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    } else if (sortConfig.key === key && sortConfig.direction === 'descending') {
+      direction = 'ascending';
+    } else {
       direction = 'descending';
     }
     setSortConfig({ key, direction });
@@ -176,7 +160,14 @@ const DataFetcher: React.FC = () => {
           />
           <label className="text-sm text-gray-600 mt-1 block">Set a end date</label>
         </div>
+        <button
+          onClick={() => setShowChart((prev) => !prev)}
+          className="p-2 bg-blue-500 text-white rounded"
+          >
+          {showChart ? "Hide Chart" : "Show Chart"}
+        </button>
       </div>
+      <ApplicationChart data={filteredData} />
       <div className="mb-4 flex justify-between items-center">
         <p className="text-lg font-bold">{filteredData.length} results found</p>
         <select value={itemsPerPage} onChange={handleItemsPerPageChange} className="p-2 border">
@@ -191,6 +182,7 @@ const DataFetcher: React.FC = () => {
           <table className="min-w-full table-auto border-collapse">
             <thead>
               <tr>
+                <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('status')}>Status</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('nsapp')}>Application</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('os_type')}>OS</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('os_version')}>OS Version</th>
@@ -199,7 +191,7 @@ const DataFetcher: React.FC = () => {
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('ram_size')}>RAM Size</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('hn')}>Hostname</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('ssh')}>SSH</th>
-                <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('verbose')}>Verbose</th>
+                <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('verbose')}>Verb</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('tags')}>Tags</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('method')}>Method</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('pve_version')}>PVE Version</th>
@@ -209,6 +201,7 @@ const DataFetcher: React.FC = () => {
             <tbody>
               {paginatedData.map((item, index) => (
                 <tr key={index}>
+                  <td className="px-4 py-2 border-b">{item.status}</td>
                   <td className="px-4 py-2 border-b">{item.nsapp}</td>
                   <td className="px-4 py-2 border-b">{item.os_type}</td>
                   <td className="px-4 py-2 border-b">{item.os_version}</td>
