@@ -822,7 +822,7 @@ post_to_api() {
     local pve_version="not found"
     pve_version=$(pveversion | awk -F'[/ ]' '{print $2}')
 
-    echo -e "${INFO}${BOLD}${DGN}Sending data to API., Random UUID ${RANDOM_UUID}}${CL}"
+    echo -e "${INFO}${BOLD}${DGN}Sending data to API, Random UUID ${RANDOM_UUID}}${CL}"
 
     
     JSON_PAYLOAD=$(cat <<EOF
@@ -862,7 +862,7 @@ post_update_to_api() {
     local API_URL="http://api.community-scripts.org/upload/updatestatus"
 
     local status="$1"
-    echo -e "${INFO}${BOLD}${DGN}Sending data to API $status,  ${CL}"
+    msg_ok "${INFO}${BOLD}${DGN}Sending data to API $status,  ${CL}"
 
     JSON_PAYLOAD=$(cat <<EOF
 {
@@ -876,6 +876,8 @@ EOF
         -H "Content-Type: application/json" \
         -d "$JSON_PAYLOAD")
     
+    msg_ok "$RESPONSE"
+
     if [ "$RESPONSE" -ne 201 ] && [ "$RESPONSE" -ne 302 ]; then
         msg_error "API UPDATE request failed with HTTP code $RESPONSE"
     fi
