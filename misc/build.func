@@ -12,7 +12,7 @@ variables() {
   PVEHOST_NAME=$(hostname) # gets the Proxmox Hostname and sets it to Uppercase
   DIAGNOSTICS="no" # sets the DIAGNOSTICS variable to "yes", used for the API call.
   METHOD="default" # sets the METHOD variable to "default", used for the API call.
-  RANDOM_UUID=$(cat /proc/sys/kernel/random/uuid) # generates a random UUID and sets it to the RANDOM_UUDI variable.
+  RANDOM_UUID="$(cat /proc/sys/kernel/random/uuid)" # generates a random UUID and sets it to the RANDOM_UUDI variable.
 }
 
 # This function sets various color variables using ANSI escape codes for formatting text in the terminal.
@@ -821,6 +821,9 @@ post_to_api() {
     local API_URL="http://api.community-scripts.org/upload"
     local pve_version="not found"
     pve_version=$(pveversion | awk -F'[/ ]' '{print $2}')
+
+    echo -e "${INFO}${BOLD}${DGN}Sending data to API., Random UUID ${RANDOM_UUID}}${CL}"
+
     
     JSON_PAYLOAD=$(cat <<EOF
 {
@@ -857,9 +860,9 @@ EOF
 
 post_update_to_api() {
     local API_URL="http://api.community-scripts.org/upload/updatestatus"
-    local pve_version="not found"
-    pve_version=$(pveversion | awk -F'[/ ]' '{print $2}')
-    
+
+    echo -e "${INFO}${BOLD}${DGN}Sending data to API., Random UUID ${RANDOM_UUID}}${CL}"
+
     JSON_PAYLOAD=$(cat <<EOF
 {
     "status": "done"
