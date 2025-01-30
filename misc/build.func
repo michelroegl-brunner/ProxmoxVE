@@ -852,7 +852,7 @@ EOF
         -d "$JSON_PAYLOAD")
     
     if [ "$RESPONSE" -ne 201 ] && [ "$RESPONSE" -ne 302 ]; then
-        msg_error "API request failed with HTTP code $RESPONSE"
+        msg_error "API  POST request failed with HTTP code $RESPONSE"
     fi
 
    
@@ -860,6 +860,7 @@ EOF
 
 post_update_to_api() {
     local API_URL="http://api.community-scripts.org/upload/updatestatus"
+    
     local status="$1"
     echo -e "${INFO}${BOLD}${DGN}Sending data to API $status,  ${CL}"
 
@@ -867,7 +868,7 @@ post_update_to_api() {
 {
     "status": "$status",
     "random_id": "$RANDOM_UUID",
-    "error": ""
+    "error": " "
 }
 EOF
 )
@@ -877,7 +878,7 @@ EOF
         -d "$JSON_PAYLOAD")
     
     if [ "$RESPONSE" -ne 201 ] && [ "$RESPONSE" -ne 302 ]; then
-        msg_error "API request failed with HTTP code $RESPONSE"
+        msg_error "API UPDATE request failed with HTTP code $RESPONSE"
     fi
 
    
