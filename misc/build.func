@@ -863,7 +863,7 @@ EOF
 
 post_update_to_api() {
     local API_URL="http://api.community-scripts.org/upload/updatestatus"
-    msg_ok "called by ${2:-} with status ${1:-}"
+    msg_ok "called by ${2:-} "
     local status="${1:-}"
     msg_ok "${INFO}${BOLD}${DGN}Sending data to API: $status${CL}"
 
@@ -1267,11 +1267,7 @@ EOF
   fi
 }
 
-trap_wrapper() {
-    post_update_to_api "done" "$1" "$2"
-}
 
-
-trap 'trap_wrapper "$1" "$2"' EXIT
-trap 'trap_wrapper "$1" "$2"' SIGINT
-trap 'trap_wrapper "$1" "$2"' SIGTERM
+trap 'post_update_to_api "done"' EXIT
+trap 'post_update_to_api "failed"' SIGINT 
+trap 'post_update_to_api "failed"' SIGTERM
