@@ -860,15 +860,14 @@ EOF
 
 post_update_to_api() {
     local API_URL="http://api.community-scripts.org/upload/updatestatus"
-    
+
     local status="$1"
     echo -e "${INFO}${BOLD}${DGN}Sending data to API $status,  ${CL}"
 
     JSON_PAYLOAD=$(cat <<EOF
 {
     "status": "$status",
-    "random_id": "$RANDOM_UUID",
-    "error": " "
+    "random_id": "$RANDOM_UUID"
 }
 EOF
 )
@@ -1265,13 +1264,20 @@ EOF
   fi
 }
 
+cleanup_done=false
 cleanup() {
+    if [ "$cleanup_done" = true ]; then
+        return  # Skip cleanup if it's already done
+    fi
+
     # Check the exit code and send the appropriate status
     if [ $? -eq 0 ]; then
         post_update_to_api "done"
     else
         post_update_to_api "failed" 
     fi
+    # Set the flag to indicate cleanup has been done
+    cleanup_done=true
 }
 
 trap cleanup EXIT
