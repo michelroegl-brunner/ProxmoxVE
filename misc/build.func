@@ -1275,11 +1275,11 @@ cleanup() {
     if [ -n "${1:-}" ]; then
 
         if [ "$1" = "failed" ]; then
-           post_update_to_api "failed" 
-            return
+          post_update_to_api "failed" 
+          return
         elif [ "$1" = "done" ]; then
-            post_update_to_api "done"
-            return
+          post_update_to_api "done"
+          return
         fi        
     fi
 }
