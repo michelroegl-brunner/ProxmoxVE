@@ -866,7 +866,7 @@ post_update_to_api() {
     JSON_PAYLOAD=$(cat <<EOF
 {
     "status": "done",
-    "random_uuid": "$RANDOM_UUID"
+    "random_id": "$RANDOM_UUID"
 }
 EOF
 )
