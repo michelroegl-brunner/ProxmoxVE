@@ -862,8 +862,8 @@ EOF
 
 post_update_to_api() {
     local API_URL="http://api.community-scripts.org/upload/updatestatus"
-
-    local status="$1"
+    echo ${2:-}
+    local status="${1:-}"
     msg_ok "${INFO}${BOLD}${DGN}Sending data to API: $status${CL}"
 
     JSON_PAYLOAD=$(cat <<EOF
