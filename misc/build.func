@@ -73,7 +73,7 @@ error_handler() {
   local exit_code="$?"
   local line_number="$1"
   local command="$2"
-  cleanup "failed"
+  post_update_to_api "failed"
   local error_message="${RD}[ERROR]${CL} in line ${RD}$line_number${CL}: exit code ${RD}$exit_code${CL}: while executing command ${YW}$command${CL}"
   echo -e "\n$error_message\n"
   
@@ -1266,24 +1266,7 @@ EOF
   fi
 }
 
-cleanup_done=false
-cleanup() {
-    if [ "$cleanup_done" = true ]; then
-        return  
-    fi
-    
-    if [ -n "${1:-}" ]; then
 
-        if [ "$1" = "failed" ]; then
-          post_update_to_api "failed" 
-          return
-        elif [ "$1" = "done" ]; then
-          post_update_to_api "done"
-          return
-        fi        
-    fi
-}
-
-trap cleanup "done" EXIT
-trap cleanup "failed" SIGINT 
-trap cleanup "failed" SIGTERM
+trap post_update_to_api "done" EXIT
+trap post_update_to_api "failed" SIGINT 
+trap post_update_to_api "failed" SIGTERM
