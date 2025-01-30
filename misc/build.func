@@ -842,7 +842,7 @@ post_to_api() {
     "method": "$METHOD",
     "pve_version": "$pve_version",
     "status": "failes",
-    "random_uudi": "$RANDOM_UUID"
+    "random_uuid": "$RANDOM_UUID"
 }
 EOF
 )
@@ -866,7 +866,7 @@ post_update_to_api() {
     JSON_PAYLOAD=$(cat <<EOF
 {
     "status": "done"
-    "random_uudi": "$RANDOM_UUID"
+    "random_uuid": "$RANDOM_UUID"
 }
 EOF
 )
