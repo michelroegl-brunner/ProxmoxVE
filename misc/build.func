@@ -73,7 +73,6 @@ error_handler() {
   local exit_code="$?"
   local line_number="$1"
   local command="$2"
-  post_update_to_api "failed" "$exit_code $command $line_number"
   local error_message="${RD}[ERROR]${CL} in line ${RD}$line_number${CL}: exit code ${RD}$exit_code${CL}: while executing command ${YW}$command${CL}"
   echo -e "\n$error_message\n"
 }
@@ -861,14 +860,13 @@ EOF
 
 post_update_to_api() {
     local API_URL="http://api.community-scripts.org/upload/updatestatus"
-
-    echo -e "${INFO}${BOLD}${DGN}Sending data to API $1, $2, Random UUID ${RANDOM_UUID}}${CL}"
+    local status="$1"
+    echo -e "${INFO}${BOLD}${DGN}Sending data to API $status,  ${CL}"
 
     JSON_PAYLOAD=$(cat <<EOF
 {
-    "status": "$1",
+    "status": "$status",
     "random_id": "$RANDOM_UUID",
-    "error": "$2"
 }
 EOF
 )
@@ -1263,8 +1261,17 @@ EOF
   if [[ -f /etc/systemd/system/ping-instances.service ]]; then
     systemctl start ping-instances.service
   fi
-
-  if [[ $DIAGNOSTICS == "yes" ]]; then
-    post_update_to_api "done"
-  fi
 }
+
+cleanup() {
+    # Check the exit code and send the appropriate status
+    if [ $? -eq 0 ]; then
+        send_status_to_api "done"
+    else
+        send_status_to_api "failed" 
+    fi
+}
+
+trap cleanup EXIT
+trap cleanup SIGINT 
+trap cleanup SIGTERM
