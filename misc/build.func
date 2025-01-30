@@ -841,7 +841,7 @@ post_to_api() {
     "nsapp": "$NSAPP",
     "method": "$METHOD",
     "pve_version": "$pve_version",
-    "status": "failes",
+    "status": "failed",
     "random_id": "$RANDOM_UUID"
 }
 EOF
