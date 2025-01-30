@@ -837,8 +837,8 @@ post_to_api() {
     "tags": "$TAGS",
     "nsapp": "$NSAPP",
     "method": "$METHOD",
-    "pve_version": "$pve_version"
-    "status": "failes"
+    "pve_version": "$pve_version",
+    "status": "failes",
     "random_uudi": "$RANDOM_UUID"
 }
 EOF
@@ -855,7 +855,7 @@ EOF
    
 }
 
-post_to_api() {
+post_update_to_api() {
     local API_URL="http://api.community-scripts.org/upload/updatestatus"
     local pve_version="not found"
     pve_version=$(pveversion | awk -F'[/ ]' '{print $2}')
