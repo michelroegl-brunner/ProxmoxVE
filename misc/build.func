@@ -842,7 +842,7 @@ post_to_api() {
     "method": "$METHOD",
     "pve_version": "$pve_version",
     "status": "failes",
-    "random_uuid": "$RANDOM_UUID"
+    "random_id": "$RANDOM_UUID"
 }
 EOF
 )
