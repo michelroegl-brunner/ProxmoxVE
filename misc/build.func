@@ -867,6 +867,7 @@ post_update_to_api() {
 {
     "status": "$status",
     "random_id": "$RANDOM_UUID",
+    "error": ""
 }
 EOF
 )
