@@ -75,7 +75,7 @@ error_handler() {
   local command="$2"
   local error_message="${RD}[ERROR]${CL} in line ${RD}$line_number${CL}: exit code ${RD}$exit_code${CL}: while executing command ${YW}$command${CL}"
   echo -e "\n$error_message\n"
-  exit 1
+  cleanup "failed"
 }
 
 # This function displays a spinner.
@@ -1269,6 +1269,17 @@ cleanup_done=false
 cleanup() {
     if [ "$cleanup_done" = true ]; then
         return  
+    fi
+    
+    if [ -n "$1" ]; then
+
+        if [ "$1" = "failed" ]; then
+           post_update_to_api "failed" 
+            return
+        elif [ "$1" = "done" ]; then
+            post_update_to_api "done"
+            return
+        fi        
     fi
 
     if [ $? -eq 0 ]; then
