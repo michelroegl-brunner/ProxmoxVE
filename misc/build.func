@@ -860,8 +860,13 @@ EOF
 
    
 }
+POST_UPDATE_DONE=false
 
 post_update_to_api() {
+    if [ "$POST_UPDATE_DONE" = true ]; then
+        return 0
+    fi
+
     local API_URL="http://api.community-scripts.org/upload/updatestatus"
     msg_ok "called by ${2:-} "
     local status="${1:-}"
@@ -883,7 +888,7 @@ EOF
         msg_error "API UPDATE request failed with HTTP code $RESPONSE"
     fi
 
-   
+   POST_UPDATE_DONE=true
 }
 
 diagnostics_check(){
