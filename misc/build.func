@@ -862,7 +862,7 @@ EOF
 post_update_to_api() {
     local API_URL="http://api.community-scripts.org/upload/updatestatus"
 
-    echo -e "${INFO}${BOLD}${DGN}Sending data to API., Random UUID ${RANDOM_UUID}}${CL}"
+    echo -e "${INFO}${BOLD}${DGN}Sending data to API $1, $2, Random UUID ${RANDOM_UUID}}${CL}"
 
     JSON_PAYLOAD=$(cat <<EOF
 {
