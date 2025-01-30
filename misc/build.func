@@ -1267,9 +1267,9 @@ EOF
 cleanup() {
     # Check the exit code and send the appropriate status
     if [ $? -eq 0 ]; then
-        send_status_to_api "done"
+        post_update_to_api "done"
     else
-        send_status_to_api "failed" 
+        post_update_to_api "failed" 
     fi
 }
 
