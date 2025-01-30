@@ -1271,7 +1271,7 @@ cleanup() {
         return  
     fi
     
-    if [ -n "$1" ]; then
+    if [ -n "${1:-}" ]; then
 
         if [ "$1" = "failed" ]; then
            post_update_to_api "failed" 
@@ -1287,7 +1287,6 @@ cleanup() {
     else
         post_update_to_api "failed" 
     fi
-
     cleanup_done=true
 }
 
