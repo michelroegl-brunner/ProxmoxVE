@@ -132,7 +132,7 @@ function send_line_to_vm() {
 TEMP_DIR=$(mktemp -d)
 pushd $TEMP_DIR >/dev/null
 
-if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "OpenWrt VM" --yesno "This will create a New OpenWrt VM. Proceed?" 10 58); then
+if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "OpenSense VM" --yesno "This will create a New OpenSense VM. Proceed?" 10 58); then
   :
 else
   header_info && echo -e "⚠ User exited script \n" && exit
@@ -193,7 +193,7 @@ function exit-script() {
 
 function default_settings() {
   VMID=$NEXTID
-  HN=openwrt
+  HN=OpenSense
   CORE_COUNT="21"
   RAM_SIZE="4096"
   BRG="vmbr0"
@@ -220,7 +220,7 @@ function default_settings() {
   echo -e "${DGN}Using LAN NETMASK: ${BGN}${LAN_NETMASK}${CL}"
   echo -e "${DGN}Using Interface MTU Size: ${BGN}Default${CL}"
   echo -e "${DGN}Start VM when completed: ${BGN}yes${CL}"
-  echo -e "${BL}Creating a OpenWRT VM using the above default settings${CL}"
+  echo -e "${BL}Creating a OpenSense VM using the above default settings${CL}"
 }
 
 function advanced_settings() {
@@ -241,9 +241,9 @@ function advanced_settings() {
     fi
   done
 
-  if VM_NAME=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set Hostname" 8 58 openwrt --title "HOSTNAME" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+  if VM_NAME=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set Hostname" 8 58 OpenSense --title "HOSTNAME" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $VM_NAME ]; then
-      HN="openwrt"
+      HN="OpenSense"
     else
       HN=$(echo ${VM_NAME,,} | tr -d ' ')
     fi
@@ -371,8 +371,8 @@ function advanced_settings() {
   fi
   echo -e "${DGN}Start VM when completed: ${BGN}$START_VM${CL}"
 
-  if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "ADVANCED SETTINGS COMPLETE" --yesno "Ready to create OpenWrt VM?" --no-button Do-Over 10 58); then
-    echo -e "${RD}Creating a OpenWrt VM using the above advanced settings${CL}"
+  if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "ADVANCED SETTINGS COMPLETE" --yesno "Ready to create OpenSense VM?" --no-button Do-Over 10 58); then
+    echo -e "${RD}Creating a OpenSense VM using the above advanced settings${CL}"
   else
     header_info
     echo -e "${RD}Using Advanced Settings${CL}"
@@ -515,7 +515,7 @@ if [ "$START_VM" == "yes" ]; then
   send_line_to_vm "root"
   send_line_to_vm "fetch https://raw.githubusercontent.com/opnsense/update/master/src/bootstrap/opnsense-bootstrap.sh.in"
   send_line_to_vm "sh ./opnsense-bootstrap.sh.in -r 25.1"
-
+  sleep 600
   msg_ok "Started OpenSense VM"
 
 fi
