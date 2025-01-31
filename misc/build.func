@@ -803,6 +803,8 @@ post_to_api() {
   local pve_version="not found"
   pve_version=$(pveversion | awk -F'[/ ]' '{print $2}')
 
+  DISK_SIZE=$(awk "BEGIN {print ($DISK_SIZE < 1) ? 1 : int($DISK_SIZE)}")
+
   JSON_PAYLOAD=$(cat <<EOF
 {
     "ct_type": $CT_TYPE,
