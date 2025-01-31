@@ -192,10 +192,14 @@ function exit-script() {
 }
 
 function default_settings() {
-  VMID=$NEXTID
-  HN=OpenSense
+  VMID="$NEXTID"
+  FORMAT=",efitype=4m"
+  MACHINE=""
+  DISK_CACHE=""
+  HN="opensense"
+  CPU_TYPE=""
   CORE_COUNT="2"
-  RAM_SIZE="4096"
+  RAM_SIZE="2048"
   BRG="vmbr0"
   VLAN=""
   MAC=$GEN_MAC
@@ -203,7 +207,7 @@ function default_settings() {
   LAN_BRG="vmbr1"
   LAN_IP_ADDR="192.168.1.1"
   LAN_NETMASK="255.255.255.0"
-  LAN_VLAN=",tag=999"
+  LAN_VLAN=""
   MTU=""
   START_VM="yes"
   echo -e "${DGN}Using Virtual Machine ID: ${BGN}${VMID}${CL}"
@@ -241,6 +245,53 @@ function advanced_settings() {
     fi
   done
 
+  if MACH=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "MACHINE TYPE" --radiolist --cancel-button Exit-Script "Choose Type" 10 58 2 \
+    "i440fx" "Machine i440fx" ON \
+    "q35" "Machine q35" OFF \
+    3>&1 1>&2 2>&3); then
+    if [ $MACH = q35 ]; then
+      echo -e "${DGN}Using Machine Type: ${BGN}$MACH${CL}"
+      FORMAT=""
+      MACHINE=" -machine q35"
+    else
+      echo -e "${DGN}Using Machine Type: ${BGN}$MACH${CL}"
+      FORMAT=",efitype=4m"
+      MACHINE=""
+    fi
+  else
+    exit-script
+  fi
+
+  if CPU_TYPE1=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "CPU MODEL" --radiolist "Choose" --cancel-button Exit-Script 10 58 2 \
+    "0" "KVM64 (Default)" ON \
+    "1" "Host" OFF \
+    3>&1 1>&2 2>&3); then
+    if [ $CPU_TYPE1 = "1" ]; then
+      echo -e "${DGN}Using CPU Model: ${BGN}Host${CL}"
+      CPU_TYPE=" -cpu host"
+    else
+      echo -e "${DGN}Using CPU Model: ${BGN}KVM64${CL}"
+      CPU_TYPE=""
+    fi
+  else
+    exit-script
+  fi
+
+  if DISK_CACHE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "DISK CACHE" --radiolist "Choose" --cancel-button Exit-Script 10 58 2 \
+    "0" "None (Default)" ON \
+    "1" "Write Through" OFF \
+    3>&1 1>&2 2>&3); then
+    if [ $DISK_CACHE = "1" ]; then
+      echo -e "${DGN}Using Disk Cache: ${BGN}Write Through${CL}"
+      DISK_CACHE="cache=writethrough,"
+    else
+      echo -e "${DGN}Using Disk Cache: ${BGN}None${CL}"
+      DISK_CACHE=""
+    fi
+  else
+    exit-script
+  fi
+
   if VM_NAME=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set Hostname" 8 58 OpenSense --title "HOSTNAME" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $VM_NAME ]; then
       HN="OpenSense"
@@ -254,7 +305,7 @@ function advanced_settings() {
 
   if CORE_COUNT=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Allocate CPU Cores" 8 58 1 --title "CORE COUNT" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $CORE_COUNT ]; then
-      CORE_COUNT="1"
+      CORE_COUNT="2"
     fi
     echo -e "${DGN}Allocated Cores: ${BGN}$CORE_COUNT${CL}"
   else
@@ -263,7 +314,7 @@ function advanced_settings() {
 
   if RAM_SIZE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Allocate RAM in MiB" 8 58 256 --title "RAM" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $RAM_SIZE ]; then
-      RAM_SIZE="256"
+      RAM_SIZE="4096"
     fi
     echo -e "${DGN}Allocated RAM: ${BGN}$RAM_SIZE${CL}"
   else
@@ -281,7 +332,7 @@ function advanced_settings() {
 
   if LAN_BRG=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN Bridge" 8 58 vmbr0 --title "LAN BRIDGE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $LAN_BRG ]; then
-      LAN_BRG="vmbr0"
+      LAN_BRG="vmbr1"
     fi
     echo -e "${DGN}Using LAN Bridge: ${BGN}$LAN_BRG${CL}"
   else
@@ -342,8 +393,8 @@ function advanced_settings() {
 
   if VLAN2=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN Vlan" 8 58 999 --title "LAN VLAN" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $VLAN2 ]; then
-      VLAN2="999"
-      LAN_VLAN=",tag=$VLAN2"
+      VLAN2=""
+      LAN_VLAN=""
     else
       LAN_VLAN=",tag=$VLAN2"
     fi
