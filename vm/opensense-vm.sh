@@ -510,7 +510,7 @@ msg_ok "Created a OpenSense VM ${CL}${BL}(${HN})"
 if [ "$START_VM" == "yes" ]; then
   msg_info "Starting OpenSense VM (Patience this takes 10 minutes)"
   qm start $VMID
-  sleep 60
+  sleep 120
   send_line_to_vm "root"
   send_line_to_vm "fetch https://raw.githubusercontent.com/opnsense/update/master/src/bootstrap/opnsense-bootstrap.sh.in"
   send_line_to_vm "sh ./opnsense-bootstrap.sh.in -y -f -r 25.1"
