@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
-# Copyright (c) 2021-2025 tteck
-# Author: tteck (tteckster)
-# License: MIT
-# https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
+# Copyright (c) 2021-2025 community-scripts ORG
+# Author: michelroegl-brunner
+# License: MIT |https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 
 function header_info {
   clear
@@ -57,6 +56,77 @@ function cleanup() {
   popd >/dev/null
   rm -rf $TEMP_DIR
 }
+
+function send_line_to_vm() {
+  echo -e "${DGN}Sending line: ${YW}$1${CL}"
+  for ((i = 0; i < ${#1}; i++)); do
+    character=${1:i:1}
+    case $character in
+    " ") character="spc" ;;
+    "-") character="minus" ;;
+    "=") character="equal" ;;
+    ",") character="comma" ;;
+    ".") character="dot" ;;
+    "/") character="slash" ;;
+    "'") character="apostrophe" ;;
+    ";") character="semicolon" ;;
+    '\') character="backslash" ;;
+    '`') character="grave_accent" ;;
+    "[") character="bracket_left" ;;
+    "]") character="bracket_right" ;;
+    "_") character="shift-minus" ;;
+    "+") character="shift-equal" ;;
+    "?") character="shift-slash" ;;
+    "<") character="shift-comma" ;;
+    ">") character="shift-dot" ;;
+    '"') character="shift-apostrophe" ;;
+    ":") character="shift-semicolon" ;;
+    "|") character="shift-backslash" ;;
+    "~") character="shift-grave_accent" ;;
+    "{") character="shift-bracket_left" ;;
+    "}") character="shift-bracket_right" ;;
+    "A") character="shift-a" ;;
+    "B") character="shift-b" ;;
+    "C") character="shift-c" ;;
+    "D") character="shift-d" ;;
+    "E") character="shift-e" ;;
+    "F") character="shift-f" ;;
+    "G") character="shift-g" ;;
+    "H") character="shift-h" ;;
+    "I") character="shift-i" ;;
+    "J") character="shift-j" ;;
+    "K") character="shift-k" ;;
+    "L") character="shift-l" ;;
+    "M") character="shift-m" ;;
+    "N") character="shift-n" ;;
+    "O") character="shift-o" ;;
+    "P") character="shift-p" ;;
+    "Q") character="shift-q" ;;
+    "R") character="shift-r" ;;
+    "S") character="shift-s" ;;
+    "T") character="shift-t" ;;
+    "U") character="shift-u" ;;
+    "V") character="shift-v" ;;
+    "W") character="shift-w" ;;
+    "X") character="shift=x" ;;
+    "Y") character="shift-y" ;;
+    "Z") character="shift-z" ;;
+    "!") character="shift-1" ;;
+    "@") character="shift-2" ;;
+    "#") character="shift-3" ;;
+    '$') character="shift-4" ;;
+    "%") character="shift-5" ;;
+    "^") character="shift-6" ;;
+    "&") character="shift-7" ;;
+    "*") character="shift-8" ;;
+    "(") character="shift-9" ;;
+    ")") character="shift-0" ;;
+    esac
+    qm sendkey $VMID "$character"
+  done
+  qm sendkey $VMID ret
+}
+
 
 TEMP_DIR=$(mktemp -d)
 pushd $TEMP_DIR >/dev/null
@@ -134,7 +204,7 @@ function default_settings() {
   FORMAT=",efitype=4m"
   MACHINE=""
   DISK_CACHE=""
-  HN="debian"
+  HN="opensense"
   CPU_TYPE=""
   CORE_COUNT="2"
   RAM_SIZE="2048"
@@ -445,9 +515,15 @@ EOF
   
 msg_ok "Created a OpenSense VM ${CL}${BL}(${HN})"
 if [ "$START_VM" == "yes" ]; then
-  msg_info "Starting OpenSense VM"
+  msg_info "Starting OpenSense VM (Patience this takes 10 minutes)"
   qm start $VMID
+  sleep 30
+  send_line_to_vm "root"
+  send_line_to_vm "fetch https://raw.githubusercontent.com/opnsense/update/master/src/bootstrap/opnsense-bootstrap.sh.in"
+  send_line_to_vm "sh ./opnsense-bootstrap.sh.in -r 25.1"
+
   msg_ok "Started OpenSense VM"
+
 fi
 msg_ok "Completed Successfully!\n"
-echo "More Info at https://github.com/community-scripts/ProxmoxVE/discussions/836"
+
