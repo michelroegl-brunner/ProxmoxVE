@@ -201,27 +201,29 @@ function default_settings() {
   CORE_COUNT="2"
   RAM_SIZE="2048"
   BRG="vmbr0"
+  IP_ADDR=""
+  NETMASK=""
   VLAN=""
   MAC=$GEN_MAC
-  LAN_MAC=$GEN_MAC_LAN
-  LAN_BRG="vmbr1"
-  LAN_IP_ADDR="192.168.1.1"
-  LAN_NETMASK="255.255.255.0"
-  LAN_VLAN=""
+  WAN_MAC=$GEN_MAC_LAN
+  WAN_BRG="vmbr1"
+  WAN_IP_ADDR="192.168.1.1"
+  WAN_NETMASK="255.255.255.0"
+  WAN_VLAN=""
   MTU=""
   START_VM="yes"
   echo -e "${DGN}Using Virtual Machine ID: ${BGN}${VMID}${CL}"
   echo -e "${DGN}Using Hostname: ${BGN}${HN}${CL}"
   echo -e "${DGN}Allocated Cores: ${BGN}${CORE_COUNT}${CL}"
   echo -e "${DGN}Allocated RAM: ${BGN}${RAM_SIZE}${CL}"
-  echo -e "${DGN}Using WAN Bridge: ${BGN}${BRG}${CL}"
+  echo -e "${DGN}Using LAN Bridge: ${BGN}${BRG}${CL}"
+  echo -e "${DGN}Using LAN VLAN: ${BGN}Default${CL}"
+  echo -e "${DGN}Using LAN MAC Address: ${BGN}${MAC}${CL}"
+  echo -e "${DGN}Using WAN MAC Address: ${BGN}${WAN_MAC}${CL}"
+  echo -e "${DGN}Using WAN Bridge: ${BGN}${WAN_BRG}${CL}"
   echo -e "${DGN}Using WAN VLAN: ${BGN}Default${CL}"
-  echo -e "${DGN}Using WAN MAC Address: ${BGN}${MAC}${CL}"
-  echo -e "${DGN}Using LAN MAC Address: ${BGN}${LAN_MAC}${CL}"
-  echo -e "${DGN}Using LAN Bridge: ${BGN}${LAN_BRG}${CL}"
-  echo -e "${DGN}Using LAN VLAN: ${BGN}999${CL}"
-  echo -e "${DGN}Using LAN IP Address: ${BGN}${LAN_IP_ADDR}${CL}"
-  echo -e "${DGN}Using LAN NETMASK: ${BGN}${LAN_NETMASK}${CL}"
+  echo -e "${DGN}Using WAN IP Address: ${BGN}${WAN_IP_ADDR}${CL}"
+  echo -e "${DGN}Using WAN NETMASK: ${BGN}${WAN_NETMASK}${CL}"
   echo -e "${DGN}Using Interface MTU Size: ${BGN}Default${CL}"
   echo -e "${DGN}Start VM when completed: ${BGN}yes${CL}"
   echo -e "${BL}Creating a OpenSense VM using the above default settings${CL}"
@@ -330,29 +332,47 @@ function advanced_settings() {
     exit-script
   fi
 
-  if LAN_BRG=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN Bridge" 8 58 vmbr0 --title "LAN BRIDGE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
-    if [ -z $LAN_BRG ]; then
-      LAN_BRG="vmbr1"
+  if IP_ADDR=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN IP" 8 58 $IP_ADDR --title "WAN IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if [ -z $IP_ADDR ]; then
+      echo -e "${DGN}Using DHCP AS LAN IP ADDRESS${CL}"
     fi
-    echo -e "${DGN}Using LAN Bridge: ${BGN}$LAN_BRG${CL}"
+    echo -e "${DGN}Using WAN IP ADDRESS: ${BGN}$IP_ADDR${CL}"
   else
     exit-script
   fi
 
-  if LAN_IP_ADDR=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a router IP" 8 58 $LAN_IP_ADDR --title "LAN IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
-    if [ -z $LAN_IP_ADDR ]; then
-      LAN_IP_ADDR="192.168.1.1"
+  if NETMASK=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN netmmask" 8 58 $NETMASK --title "WAN NETMASK" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if [ -z $NETMASK ]; then
+      NETMASK=""
     fi
-    echo -e "${DGN}Using LAN IP ADDRESS: ${BGN}$LAN_IP_ADDR${CL}"
+    echo -e "${DGN}Using WAN NETMASK: ${BGN}$NETMASK${CL}"
   else
     exit-script
   fi
 
-  if LAN_NETMASK=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a router netmmask" 8 58 $LAN_NETMASK --title "LAN NETMASK" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
-    if [ -z $LAN_NETMASK ]; then
-      LAN_NETMASK="255.255.255.0"
+  if WAN_BRG=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN Bridge" 8 58 vmbr0 --title "LAN BRIDGE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if [ -z $WAN_BRG ]; then
+      WAN_BRG="vmbr1"
     fi
-    echo -e "${DGN}Using LAN NETMASK: ${BGN}$LAN_NETMASK${CL}"
+    echo -e "${DGN}Using LAN Bridge: ${BGN}$WAN_BRG${CL}"
+  else
+    exit-script
+  fi
+
+  if WAN_IP_ADDR=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a router IP" 8 58 $WAN_IP_ADDR --title "WAN IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if [ -z $WAN_IP_ADDR ]; then
+      WAN_IP_ADDR="192.168.1.1"
+    fi
+    echo -e "${DGN}Using WAN IP ADDRESS: ${BGN}$WAN_IP_ADDR${CL}"
+  else
+    exit-script
+  fi
+
+  if WAN_NETMASK=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a router netmmask" 8 58 $WAN_NETMASK --title "WAN NETMASK" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if [ -z $WAN_NETMASK ]; then
+      WAN_NETMASK="255.255.255.0"
+    fi
+    echo -e "${DGN}Using WAN NETMASK: ${BGN}$WAN_NETMASK${CL}"
   else
     exit-script
   fi
@@ -370,11 +390,11 @@ function advanced_settings() {
 
   if MAC2=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN MAC Address" 8 58 $GEN_MAC_LAN --title "LAN MAC ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $MAC2 ]; then
-      LAN_MAC="$GEN_MAC_LAN"
+      WAN_MAC="$GEN_MAC_LAN"
     else
-      LAN_MAC="$MAC2"
+      WAN_MAC="$MAC2"
     fi
-    echo -e "${DGN}Using LAN MAC Address: ${BGN}$LAN_MAC${CL}"
+    echo -e "${DGN}Using LAN MAC Address: ${BGN}$WAN_MAC${CL}"
   else
     exit-script
   fi
@@ -394,9 +414,9 @@ function advanced_settings() {
   if VLAN2=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN Vlan" 8 58 999 --title "LAN VLAN" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $VLAN2 ]; then
       VLAN2=""
-      LAN_VLAN=""
+      WAN_VLAN=""
     else
-      LAN_VLAN=",tag=$VLAN2"
+      WAN_VLAN=",tag=$VLAN2"
     fi
     echo -e "${DGN}Using LAN Vlan: ${BGN}$VLAN2${CL}"
   else
@@ -553,8 +573,8 @@ EOF
 
 msg_info "Bridge interfaces are being added."
 qm set $VMID \
-  -net0 virtio,bridge=${LAN_BRG},macaddr=${LAN_MAC}${LAN_VLAN}${MTU} \
-  -net1 virtio,bridge=${BRG},macaddr=${MAC}${VLAN}${MTU} >/dev/null 2>/dev/null
+  -net0 virtio,bridge=${BRG},macaddr=${MAC}${VLAN}${MTU} \
+  -net1 virtio,bridge=${WAN_BRG},macaddr=${WAN_MAC}${WAN_VLAN}${MTU} 2>/dev/null
 msg_ok "Bridge interfaces have been successfully added."
   
 msg_ok "Created a OpenSense VM ${CL}${BL}(${HN})"
