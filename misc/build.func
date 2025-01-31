@@ -805,10 +805,10 @@ post_to_api() {
 
   JSON_PAYLOAD=$(cat <<EOF
 {
-    "ct_type": "$CT_TYPE",
-    "disk_size": "$DISK_SIZE",
-    "core_count": "$CORE_COUNT",
-    "ram_size": "$RAM_SIZE",
+    "ct_type": $CT_TYPE,
+    "disk_size": $DISK_SIZE,
+    "core_count": $CORE_COUNT,
+    "ram_size": $RAM_SIZE,
     "verbose": "$VERBOSE",
     "os_type": "$var_os",
     "os_version": "$var_version",
@@ -826,7 +826,7 @@ EOF
 )
   echo -e "Json Payload: "
   echo -e "${JSON_PAYLOAD}"
-  msg_ok "${JSON_PAYLOAD}"
+
 
   RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
     -H "Content-Type: application/json" \
