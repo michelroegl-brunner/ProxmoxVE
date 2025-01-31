@@ -61,7 +61,6 @@ color() {
 }
 
 POST_UPDATE_DONE=false
-
 post_update_to_api() {
     if [ "$POST_UPDATE_DONE" = true ]; then
         return 0
@@ -78,15 +77,15 @@ post_update_to_api() {
 EOF
 )
    
-   RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
-        -H "Content-Type: application/json" \
-        -d "$JSON_PAYLOAD")
+  RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
+      -H "Content-Type: application/json" \
+      -d "$JSON_PAYLOAD")
 
-    if [ "$RESPONSE" -ne 201 ] && [ "$RESPONSE" -ne 302 ]; then
-        msg_error "API UPDATE request failed with HTTP code $RESPONSE"
-    fi
+  if [ "$RESPONSE" -ne 201 ] && [ "$RESPONSE" -ne 302 ]; then
+    msg_error "API UPDATE request failed with HTTP code $RESPONSE"
+  fi
 
-   POST_UPDATE_DONE=true
+  POST_UPDATE_DONE=true
 }
 
 # This function enables error handling in the script by setting options and defining a trap for the ERR signal.
@@ -859,7 +858,6 @@ EOF
   fi
 
 }
-
 diagnostics_check(){
   if ! [ -d "/usr/local/community-scripts" ]; then
       mkdir -p /usr/local/community-scripts
