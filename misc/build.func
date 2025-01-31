@@ -60,6 +60,35 @@ color() {
   ADVANCED="${TAB}🧩${TAB}${CL}"
 }
 
+POST_UPDATE_DONE=false
+
+post_update_to_api() {
+    if [ "$POST_UPDATE_DONE" = true ]; then
+        return 0
+    fi
+    local API_URL="http://api.community-scripts.org/upload/updatestatus"    
+    local status="${1:-failed}"
+
+    msg_ok "Sending ${status} to API"
+    JSON_PAYLOAD=$(cat <<EOF
+{
+    "status": "$status",
+    "random_id": "$RANDOM_UUID"
+}
+EOF
+)
+   
+   RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
+        -H "Content-Type: application/json" \
+        -d "$JSON_PAYLOAD")
+
+    if [ "$RESPONSE" -ne 201 ] && [ "$RESPONSE" -ne 302 ]; then
+        msg_error "API UPDATE request failed with HTTP code $RESPONSE"
+    fi
+
+   POST_UPDATE_DONE=true
+}
+
 # This function enables error handling in the script by setting options and defining a trap for the ERR signal.
 catch_errors() {
   set -Eeuo pipefail
@@ -67,12 +96,11 @@ catch_errors() {
 }
 
 # This function is called when an error occurs. It receives the exit code, line number, and command that caused the error, and displays an error message.
-error_handler() {
-  local exit_code="$?"
-  echo "calling post_update_to_api"
+error_handler() {  
   post_update_to_api ""
   if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
   printf "\e[?25h"
+  local exit_code="$?"
   local line_number="$1"
   local command="$2"
   local error_message="${RD}[ERROR]${CL} in line ${RD}$line_number${CL}: exit code ${RD}$exit_code${CL}: while executing command ${YW}$command${CL}"
@@ -830,35 +858,6 @@ EOF
     msg_error "API request failed with HTTP code $RESPONSE"
   fi
 
-}
-
-POST_UPDATE_DONE=false
-
-post_update_to_api() {
-    if [ "$POST_UPDATE_DONE" = true ]; then
-        return 0
-    fi
-    local API_URL="http://api.community-scripts.org/upload/updatestatus"    
-    local status="${1:-failed}"
-
-    msg_ok "Sending ${status} to API"
-    JSON_PAYLOAD=$(cat <<EOF
-{
-    "status": "$status",
-    "random_id": "$RANDOM_UUID"
-}
-EOF
-)
-   
-   RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
-        -H "Content-Type: application/json" \
-        -d "$JSON_PAYLOAD")
-
-    if [ "$RESPONSE" -ne 201 ] && [ "$RESPONSE" -ne 302 ]; then
-        msg_error "API UPDATE request failed with HTTP code $RESPONSE"
-    fi
-
-   POST_UPDATE_DONE=true
 }
 
 diagnostics_check(){
