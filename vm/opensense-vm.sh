@@ -392,7 +392,6 @@ function start_script() {
   fi
 }
 
-check_root
 arch_check
 pve_check
 ssh_check
@@ -514,7 +513,7 @@ if [ "$START_VM" == "yes" ]; then
   sleep 30
   send_line_to_vm "root"
   send_line_to_vm "fetch https://raw.githubusercontent.com/opnsense/update/master/src/bootstrap/opnsense-bootstrap.sh.in"
-  send_line_to_vm "sh ./opnsense-bootstrap.sh.in -r 25.1"
+  send_line_to_vm "sh ./opnsense-bootstrap.sh.in -y -f -r 25.1"
   sleep 600
   msg_ok "Started OpenSense VM"
 
