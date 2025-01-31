@@ -70,7 +70,7 @@ catch_errors() {
 error_handler() {
   local exit_code="$?"
   echo "calling post_update_to_api"
-  post_update_to_api "failed"
+  post_update_to_api
   if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
   printf "\e[?25h"
   local line_number="$1"
