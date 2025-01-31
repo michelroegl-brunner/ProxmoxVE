@@ -7,19 +7,20 @@
 function header_info {
   clear
   cat <<"EOF"
-    ____       __    _                ______
-   / __ \___  / /_  (_)___ _____     <  /__ \
-  / / / / _ \/ __ \/ / __ `/ __ \    / /__/ /
- / /_/ /  __/ /_/ / / /_/ / / / /   / // __/
-/_____/\___/_.___/_/\__,_/_/ /_/   /_//____/
+   ____                 _       __     __
+  / __ \____  ___  ____| |     / /____/ /_
+ / / / / __ \/ _ \/ __ \ | /| / / ___/ __/
+/ /_/ / /_/ /  __/ / / / |/ |/ / /  / /_
+\____/ .___/\___/_/ /_/|__/|__/_/   \__/
+    /_/ W I R E L E S S   F R E E D O M
 
 EOF
 }
 header_info
-echo -e "\n Loading..."
+echo -e "Loading..."
 GEN_MAC=02:$(openssl rand -hex 5 | awk '{print toupper($0)}' | sed 's/\(..\)/\1:/g; s/.$//')
+GEN_MAC_LAN=02:$(openssl rand -hex 5 | awk '{print toupper($0)}' | sed 's/\(..\)/\1:/g; s/.$//')
 NEXTID=$(pvesh get /cluster/nextid)
-
 YW=$(echo "\033[33m")
 BL=$(echo "\033[36m")
 HA=$(echo "\033[1;34m")
@@ -32,8 +33,7 @@ BFR="\\r\\033[K"
 HOLD="-"
 CM="${GN}✓${CL}"
 CROSS="${RD}✗${CL}"
-THIN="discard=on,ssd=1,"
-set -e
+set -Eeo pipefail
 trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 trap cleanup EXIT
 function error_handler() {
@@ -57,6 +57,8 @@ function cleanup() {
   rm -rf $TEMP_DIR
 }
 
+TEMP_DIR=$(mktemp -d)
+pushd $TEMP_DIR >/dev/null
 function send_line_to_vm() {
   echo -e "${DGN}Sending line: ${YW}$1${CL}"
   for ((i = 0; i < ${#1}; i++)); do
@@ -127,10 +129,10 @@ function send_line_to_vm() {
   qm sendkey $VMID ret
 }
 
-
 TEMP_DIR=$(mktemp -d)
 pushd $TEMP_DIR >/dev/null
-if whiptail --backtitle "Proxmox VE Helper Scripts" --title "OpenSense VM" --yesno "This will create a New OpenSense VM. Proceed?" 10 58; then
+
+if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "OpenWrt VM" --yesno "This will create a New OpenWrt VM. Proceed?" 10 58); then
   :
 else
   header_info && echo -e "⚠ User exited script \n" && exit
@@ -151,16 +153,6 @@ function msg_error() {
   echo -e "${BFR} ${CROSS} ${RD}${msg}${CL}"
 }
 
-function check_root() {
-  if [[ "$(id -u)" -ne 0 || $(ps -o comm= -p $PPID) == "sudo" ]]; then
-    clear
-    msg_error "Please run this script as root."
-    echo -e "\nExiting..."
-    sleep 2
-    exit
-  fi
-}
-
 function pve_check() {
   if ! pveversion | grep -Eq "pve-manager/8.[1-3]"; then
     msg_error "This version of Proxmox Virtual Environment is not supported"
@@ -173,7 +165,7 @@ fi
 
 function arch_check() {
   if [ "$(dpkg --print-architecture)" != "amd64" ]; then
-    msg_error "This script will not work with PiMox! \n"
+    echo -e "\n ${CROSS} This script will not work with PiMox! \n"
     echo -e "Exiting..."
     sleep 2
     exit
@@ -200,32 +192,35 @@ function exit-script() {
 }
 
 function default_settings() {
-  VMID="$NEXTID"
-  FORMAT=",efitype=4m"
-  MACHINE=""
-  DISK_CACHE=""
-  HN="opensense"
-  CPU_TYPE=""
-  CORE_COUNT="2"
-  RAM_SIZE="2048"
+  VMID=$NEXTID
+  HN=openwrt
+  CORE_COUNT="21"
+  RAM_SIZE="4096"
   BRG="vmbr0"
-  MAC="$GEN_MAC"
   VLAN=""
+  MAC=$GEN_MAC
+  LAN_MAC=$GEN_MAC_LAN
+  LAN_BRG="vmbr1"
+  LAN_IP_ADDR="192.168.1.1"
+  LAN_NETMASK="255.255.255.0"
+  LAN_VLAN=",tag=999"
   MTU=""
   START_VM="yes"
   echo -e "${DGN}Using Virtual Machine ID: ${BGN}${VMID}${CL}"
-  echo -e "${DGN}Using Machine Type: ${BGN}i440fx${CL}"
-  echo -e "${DGN}Using Disk Cache: ${BGN}None${CL}"
   echo -e "${DGN}Using Hostname: ${BGN}${HN}${CL}"
-  echo -e "${DGN}Using CPU Model: ${BGN}KVM64${CL}"
   echo -e "${DGN}Allocated Cores: ${BGN}${CORE_COUNT}${CL}"
   echo -e "${DGN}Allocated RAM: ${BGN}${RAM_SIZE}${CL}"
-  echo -e "${DGN}Using Bridge: ${BGN}${BRG}${CL}"
-  echo -e "${DGN}Using MAC Address: ${BGN}${MAC}${CL}"
-  echo -e "${DGN}Using VLAN: ${BGN}Default${CL}"
+  echo -e "${DGN}Using WAN Bridge: ${BGN}${BRG}${CL}"
+  echo -e "${DGN}Using WAN VLAN: ${BGN}Default${CL}"
+  echo -e "${DGN}Using WAN MAC Address: ${BGN}${MAC}${CL}"
+  echo -e "${DGN}Using LAN MAC Address: ${BGN}${LAN_MAC}${CL}"
+  echo -e "${DGN}Using LAN Bridge: ${BGN}${LAN_BRG}${CL}"
+  echo -e "${DGN}Using LAN VLAN: ${BGN}999${CL}"
+  echo -e "${DGN}Using LAN IP Address: ${BGN}${LAN_IP_ADDR}${CL}"
+  echo -e "${DGN}Using LAN NETMASK: ${BGN}${LAN_NETMASK}${CL}"
   echo -e "${DGN}Using Interface MTU Size: ${BGN}Default${CL}"
   echo -e "${DGN}Start VM when completed: ${BGN}yes${CL}"
-  echo -e "${BL}Creating a OpenSense VM using the above default settings${CL}"
+  echo -e "${BL}Creating a OpenWRT VM using the above default settings${CL}"
 }
 
 function advanced_settings() {
@@ -246,119 +241,113 @@ function advanced_settings() {
     fi
   done
 
-  if MACH=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "MACHINE TYPE" --radiolist --cancel-button Exit-Script "Choose Type" 10 58 2 \
-    "i440fx" "Machine i440fx" ON \
-    "q35" "Machine q35" OFF \
-    3>&1 1>&2 2>&3); then
-    if [ $MACH = q35 ]; then
-      echo -e "${DGN}Using Machine Type: ${BGN}$MACH${CL}"
-      FORMAT=""
-      MACHINE=" -machine q35"
-    else
-      echo -e "${DGN}Using Machine Type: ${BGN}$MACH${CL}"
-      FORMAT=",efitype=4m"
-      MACHINE=""
-    fi
-  else
-    exit-script
-  fi
-
-  if DISK_CACHE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "DISK CACHE" --radiolist "Choose" --cancel-button Exit-Script 10 58 2 \
-    "0" "None (Default)" ON \
-    "1" "Write Through" OFF \
-    3>&1 1>&2 2>&3); then
-    if [ $DISK_CACHE = "1" ]; then
-      echo -e "${DGN}Using Disk Cache: ${BGN}Write Through${CL}"
-      DISK_CACHE="cache=writethrough,"
-    else
-      echo -e "${DGN}Using Disk Cache: ${BGN}None${CL}"
-      DISK_CACHE=""
-    fi
-  else
-    exit-script
-  fi
-
-  if VM_NAME=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set Hostname" 8 58 debian --title "HOSTNAME" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+  if VM_NAME=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set Hostname" 8 58 openwrt --title "HOSTNAME" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $VM_NAME ]; then
-      HN="debian"
-      echo -e "${DGN}Using Hostname: ${BGN}$HN${CL}"
+      HN="openwrt"
     else
       HN=$(echo ${VM_NAME,,} | tr -d ' ')
-      echo -e "${DGN}Using Hostname: ${BGN}$HN${CL}"
     fi
+    echo -e "${DGN}Using Hostname: ${BGN}$HN${CL}"
   else
     exit-script
   fi
 
-  if CPU_TYPE1=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "CPU MODEL" --radiolist "Choose" --cancel-button Exit-Script 10 58 2 \
-    "0" "KVM64 (Default)" ON \
-    "1" "Host" OFF \
-    3>&1 1>&2 2>&3); then
-    if [ $CPU_TYPE1 = "1" ]; then
-      echo -e "${DGN}Using CPU Model: ${BGN}Host${CL}"
-      CPU_TYPE=" -cpu host"
-    else
-      echo -e "${DGN}Using CPU Model: ${BGN}KVM64${CL}"
-      CPU_TYPE=""
-    fi
-  else
-    exit-script
-  fi
-
-  if CORE_COUNT=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Allocate CPU Cores" 8 58 2 --title "CORE COUNT" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+  if CORE_COUNT=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Allocate CPU Cores" 8 58 1 --title "CORE COUNT" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $CORE_COUNT ]; then
-      CORE_COUNT="2"
-      echo -e "${DGN}Allocated Cores: ${BGN}$CORE_COUNT${CL}"
-    else
-      echo -e "${DGN}Allocated Cores: ${BGN}$CORE_COUNT${CL}"
+      CORE_COUNT="1"
     fi
+    echo -e "${DGN}Allocated Cores: ${BGN}$CORE_COUNT${CL}"
   else
     exit-script
   fi
 
-  if RAM_SIZE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Allocate RAM in MiB" 8 58 2048 --title "RAM" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+  if RAM_SIZE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Allocate RAM in MiB" 8 58 256 --title "RAM" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $RAM_SIZE ]; then
-      RAM_SIZE="2048"
-      echo -e "${DGN}Allocated RAM: ${BGN}$RAM_SIZE${CL}"
-    else
-      echo -e "${DGN}Allocated RAM: ${BGN}$RAM_SIZE${CL}"
+      RAM_SIZE="256"
     fi
+    echo -e "${DGN}Allocated RAM: ${BGN}$RAM_SIZE${CL}"
   else
     exit-script
   fi
 
-  if BRG=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a Bridge" 8 58 vmbr0 --title "BRIDGE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+  if BRG=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN Bridge" 8 58 vmbr0 --title "WAN BRIDGE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $BRG ]; then
       BRG="vmbr0"
-      echo -e "${DGN}Using Bridge: ${BGN}$BRG${CL}"
-    else
-      echo -e "${DGN}Using Bridge: ${BGN}$BRG${CL}"
     fi
+    echo -e "${DGN}Using WAN Bridge: ${BGN}$BRG${CL}"
   else
     exit-script
   fi
 
-  if MAC1=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a MAC Address" 8 58 $GEN_MAC --title "MAC ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+  if LAN_BRG=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN Bridge" 8 58 vmbr0 --title "LAN BRIDGE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if [ -z $LAN_BRG ]; then
+      LAN_BRG="vmbr0"
+    fi
+    echo -e "${DGN}Using LAN Bridge: ${BGN}$LAN_BRG${CL}"
+  else
+    exit-script
+  fi
+
+  if LAN_IP_ADDR=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a router IP" 8 58 $LAN_IP_ADDR --title "LAN IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if [ -z $LAN_IP_ADDR ]; then
+      LAN_IP_ADDR="192.168.1.1"
+    fi
+    echo -e "${DGN}Using LAN IP ADDRESS: ${BGN}$LAN_IP_ADDR${CL}"
+  else
+    exit-script
+  fi
+
+  if LAN_NETMASK=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a router netmmask" 8 58 $LAN_NETMASK --title "LAN NETMASK" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if [ -z $LAN_NETMASK ]; then
+      LAN_NETMASK="255.255.255.0"
+    fi
+    echo -e "${DGN}Using LAN NETMASK: ${BGN}$LAN_NETMASK${CL}"
+  else
+    exit-script
+  fi
+
+  if MAC1=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN MAC Address" 8 58 $GEN_MAC --title "WAN MAC ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $MAC1 ]; then
       MAC="$GEN_MAC"
-      echo -e "${DGN}Using MAC Address: ${BGN}$MAC${CL}"
     else
       MAC="$MAC1"
-      echo -e "${DGN}Using MAC Address: ${BGN}$MAC1${CL}"
     fi
+    echo -e "${DGN}Using WAN MAC Address: ${BGN}$MAC${CL}"
   else
     exit-script
   fi
 
-  if VLAN1=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a Vlan(leave blank for default)" 8 58 --title "VLAN" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+  if MAC2=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN MAC Address" 8 58 $GEN_MAC_LAN --title "LAN MAC ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if [ -z $MAC2 ]; then
+      LAN_MAC="$GEN_MAC_LAN"
+    else
+      LAN_MAC="$MAC2"
+    fi
+    echo -e "${DGN}Using LAN MAC Address: ${BGN}$LAN_MAC${CL}"
+  else
+    exit-script
+  fi
+
+  if VLAN1=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN Vlan (leave blank for default)" 8 58 --title "WAN VLAN" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $VLAN1 ]; then
       VLAN1="Default"
       VLAN=""
-      echo -e "${DGN}Using Vlan: ${BGN}$VLAN1${CL}"
     else
       VLAN=",tag=$VLAN1"
-      echo -e "${DGN}Using Vlan: ${BGN}$VLAN1${CL}"
     fi
+    echo -e "${DGN}Using WAN Vlan: ${BGN}$VLAN1${CL}"
+  else
+    exit-script
+  fi
+
+  if VLAN2=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN Vlan" 8 58 999 --title "LAN VLAN" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if [ -z $VLAN2 ]; then
+      VLAN2="999"
+      LAN_VLAN=",tag=$VLAN2"
+    else
+      LAN_VLAN=",tag=$VLAN2"
+    fi
+    echo -e "${DGN}Using LAN Vlan: ${BGN}$VLAN2${CL}"
   else
     exit-script
   fi
@@ -367,25 +356,23 @@ function advanced_settings() {
     if [ -z $MTU1 ]; then
       MTU1="Default"
       MTU=""
-      echo -e "${DGN}Using Interface MTU Size: ${BGN}$MTU1${CL}"
     else
       MTU=",mtu=$MTU1"
-      echo -e "${DGN}Using Interface MTU Size: ${BGN}$MTU1${CL}"
     fi
+    echo -e "${DGN}Using Interface MTU Size: ${BGN}$MTU1${CL}"
   else
     exit-script
   fi
 
   if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "START VIRTUAL MACHINE" --yesno "Start VM when completed?" 10 58); then
-    echo -e "${DGN}Start VM when completed: ${BGN}yes${CL}"
     START_VM="yes"
   else
-    echo -e "${DGN}Start VM when completed: ${BGN}no${CL}"
     START_VM="no"
   fi
+  echo -e "${DGN}Start VM when completed: ${BGN}$START_VM${CL}"
 
-  if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "ADVANCED SETTINGS COMPLETE" --yesno "Ready to create a OpenSense VM?" --no-button Do-Over 10 58); then
-    echo -e "${RD}Creating a OpenSense VM using the above advanced settings${CL}"
+  if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "ADVANCED SETTINGS COMPLETE" --yesno "Ready to create OpenWrt VM?" --no-button Do-Over 10 58); then
+    echo -e "${RD}Creating a OpenWrt VM using the above advanced settings${CL}"
   else
     header_info
     echo -e "${RD}Using Advanced Settings${CL}"
@@ -480,8 +467,9 @@ qm set $VMID \
   -efidisk0 ${DISK0_REF}${FORMAT} \
   -scsi0 ${DISK1_REF},${DISK_CACHE}${THIN}size=2G \
   -boot order=scsi0 \
-  -serial0 socket >/dev/null
-qm resize $VMID scsi0 4G >/dev/null
+  -serial0 socket >/dev/null \
+  -tags community-scripts
+qm resize $VMID scsi0 10G >/dev/null
   DESCRIPTION=$(cat <<EOF
 <div align='center'>
   <a href='https://Helper-Scripts.com' target='_blank' rel='noopener noreferrer'>
@@ -512,6 +500,12 @@ qm resize $VMID scsi0 4G >/dev/null
 EOF
 )
   qm set "$VMID" -description "$DESCRIPTION" >/dev/null  
+
+msg_info "Bridge interfaces are being added."
+qm set $VMID \
+  -net0 virtio,bridge=${LAN_BRG},macaddr=${LAN_MAC}${LAN_VLAN}${MTU} \
+  -net1 virtio,bridge=${BRG},macaddr=${MAC}${VLAN}${MTU} >/dev/null 2>/dev/null
+msg_ok "Bridge interfaces have been successfully added."
   
 msg_ok "Created a OpenSense VM ${CL}${BL}(${HN})"
 if [ "$START_VM" == "yes" ]; then
