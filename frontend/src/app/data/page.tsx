@@ -35,7 +35,7 @@ const DataFetcher: React.FC = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: keyof DataModel | null, direction: 'ascending' | 'descending' }>({ key: 'id', direction: 'descending' });
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(25);
   const [currentPage, setCurrentPage] = useState(1);
   const [showChart, setShowChart] = useState<boolean>(false);
 
