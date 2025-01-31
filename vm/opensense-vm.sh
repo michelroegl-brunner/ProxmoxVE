@@ -559,13 +559,13 @@ msg_ok "Bridge interfaces have been successfully added."
   
 msg_ok "Created a OpenSense VM ${CL}${BL}(${HN})"
 if [ "$START_VM" == "yes" ]; then
-  msg_info "Starting OpenSense VM (Patience this takes 10 minutes)"
+  msg_info "Starting OpenSense VM (Patience this takes 15 minutes)"
   qm start $VMID
   sleep 60
   send_line_to_vm "root"
   send_line_to_vm "fetch https://raw.githubusercontent.com/opnsense/update/master/src/bootstrap/opnsense-bootstrap.sh.in"
   send_line_to_vm "sh ./opnsense-bootstrap.sh.in -y -f -r 25.1"
-  sleep 600
+  sleep 900
   msg_ok "Started OpenSense VM"
 
 fi
