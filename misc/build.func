@@ -62,6 +62,10 @@ color() {
 
 POST_UPDATE_DONE=false
 post_update_to_api() {
+    if [ "$DIAGNOSTICS" = "no" ]; then
+        return 0
+    fi
+
     if [ "$POST_UPDATE_DONE" = true ]; then
         return 0
     fi
@@ -96,7 +100,6 @@ catch_errors() {
 
 # This function is called when an error occurs. It receives the exit code, line number, and command that caused the error, and displays an error message.
 error_handler() {  
-  post_update_to_api "failed"
   if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
   printf "\e[?25h"
   local exit_code="$?"
@@ -823,6 +826,11 @@ advanced_settings() {
 }
 
 post_to_api() {
+
+  if [ "$DIAGNOSTICS" = "no" ]; then
+    return 0
+  fi
+
   local API_URL="http://api.community-scripts.org/upload"
   local pve_version="not found"
   pve_version=$(pveversion | awk -F'[/ ]' '{print $2}')
@@ -1234,9 +1242,12 @@ EOF
     systemctl start ping-instances.service
   fi
 
+
+  post_update_to_api "done"
+
 }
 
-trap 'post_update_to_api "done"' EXIT
+trap 'post_update_to_api "failed"' EXIT
 trap 'post_update_to_api "failed"' SIGINT 
 trap 'post_update_to_api "failed"' SIGTERM
 
