@@ -194,7 +194,7 @@ function exit-script() {
 function default_settings() {
   VMID=$NEXTID
   HN=OpenSense
-  CORE_COUNT="21"
+  CORE_COUNT="2"
   RAM_SIZE="4096"
   BRG="vmbr0"
   VLAN=""
