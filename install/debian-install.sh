@@ -6,7 +6,6 @@
 # https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 
 source /dev/stdin <<< "$FUNCTIONS_FILE_PATH"
-source /dev/stdin <<< <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/api.func)
 color
 verb_ip6
 catch_errors
@@ -14,9 +13,9 @@ setting_up_container
 
 
 msg_info "Installing Dependencies"
-$STD apt-get insll -y curl
+$STD apt-get install -y curl
 $STD apt-get install -y sudo
-$STD apt-get install -y mc
+$STD apt-get insta -y mc
 msg_ok "Installed Dependencies"
 
 motd_ssh
