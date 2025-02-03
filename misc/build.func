@@ -65,6 +65,7 @@ color() {
 
 # This function enables error handling in the script by setting options and defining a trap for the ERR signal.
 catch_errors() {
+  source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/build.func)
   set -Eeuo pipefail
   trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 }
@@ -78,8 +79,8 @@ error_handler() {
   local line_number="$1"
   local command="$2"
   local error_message="${RD}[ERROR]${CL} in line ${RD}$line_number${CL}: exit code ${RD}$exit_code${CL}: while executing command ${YW}$command${CL}"
-  echo -e "\n$error_message\n"
   post_update_to_api "failed" "$error_message"
+  echo -e "\n$error_message\n"  
 }
 
 # This function displays a spinner.
