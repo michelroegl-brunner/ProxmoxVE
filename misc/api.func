@@ -1,3 +1,8 @@
+#!/usr/bin/env bash
+# Copyright (c) 2021-2025 community-scripts ORG
+# Author: michelroegl-brunner
+# License: MIT | https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/LICENSE
+
 post_to_api() {
 
   if [ "$DIAGNOSTICS" = "no" ]; then
