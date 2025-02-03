@@ -5,6 +5,8 @@
 # License: MIT
 # https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/LICENSE
 
+source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/api.func)
+
 variables() {
   NSAPP=$(echo ${APP,,} | tr -d ' ') # This function sets the NSAPP variable by converting the value of the APP variable to lowercase and removing any spaces.
   var_install="${NSAPP}-install"     # sets the var_install variable by appending "-install" to the value of NSAPP.
@@ -68,14 +70,17 @@ catch_errors() {
 }
 
 # This function is called when an error occurs. It receives the exit code, line number, and command that caused the error, and displays an error message.
-error_handler() {  
+error_handler() {
+  source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/build.func)
   if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
   printf "\e[?25h"
   local exit_code="$?"
   local line_number="$1"
   local command="$2"
+  post_update_to_api "failed"
   local error_message="${RD}[ERROR]${CL} in line ${RD}$line_number${CL}: exit code ${RD}$exit_code${CL}: while executing command ${YW}$command${CL}"
   echo -e "\n$error_message\n"
+  post_update_to_api "failed" "$error_message"
 }
 
 # This function displays a spinner.
@@ -793,87 +798,6 @@ advanced_settings() {
   fi
 }
 
-post_to_api() {
-
-  if [ "$DIAGNOSTICS" = "no" ]; then
-    return 0
-  fi
-
-  local API_URL="http://api.community-scripts.org/upload"
-  local pve_version="not found"
-  pve_version=$(pveversion | awk -F'[/ ]' '{print $2}')
-
-  JSON_PAYLOAD=$(cat <<EOF
-{
-    "ct_type": $CT_TYPE,
-    "disk_size": $DISK_SIZE,
-    "core_count": $CORE_COUNT,
-    "ram_size": $RAM_SIZE,
-    "os_type": "$var_os",
-    "os_version": "$var_version",
-    "disableip6": "$DISABLEIP6",
-    "nsapp": "$NSAPP",
-    "method": "$METHOD",
-    "pve_version": "$pve_version",
-    "status": "installing",
-    "random_id": "$RANDOM_UUID"
-}
-EOF
-)
-  echo -e "Json Payload: "
-  echo -e "${JSON_PAYLOAD}"
-  echo "$JSON_PAYLOAD"
-
-
-
-  RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
-    -H "Content-Type: application/json" \
-    -d "$JSON_PAYLOAD")
-
-  if [ "$RESPONSE" -ne 201 ] && [ "$RESPONSE" -ne 302 ]; then
-    msg_error "API request failed with HTTP code $RESPONSE"
-  fi
-
-}
-
-POST_UPDATE_DONE=false
-post_update_to_api() {
-    if [ "$DIAGNOSTICS" = "no" ]; then
-        return 0
-    fi
-
-    if [ "$POST_UPDATE_DONE" = true ]; then
-        return 0
-    fi
-    local API_URL="http://api.community-scripts.org/upload/updatestatus"    
-    local status="${1:-failed}"
-    local error="${2:-unknown}"
-
-    msg_ok "Sending ${status} to API"
-    JSON_PAYLOAD=$(cat <<EOF
-{
-    "status": "$status",
-    "error": "$error",
-    "random_id": "$RANDOM_UUID"
-}
-EOF
-)
-    echo -e "Json Payload: "
-    echo -e "${JSON_PAYLOAD}"
-    echo "$JSON_PAYLOAD"
-  
-   
-  RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
-      -H "Content-Type: application/json" \
-      -d "$JSON_PAYLOAD")
-
-  if [ "$RESPONSE" -ne 201 ] && [ "$RESPONSE" -ne 302 ]; then
-    msg_error "API UPDATE request failed with HTTP code $RESPONSE"
-  fi
-
-  POST_UPDATE_DONE=true
-}
-
 diagnostics_check(){
   if ! [ -d "/usr/local/community-scripts" ]; then
       mkdir -p /usr/local/community-scripts
@@ -1106,6 +1030,7 @@ build_container() {
   else
     export FUNCTIONS_FILE_PATH="$(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/install.func)"
   fi
+  export RANDOM_UUID="$RANDOM_UUID"
   export CACHER="$APT_CACHER"
   export CACHER_IP="$APT_CACHER_IP"
   export tz="$timezone"
