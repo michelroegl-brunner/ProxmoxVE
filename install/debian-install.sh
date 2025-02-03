@@ -14,7 +14,6 @@ setting_up_container
 
 msg_info "Installing Dependencies"
 $STD apt-get install -y curl
-post_update_to_api "done" "none"
 $STD apt-get install -y sudo
 $STD apt-get insta -y mc
 msg_ok "Installed Dependencies"
