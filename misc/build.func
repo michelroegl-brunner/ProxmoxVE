@@ -1174,7 +1174,6 @@ EOF
 
 }
 
-trap 'post_update_to_api "failed" "$?"' EXIT
-trap 'post_update_to_api "failed" "$?"' SIGINT 
-trap 'post_update_to_api "failed" "$?"' SIGTERM
+trap 'post_update_to_api "failed" "INTERRUPTED"' SIGINT 
+trap 'post_update_to_api "failed" "TERMINATED"' SIGTERM
 
