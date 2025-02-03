@@ -7,7 +7,6 @@
 set -x
 source /dev/stdin <<< "$FUNCTIONS_FILE_PATH"
 source /dev/stdin <<< $(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/api.func)
-#source /dev/stdin <<< "$API_FILE_PATH"
 color
 verb_ip6
 catch_errors
