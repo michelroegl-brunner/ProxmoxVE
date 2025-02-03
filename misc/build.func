@@ -64,7 +64,6 @@ color() {
 # This function enables error handling in the script by setting options and defining a trap for the ERR signal.
 catch_errors() {
   set -Eeuo pipefail
-  ERROR="${LINENO};${BASH_COMMAND}"
   trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 }
 
@@ -75,10 +74,9 @@ error_handler() {
   local exit_code="$?"
   local line_number="$1"
   local command="$2"
-  ERROR="${exit_code};${line_number};${command}"
+  ERROR="$command"
   local error_message="${RD}[ERROR]${CL} in line ${RD}$line_number${CL}: exit code ${RD}$exit_code${CL}: while executing command ${YW}$command${CL}"
   echo -e "\n$error_message\n"
-  exit 1
 }
 
 # This function displays a spinner.
