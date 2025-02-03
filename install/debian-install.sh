@@ -10,6 +10,7 @@ color
 verb_ip6
 catch_errors
 setting_up_container
+update_os
 
 
 msg_info "Installing Dependencies"
