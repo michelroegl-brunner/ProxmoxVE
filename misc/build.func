@@ -13,6 +13,7 @@ variables() {
   DIAGNOSTICS="yes"                  # sets the DIAGNOSTICS variable to "yes", used for the API call.
   METHOD="default"                   # sets the METHOD variable to "default", used for the API call.
   RANDOM_UUID="$(cat /proc/sys/kernel/random/uuid)" # generates a random UUID and sets it to the RANDOM_UUDI variable.
+  ERROR="none"
 }
 
 # This function sets various color variables using ANSI escape codes for formatting text in the terminal.
@@ -73,6 +74,7 @@ error_handler() {
   local exit_code="$?"
   local line_number="$1"
   local command="$2"
+  ERROR="${exit_code};${line_number};${command}"
   local error_message="${RD}[ERROR]${CL} in line ${RD}$line_number${CL}: exit code ${RD}$exit_code${CL}: while executing command ${YW}$command${CL}"
   echo -e "\n$error_message\n"
   exit 1
@@ -847,11 +849,13 @@ post_update_to_api() {
     fi
     local API_URL="http://api.community-scripts.org/upload/updatestatus"    
     local status="${1:-failed}"
+    local error="${2:-none}"
 
     msg_ok "Sending ${status} to API"
     JSON_PAYLOAD=$(cat <<EOF
 {
     "status": "$status",
+    "error": "$error";
     "random_id": "$RANDOM_UUID"
 }
 EOF
@@ -1239,11 +1243,11 @@ EOF
   fi
 
 
-  post_update_to_api "done"
+  post_update_to_api "done" "none"
 
 }
 
-trap 'post_update_to_api "failed"' EXIT
-trap 'post_update_to_api "failed"' SIGINT 
-trap 'post_update_to_api "failed"' SIGTERM
+trap 'post_update_to_api "failed" "${ERROR}"' EXIT
+trap 'post_update_to_api "failed" "${ERROR}"' SIGINT 
+trap 'post_update_to_api "failed" "${ERROR}"' SIGTERM
 
