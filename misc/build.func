@@ -1250,7 +1250,7 @@ EOF
 
 }
 
-trap 'post_update_to_api "failed" "${ERROR}"' EXIT
-trap 'post_update_to_api "failed" "${ERROR}"' SIGINT 
-trap 'post_update_to_api "failed" "${ERROR}"' SIGTERM
+trap 'post_update_to_api "failed" "$?"' EXIT
+trap 'post_update_to_api "failed" "$?"' SIGINT 
+trap 'post_update_to_api "failed" "$?"' SIGTERM
 
