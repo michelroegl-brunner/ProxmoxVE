@@ -47,9 +47,6 @@ EOF
 
 POST_UPDATE_DONE=false
 post_update_to_api() {
-    if [ "$DIAGNOSTICS" = "no" ]; then
-        return 0
-    fi
 
     if [ "$POST_UPDATE_DONE" = true ]; then
         return 0
