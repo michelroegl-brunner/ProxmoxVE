@@ -13,7 +13,7 @@ variables() {
   DIAGNOSTICS="yes"                  # sets the DIAGNOSTICS variable to "yes", used for the API call.
   METHOD="default"                   # sets the METHOD variable to "default", used for the API call.
   RANDOM_UUID="$(cat /proc/sys/kernel/random/uuid)" # generates a random UUID and sets it to the RANDOM_UUDI variable.
-  ERROR=""
+
 }
 
 # This function sets various color variables using ANSI escape codes for formatting text in the terminal.
@@ -74,7 +74,6 @@ error_handler() {
   local exit_code="$?"
   local line_number="$1"
   local command="$2"
-  export ERROR="${command}"
   local error_message="${RD}[ERROR]${CL} in line ${RD}$line_number${CL}: exit code ${RD}$exit_code${CL}: while executing command ${YW}$command${CL}"
   echo -e "\n$error_message\n"
 }
