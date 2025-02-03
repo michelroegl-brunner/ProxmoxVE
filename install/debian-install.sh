@@ -6,7 +6,6 @@
 # https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 set -x
 source /dev/stdin <<< "$FUNCTIONS_FILE_PATH"
-source /dev/stdin <<< $(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/api.func)
 color
 verb_ip6
 catch_errors
