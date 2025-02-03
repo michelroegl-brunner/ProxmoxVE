@@ -13,7 +13,7 @@ variables() {
   DIAGNOSTICS="yes"                  # sets the DIAGNOSTICS variable to "yes", used for the API call.
   METHOD="default"                   # sets the METHOD variable to "default", used for the API call.
   RANDOM_UUID="$(cat /proc/sys/kernel/random/uuid)" # generates a random UUID and sets it to the RANDOM_UUDI variable.
-  ERROR="none"
+  ERROR=""
 }
 
 # This function sets various color variables using ANSI escape codes for formatting text in the terminal.
@@ -64,6 +64,7 @@ color() {
 # This function enables error handling in the script by setting options and defining a trap for the ERR signal.
 catch_errors() {
   set -Eeuo pipefail
+  ERROR="${LINENO};${BASH_COMMAND}"
   trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 }
 
