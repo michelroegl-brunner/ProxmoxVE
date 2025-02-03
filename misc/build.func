@@ -825,7 +825,7 @@ EOF
   echo -e "Json Payload: "
   echo -e "${JSON_PAYLOAD}"
   echo "$JSON_PAYLOAD"
-  echo "$JSON_PAYLOAD" > /usr/local/community-scripts/$RANDOM_UUID.json
+
 
 
   RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
@@ -860,6 +860,10 @@ post_update_to_api() {
 }
 EOF
 )
+    echo -e "Json Payload: "
+    echo -e "${JSON_PAYLOAD}"
+    echo "$JSON_PAYLOAD"
+  
    
   RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
       -H "Content-Type: application/json" \
