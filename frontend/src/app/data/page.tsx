@@ -275,10 +275,17 @@ const DataFetcher: React.FC = () => {
                     <td className="px-4 py-2 border-b">{item.method}</td>
                     <td className="px-4 py-2 border-b">{item.pve_version}</td>
                     <td className="px-4 py-2 border-b">
-                      {showErrorRow === index ? (
-                        item.error
+                      {item.error !== "none" ? (
+                        showErrorRow === index ? (
+                          <>
+                            {item.error}
+                            <button onClick={() => setShowErrorRow(null)}>{item.error}</button>
+                          </>
+                        ) : (
+                          <button onClick={() => setShowErrorRow(index)}>Click to show error</button>
+                        )
                       ) : (
-                        <button onClick={() => setShowErrorRow(index)}>Click to show error</button>
+                        "none"
                       )}
                     </td>
                     <td className="px-4 py-2 border-b">{formatDate(item.created_at)}</td>
