@@ -849,13 +849,13 @@ post_update_to_api() {
     fi
     local API_URL="http://api.community-scripts.org/upload/updatestatus"    
     local status="${1:-failed}"
-    local error="${2:-none}"
+    local error="${2:-unknown}"
 
     msg_ok "Sending ${status} to API"
     JSON_PAYLOAD=$(cat <<EOF
 {
     "status": "$status",
-    "error": "$error";
+    "error": "$error",
     "random_id": "$RANDOM_UUID"
 }
 EOF
