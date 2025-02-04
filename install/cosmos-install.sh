@@ -31,7 +31,7 @@ msg_info "Install mergerfs"
 
 MERGERFS_VERSION="2.40.2"
 wget -q "https://github.com/trapexit/mergerfs/releases/download/${MERGERFS_VERSION}/mergerfs_${MERGERFS_VERSION}.debian-bullseye_amd64.deb"
-dpkg -i "mergerfs_${MERGERFS_VERSION}.debian-bullseye_amd64.deb" || apt-get install -f -y
+$STD dpkg -i "mergerfs_${MERGERFS_VERSION}.debian-bullseye_amd64.deb" || apt-get install -f -y
 
 msg_ok "Installed mergerfs"
 
@@ -46,12 +46,12 @@ msg_info "Setting up database"
 DB_NAME=cosmos_db
 DB_USER=cosmos
 DB_PASS=$(openssl rand -base64 18 | tr -dc 'a-zA-Z0-9' | head -c13)
-
-    echo "Cosmos-Credentials"
+{
+    echo "Cosmos-DB--Credentials"
     echo "Cosmos Database User: $DB_USER"
     echo "Cosmos Database Password: $DB_PASS"
     echo "Cosmos Database Name: $DB_NAME"
-} >> ~/snipeit.creds
+} >> ~/cosmos_db.creds
 msg_ok "Set up database"
 
 msg_info "Install Cosmos" 
