@@ -84,6 +84,7 @@ EOF
 
   if [ "$RESPONSE" -ne 201 ] && [ "$RESPONSE" -ne 302 ]; then
     msg_error "API request failed with HTTP code $RESPONSE"
+    echo -e ${JSON_PAYLOAD}
   fi
 
 }
