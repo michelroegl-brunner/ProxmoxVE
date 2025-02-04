@@ -61,13 +61,14 @@ post_to_api_vm() {
 
   JSON_PAYLOAD=$(cat <<EOF
 {
-    
+    "ct_type": 0,
     "type":"vm",
     "disk_size": $DISK_SIZE,
     "core_count": $CORE_COUNT,
     "ram_size": $RAM_SIZE,
     "os_type": "$var_os",
     "os_version": "$var_version",
+    "disableip6": "",
     "nsapp": "$NSAPP",
     "method": "$METHOD",
     "pve_version": "$pve_version",
