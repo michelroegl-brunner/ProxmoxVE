@@ -26,6 +26,7 @@ $STD apt-get install -y \
  snapraid \
  wget \
  avahi-daemon \
+ uuid-runtime \
  fdisk
 msg_ok "Installed Dependencies"
 
