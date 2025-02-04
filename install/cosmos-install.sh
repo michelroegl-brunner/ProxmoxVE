@@ -53,17 +53,18 @@ msg_ok "Installed Docker"
 msg_info "Configure MongoDB"
 MONGO_ADMIN_USER="admin"
 MONGO_ADMIN_PWD="$(openssl rand -base64 18 | cut -c1-13)"
-NODEBB_USER="cosmos"
-NODEBB_PWD="$(openssl rand -base64 18 | cut -c1-13)"
-MONGO_CONNECTION_STRING="mongodb://${NODEBB_USER}:${NODEBB_PWD}@localhost:27017/cosmos"
-NODEBB_SECRET=$(uuidgen)
+COSMOS_USER="cosmos"
+COSMOS_PWD="$(openssl rand -base64 18 | cut -c1-13)"
+MONGO_CONNECTION_STRING="mongodb://${COSMOS_USER}:${COSMOS_PWD}@localhost:27017/cosmos"
+COSMOS_SECRET=$(uuidgen)
 {
-  echo "NodeBB-Credentials"
-  echo "Mongo Database User: $MONGO_ADMIN_USER"
-  echo "Mongo Database Password: $MONGO_ADMIN_PWD"
-  echo "NodeBB User: $NODEBB_USER"
-	echo "NodeBB Password: $NODEBB_PWD"
-	echo "NodeBB Secret: $NODEBB_SECRET"
+  echo "Cosmos-Credentials"
+  echo "Mongo Database Admin User: $MONGO_ADMIN_USER"
+  echo "Mongo Database Admin Password: $MONGO_ADMIN_PWD"
+  echo "Cosmos User: $COSMOS_USER"
+	echo "Cosmos Password: $COSMOS_PWD"
+	echo "Cosmos Secret: $COSMOS_SECRET"
+  echo "Mongo Connection String: $MONGO_CONNECTION_STRING"
 } >> ~/nodebb.creds
 
 $STD mongosh <<EOF
@@ -74,12 +75,12 @@ db.createUser({
   roles: [{ role: "root", db: "admin" }]
 })
 
-use nodebb
+use cosmos
 db.createUser({
-  user: "$NODEBB_USER",
-  pwd: "$NODEBB_PWD",
+  user: "$COSMOS_USER",
+  pwd: "$COSMOS_PWD",
   roles: [
-    { role: "readWrite", db: "nodebb" },
+    { role: "readWrite", db: "cosmos" },
     { role: "clusterMonitor", db: "admin" }
   ]
 })
@@ -126,7 +127,7 @@ EnvironmentFile=-/etc/sysconfig/CosmosCloud
 WantedBy=multi-user.target
 EOF
 
-systemctl enable -q --now cosmos
+systemctl enable -q --now cosmos.service
 msg_info "Created Service"
 
 motd_ssh
