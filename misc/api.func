@@ -12,7 +12,7 @@ post_to_api() {
     return
   fi
 
-  local API_URL="http://api.community-scripts.org/upload"
+  local API_URL="http://ap.community-scripts.org/upload"
   local pve_version="not found"
   pve_version=$(pveversion | awk -F'[/ ]' '{print $2}')
 
@@ -58,7 +58,7 @@ post_to_api_vm() {
     return
   fi
 
-  local API_URL="http://ai.community-scripts.org/upload"
+  local API_URL="http://api.community-scripts.org/upload"
   local pve_version="not found"
   pve_version=$(pveversion | awk -F'[/ ]' '{print $2}')
 
