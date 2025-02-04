@@ -214,6 +214,7 @@ function start_script() {
   fi
 }
 start_script
+DISK_SIZE="1G"
 post_to_api_vm
 msg_info "Validating Storage"
 while read -r line; do
