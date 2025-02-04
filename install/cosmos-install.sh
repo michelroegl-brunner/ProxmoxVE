@@ -56,11 +56,16 @@ msg_ok "Set up database"
 
 msg_info "Install Cosmos" 
 mkdir -p /opt/cosmos
-COSMOS_RELEASE=$(curl -s https://api.github.com/repos/azukaar/Cosmos-Server/releases/latest | grep "tag_name" | cut -d '"' -f 4)
-curl -L "https://github.com/azukaar/Cosmos-Server/releases/download/${LATEST_RELEASE}/${ZIP_FILE}" -o "/opt/cosmos/cosmos-cloud-${COSMOS_RELEASE#v}-amd64.zip"
+LATEST_RELEASE=$(curl -s https://api.github.com/repos/azukaar/Cosmos-Server/releases/latest | grep "tag_name" | cut -d '"' -f 4)
+ZIP_FILE="cosmos-cloud-${LATEST_RELEASE#v}-amd64.zip"
+
+curl -sL "https://github.com/azukaar/Cosmos-Server/releases/download/${LATEST_RELEASE}/${ZIP_FILE}" -o "/opt/cosmos/${ZIP_FILE}"
 cd /opt/cosmos
-unzip -o "cosmos-cloud-${COSMOS_RELEASE#v}-amd64.zip"
-mv /opt/cosmos/cosmos-cloud-${COSMOS_RELEASE#v}/* /opt/cosmos/
+unzip -o "${ZIP_FILE}"
+LATEST_RELEASE_NO_V=${LATEST_RELEASE#v}
+
+mv /opt/cosmos/cosmos-cloud-${LATEST_RELEASE_NO_V}/* /opt/cosmos/
+rmdir /opt/cosmos/cosmos-cloud-${LATEST_RELEASE_NO_V}
 chmod +x /opt/cosmos/cosmos
 
 msg_ok "Installed Cosmos"
