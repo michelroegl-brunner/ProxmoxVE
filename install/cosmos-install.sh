@@ -24,6 +24,8 @@ $STD apt-get install -y \
  ca-certificates \
  openssl \
  snapraid \
+ wget \
+ avahi-daemon \
  fdisk
 msg_ok "Installed Dependencies"
 
