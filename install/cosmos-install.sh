@@ -93,7 +93,6 @@ bash -c 'echo -e "\nsecurity:\n  authorization: enabled" >> /etc/mongod.conf'
 systemctl restart mongod
 msg_ok "MongoDB successfully configurated" 
 
-
 msg_ok "Set up database"
 
 msg_info "Install Cosmos" 
@@ -143,7 +142,7 @@ motd_ssh
 customize
 
 msg_info "Cleaning up"
-rm "mergerfs_${MERGERFS_VERSION}.debian-bullseye_amd64.deb"
+rm "/root/mergerfs_${MERGERFS_VERSION}.debian-bullseye_amd64.deb"
 rm -f "/opt/cosmos/cosmos-cloud-${COSMOS_RELEASE#v}-amd64.zip"
 $STD apt-get -y autoremove
 $STD apt-get -y autoclean
