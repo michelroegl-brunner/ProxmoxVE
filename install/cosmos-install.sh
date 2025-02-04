@@ -105,7 +105,7 @@ chmod +x /opt/cosmos/cosmos
 msg_ok "Installed Cosmos"
 
 msg_info "Creating Cosmos Service"
-cat <<EOF > /etc/systemd/system/cosmos
+cat <<EOF > /etc/systemd/system/cosmos.service
 [Unit]
 Description=Cosmos Cloud service
 ConditionFileIsExecutable=/opt/cosmos/start.sh
