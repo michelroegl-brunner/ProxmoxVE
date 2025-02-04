@@ -72,7 +72,6 @@ function cleanup_vmid() {
 
 function cleanup() {
   popd >/dev/null
-  post_update_to_api "done" "none"
   rm -rf $TEMP_DIR
 }
 
@@ -481,4 +480,5 @@ if [ "$START_VM" == "yes" ]; then
   qm start $VMID
   msg_ok "Started Home Assistant OS VM"
 fi
+post_update_to_api "done" "none"
 msg_ok "Completed Successfully!\n"
