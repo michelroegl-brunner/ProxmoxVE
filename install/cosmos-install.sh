@@ -34,6 +34,7 @@ msg_info "Install mergerfs"
 MERGERFS_VERSION="2.40.2"
 wget -q "https://github.com/trapexit/mergerfs/releases/download/${MERGERFS_VERSION}/mergerfs_${MERGERFS_VERSION}.debian-bullseye_amd64.deb"
 $STD dpkg -i "mergerfs_${MERGERFS_VERSION}.debian-bullseye_amd64.deb" || $STD apt-get install -f -y
+rm "mergerfs_${MERGERFS_VERSION}.debian-bullseye_amd64.deb"
 msg_ok "Installed mergerfs"
 
 msg_info "Install Mongo DB"
@@ -134,7 +135,7 @@ motd_ssh
 customize
 
 msg_info "Cleaning up"
-rm "/root/mergerfs_${MERGERFS_VERSION}.debian-bullseye_amd64.deb"
+
 rm -f "/opt/cosmos/cosmos-cloud-${COSMOS_RELEASE#v}-amd64.zip"
 $STD apt-get -y autoremove
 $STD apt-get -y autoclean
