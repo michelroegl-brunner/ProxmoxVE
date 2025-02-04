@@ -4,6 +4,8 @@
 # Author: michelroegl-brunner
 # License: MIT |https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 
+source /dev/stdin <<< $(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/api.func)
+
 function header_info {
   clear
   cat <<"EOF"
@@ -18,6 +20,13 @@ EOF
 }
 header_info
 echo -e "Loading..."
+#API VARIABLES
+RANDOM_UUID="$(cat /proc/sys/kernel/random/uuid)"
+METHOD=""
+NSAPP="openwrt-vm"
+var_os="openwrt"
+var_version=" "
+#
 GEN_MAC=02:$(openssl rand -hex 5 | awk '{print toupper($0)}' | sed 's/\(..\)/\1:/g; s/.$//')
 GEN_MAC_LAN=02:$(openssl rand -hex 5 | awk '{print toupper($0)}' | sed 's/\(..\)/\1:/g; s/.$//')
 NEXTID=$(pvesh get /cluster/nextid)
@@ -40,6 +49,7 @@ function error_handler() {
   local exit_code="$?"
   local line_number="$1"
   local command="$2"
+  post_update_to_api "failed" "$command"
   local error_message="${RD}[ERROR]${CL} in line ${RD}$line_number${CL}: exit code ${RD}$exit_code${CL}: while executing command ${YW}$command${CL}"
   echo -e "\n$error_message\n"
   cleanup_vmid
@@ -54,6 +64,7 @@ function cleanup_vmid() {
 
 function cleanup() {
   popd >/dev/null
+  post_update_to_api "done" "none"  
   rm -rf $TEMP_DIR
 }
 
@@ -212,6 +223,7 @@ function default_settings() {
   WAN_VLAN=""
   MTU=""
   START_VM="yes"
+  METHOD="default"
   echo -e "${DGN}Using Virtual Machine ID: ${BGN}${VMID}${CL}"
   echo -e "${DGN}Using Hostname: ${BGN}${HN}${CL}"
   echo -e "${DGN}Allocated Cores: ${BGN}${CORE_COUNT}${CL}"
@@ -230,6 +242,7 @@ function default_settings() {
 }
 
 function advanced_settings() {
+  METHOD="advanced"
   while true; do
     if VMID=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set Virtual Machine ID" 8 58 $NEXTID --title "VIRTUAL MACHINE ID" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
       if [ -z "$VMID" ]; then
@@ -467,6 +480,7 @@ arch_check
 pve_check
 ssh_check
 start_script
+post_to_api_vm
 
 msg_info "Validating Storage"
 while read -r line; do
