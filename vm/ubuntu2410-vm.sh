@@ -65,6 +65,8 @@ THIN="discard=on,ssd=1,"
 set -e
 trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 trap cleanup EXIT
+trap 'post_update_to_api "failed" "INTERRUPTED"' SIGINT 
+trap 'post_update_to_api "failed" "TERMINATED"' SIGTERM
 function error_handler() {
   local exit_code="$?"
   local line_number="$1"
@@ -84,7 +86,6 @@ function cleanup_vmid() {
 
 function cleanup() {
   popd >/dev/null
-  post_update_to_api "done" "none"
   rm -rf $TEMP_DIR
 }
 
@@ -507,7 +508,7 @@ if [ "$START_VM" == "yes" ]; then
   qm start $VMID
   msg_ok "Started Ubuntu 24.10 VM"
 fi
-
+post_update_to_api "done" "none"
 msg_ok "Completed Successfully!\n"
 echo -e "Setup Cloud-Init before starting \n
 More info at https://github.com/community-scripts/ProxmoxVE/discussions/272 \n"

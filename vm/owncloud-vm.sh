@@ -25,6 +25,7 @@ METHOD=""
 NSAPP="turnkey-owncloud-vm"
 var_os="owncloud"
 var_version="12"
+DISK_SIZE="12G"
 #
 GEN_MAC=02:$(openssl rand -hex 5 | awk '{print toupper($0)}' | sed 's/\(..\)/\1:/g; s/.$//')
 NEXTID=$(pvesh get /cluster/nextid)
@@ -45,6 +46,8 @@ THIN="discard=on,ssd=1"
 set -e
 trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 trap cleanup EXIT
+trap 'post_update_to_api "failed" "INTERRUPTED"' SIGINT 
+trap 'post_update_to_api "failed" "TERMINATED"' SIGTERM
 function error_handler() {
   local exit_code="$?"
   local line_number="$1"
@@ -64,7 +67,6 @@ function cleanup_vmid() {
 
 function cleanup() {
   popd >/dev/null
-  post_update_to_api "done" "none"
   rm -rf $TEMP_DIR
 }
 
@@ -352,7 +354,7 @@ arch_check
 pve_check
 ssh_check
 start_script
-DISK_SIZE="12G"
+
 post_to_api_vm
 
 msg_info "Validating Storage"
@@ -437,4 +439,5 @@ if [ "$START_VM" == "yes" ]; then
   qm start $VMID
   msg_ok "Started $NAME"
 fi
+post_update_to_api "done" "none"
 msg_ok "Completed Successfully!\n"

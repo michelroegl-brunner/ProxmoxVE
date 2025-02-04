@@ -26,7 +26,7 @@ METHOD=""
 NSAPP="ubunutu2404-vm"
 var_os="ubuntu"
 var_version="2404"
-DISK_SIZE="32G"########REMOVE!!!!!!!!!!
+DISK_SIZE="32G" ########REMOVE!!!!!!!!!!
 #
 GEN_MAC=02:$(openssl rand -hex 5 | awk '{print toupper($0)}' | sed 's/\(..\)/\1:/g; s/.$//')
 NEXTID=$(pvesh get /cluster/nextid)
@@ -47,6 +47,8 @@ THIN="discard=on,ssd=1,"
 set -e
 trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 trap cleanup EXIT
+trap 'post_update_to_api "failed" "INTERRUPTED"' SIGINT 
+trap 'post_update_to_api "failed" "TERMINATED"' SIGTERM
 function error_handler() {
   local exit_code="$?"
   local line_number="$1"
@@ -66,7 +68,6 @@ function cleanup_vmid() {
 
 function cleanup() {
   popd >/dev/null
-  post_update_to_api "done" "none"
   rm -rf $TEMP_DIR
 }
 
@@ -422,6 +423,7 @@ qm set $VMID \
 
   <a href='https://ko-fi.com/D1D7EP4GF'><img src='https://img.shields.io/badge/&#x2615;-Buy me a coffee-blue' /></a>
   </div>" >/dev/null
+post_update_to_api "done" "none"
 msg_ok "Created a Ubuntu 24.04 VM ${CL}${BL}(${HN})"
 msg_ok "Completed Successfully!\n"
 echo -e "Setup Cloud-Init before starting \n

@@ -49,6 +49,8 @@ CROSS="${RD}✗${CL}"
 set -Eeo pipefail
 trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 trap cleanup EXIT
+trap 'post_update_to_api "failed" "INTERRUPTED"' SIGINT 
+trap 'post_update_to_api "failed" "TERMINATED"' SIGTERM
 function error_handler() {
   local exit_code="$?"
   local line_number="$1"
@@ -68,7 +70,6 @@ function cleanup_vmid() {
 
 function cleanup() {
   popd >/dev/null
-  post_update_to_api "done" "none"
   rm -rf $TEMP_DIR
 }
 
@@ -533,4 +534,5 @@ VLAN_FINISH=""
 if [ "$VLAN" == "" ] && [ "$VLAN2" != "999" ]; then
   VLAN_FINISH=" Please remember to adjust the VLAN tags to suit your network."
 fi
+post_update_to_api "done" "none"
 msg_ok "Completed Successfully!\n${VLAN_FINISH}"

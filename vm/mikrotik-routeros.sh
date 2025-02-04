@@ -49,6 +49,8 @@ shopt -s expand_aliases
 alias die='EXIT=$? LINE=$LINENO error_exit'
 trap die ERR
 trap cleanup EXIT
+trap 'post_update_to_api "failed" "INTERRUPTED"' SIGINT 
+trap 'post_update_to_api "failed" "TERMINATED"' SIGTERM
 function error_exit() {
   trap - ERR
   local reason="Unknown failure occurred."
@@ -301,4 +303,5 @@ if [ "$START_VM" == "yes" ]; then
   qm start $VMID
   msg_ok "Started Mikrotik RouterOS CHR VM"
 fi
+post_update_to_api "done" "none"
 msg_ok "Completed Successfully!\n"
