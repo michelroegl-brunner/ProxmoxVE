@@ -30,6 +30,7 @@ METHOD=""
 NSAPP="pimox-haos-vm"
 var_os="pimox-haos"
 var_version=" "
+DISK_SIZE="32G"
 #
 GEN_MAC=$(echo '00 60 2f'$(od -An -N3 -t xC /dev/urandom) | sed -e 's/ /:/g' | tr '[:lower:]' '[:upper:]')
 USEDID=$(pvesh get /cluster/resources --type vm --output-format yaml | egrep -i 'vmid' | awk '{print substr($2, 1, length($2)-0) }')
