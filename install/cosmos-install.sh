@@ -52,9 +52,9 @@ msg_ok "Installed Docker"
 msg_info "Configure MongoDB"
 MONGO_ADMIN_USER="admin"
 MONGO_ADMIN_PWD="$(openssl rand -base64 18 | cut -c1-13)"
-NODEBB_USER="nodebb"
+NODEBB_USER="cosmos"
 NODEBB_PWD="$(openssl rand -base64 18 | cut -c1-13)"
-MONGO_CONNECTION_STRING="mongodb://${NODEBB_USER}:${NODEBB_PWD}@localhost:27017/nodebb"
+MONGO_CONNECTION_STRING="mongodb://${NODEBB_USER}:${NODEBB_PWD}@localhost:27017/cosmos"
 NODEBB_SECRET=$(uuidgen)
 {
   echo "NodeBB-Credentials"
