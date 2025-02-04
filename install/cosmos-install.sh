@@ -35,13 +35,6 @@ $STD dpkg -i "mergerfs_${MERGERFS_VERSION}.debian-bullseye_amd64.deb" || $STD ap
 
 msg_ok "Installed mergerfs"
 
-msg_info "Install Mongo DB"
-curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
-echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] http://repo.mongodb.org/apt/debian bookworm/mongodb-org/8.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
-$STD apt-get update
-$STD apt-get install -y mongodb-org
-msg_ok  "Installed Mongo DB"
-
 msg_info "Install Docker"
 
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -50,16 +43,57 @@ rm get-docker.sh
 
 msg_ok "Installed Docker"
 
-msg_info "Setting up database"
-DB_NAME=cosmos_db
-DB_USER=cosmos
-DB_PASS=$(openssl rand -base64 18 | tr -dc 'a-zA-Z0-9' | head -c13)
+msg_info "Install Mongo DB"
+curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
+$STD echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] http://repo.mongodb.org/apt/debian bookworm/mongodb-org/8.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+$STD apt-get update
+$STD apt-get install -y mongodb-org
+systemctl enable -q --now mongod
+sleep 10 # MongoDB needs some secounds to start, if not sleep it collide with following mongosh
+msg_ok  "Installed Mongo DB"
+
+msg_info "Configure MongoDB"
+MONGO_ADMIN_USER="admin"
+MONGO_ADMIN_PWD="$(openssl rand -base64 18 | cut -c1-13)"
+NODEBB_USER="nodebb"
+NODEBB_PWD="$(openssl rand -base64 18 | cut -c1-13)"
+MONGO_CONNECTION_STRING="mongodb://${NODEBB_USER}:${NODEBB_PWD}@localhost:27017/nodebb"
+NODEBB_SECRET=$(uuidgen)
 {
-    echo "Cosmos-DB--Credentials"
-    echo "Cosmos Database User: $DB_USER"
-    echo "Cosmos Database Password: $DB_PASS"
-    echo "Cosmos Database Name: $DB_NAME"
-} >> ~/cosmos_db.creds
+  echo "NodeBB-Credentials"
+  echo "Mongo Database User: $MONGO_ADMIN_USER"
+  echo "Mongo Database Password: $MONGO_ADMIN_PWD"
+  echo "NodeBB User: $NODEBB_USER"
+	echo "NodeBB Password: $NODEBB_PWD"
+	echo "NodeBB Secret: $NODEBB_SECRET"
+} >> ~/nodebb.creds
+
+$STD mongosh <<EOF
+use admin
+db.createUser({
+  user: "$MONGO_ADMIN_USER",
+  pwd: "$MONGO_ADMIN_PWD",
+  roles: [{ role: "root", db: "admin" }]
+})
+
+use nodebb
+db.createUser({
+  user: "$NODEBB_USER",
+  pwd: "$NODEBB_PWD",
+  roles: [
+    { role: "readWrite", db: "nodebb" },
+    { role: "clusterMonitor", db: "admin" }
+  ]
+})
+quit()
+EOF
+sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/' /etc/mongod.conf
+sed -i '/security:/d' /etc/mongod.conf
+bash -c 'echo -e "\nsecurity:\n  authorization: enabled" >> /etc/mongod.conf'
+systemctl restart mongod
+msg_ok "MongoDB successfully configurated" 
+
+
 msg_ok "Set up database"
 
 msg_info "Install Cosmos" 
@@ -69,7 +103,7 @@ ZIP_FILE="cosmos-cloud-${LATEST_RELEASE#v}-amd64.zip"
 
 curl -sL "https://github.com/azukaar/Cosmos-Server/releases/download/${LATEST_RELEASE}/${ZIP_FILE}" -o "/opt/cosmos/${ZIP_FILE}"
 cd /opt/cosmos
-unzip -o "${ZIP_FILE}"
+unzip -o -q "${ZIP_FILE}"
 LATEST_RELEASE_NO_V=${LATEST_RELEASE#v}
 
 mv /opt/cosmos/cosmos-cloud-${LATEST_RELEASE_NO_V}/* /opt/cosmos/
@@ -79,7 +113,7 @@ chmod +x /opt/cosmos/cosmos
 msg_ok "Installed Cosmos"
 
 msg_info "Creating Cosmos Service"
-cat <<EOF > /etc/systemd/system/cosmos.service
+cat <<EOF > /etc/systemd/system/cosmos
 [Unit]
 Description=Cosmos Cloud service
 ConditionFileIsExecutable=/opt/cosmos/start.sh
@@ -100,9 +134,11 @@ EnvironmentFile=-/etc/sysconfig/CosmosCloud
 WantedBy=multi-user.target
 EOF
 
+systemctl enable -q --now cosmos
+
 msg_info "Created Service"
 
-mongodb://cosmos:vxd0BadXBA526@localhost:27017/cosmos_db
+
 motd_ssh
 customize
 
