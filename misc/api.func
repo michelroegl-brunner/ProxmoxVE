@@ -37,7 +37,7 @@ EOF
 
   RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
     -H "Content-Type: application/json" \
-    -d "$JSON_PAYLOAD") 
+    -d "$JSON_PAYLOAD") || true
 
 }
 
