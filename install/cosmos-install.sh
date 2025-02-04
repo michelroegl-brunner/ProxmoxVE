@@ -28,20 +28,10 @@ $STD apt-get install -y \
 msg_ok "Installed Dependencies"
 
 msg_info "Install mergerfs"
-
 MERGERFS_VERSION="2.40.2"
 wget -q "https://github.com/trapexit/mergerfs/releases/download/${MERGERFS_VERSION}/mergerfs_${MERGERFS_VERSION}.debian-bullseye_amd64.deb"
 $STD dpkg -i "mergerfs_${MERGERFS_VERSION}.debian-bullseye_amd64.deb" || $STD apt-get install -f -y
-
 msg_ok "Installed mergerfs"
-
-msg_info "Install Docker"
-
-curl -fsSL https://get.docker.com -o get-docker.sh
-$STD sh get-docker.sh
-rm get-docker.sh
-
-msg_ok "Installed Docker"
 
 msg_info "Install Mongo DB"
 curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | gpg --dearmor -o /etc/apt/keyrings/mongodb-server-8.0.gpg
@@ -51,6 +41,12 @@ $STD apt-get install -y mongodb-org
 systemctl enable -q --now mongod
 sleep 10 # MongoDB needs some secounds to start, if not sleep it collide with following mongosh
 msg_ok  "Installed Mongo DB"
+
+msg_info "Install Docker"
+curl -fsSL https://get.docker.com -o get-docker.sh
+$STD sh get-docker.sh
+rm get-docker.sh
+msg_ok "Installed Docker"
 
 msg_info "Configure MongoDB"
 MONGO_ADMIN_USER="admin"
@@ -93,22 +89,17 @@ bash -c 'echo -e "\nsecurity:\n  authorization: enabled" >> /etc/mongod.conf'
 systemctl restart mongod
 msg_ok "MongoDB successfully configurated" 
 
-msg_ok "Set up database"
-
 msg_info "Install Cosmos" 
 mkdir -p /opt/cosmos
 LATEST_RELEASE=$(curl -s https://api.github.com/repos/azukaar/Cosmos-Server/releases/latest | grep "tag_name" | cut -d '"' -f 4)
 ZIP_FILE="cosmos-cloud-${LATEST_RELEASE#v}-amd64.zip"
-
 curl -sL "https://github.com/azukaar/Cosmos-Server/releases/download/${LATEST_RELEASE}/${ZIP_FILE}" -o "/opt/cosmos/${ZIP_FILE}"
 cd /opt/cosmos
 unzip -o -q "${ZIP_FILE}"
 LATEST_RELEASE_NO_V=${LATEST_RELEASE#v}
-
 mv /opt/cosmos/cosmos-cloud-${LATEST_RELEASE_NO_V}/* /opt/cosmos/
 rmdir /opt/cosmos/cosmos-cloud-${LATEST_RELEASE_NO_V}
 chmod +x /opt/cosmos/cosmos
-
 msg_ok "Installed Cosmos"
 
 msg_info "Creating Cosmos Service"
@@ -134,9 +125,7 @@ WantedBy=multi-user.target
 EOF
 
 systemctl enable -q --now cosmos
-
 msg_info "Created Service"
-
 
 motd_ssh
 customize
