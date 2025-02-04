@@ -25,6 +25,7 @@ METHOD=""
 NSAPP="turnkey-nextcloud"
 var_os="turnkey-nextcloud"
 var_version=" "
+DISK_SIZE="12G"
 #
 GEN_MAC=02:$(openssl rand -hex 5 | awk '{print toupper($0)}' | sed 's/\(..\)/\1:/g; s/.$//')
 NEXTID=$(pvesh get /cluster/nextid)
@@ -352,7 +353,7 @@ arch_check
 pve_check
 ssh_check
 start_script
-DISK_SIZE="12G"
+
 post_to_api_vm
 
 msg_info "Validating Storage"

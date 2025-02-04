@@ -28,6 +28,7 @@ RANDOM_UUID="$(cat /proc/sys/kernel/random/uuid)"
 METHOD=""
 NSAPP="homeassistant-os"
 var_os="homeassistant"
+DISK_SIZE="32G"
 #
 for version in "${VERSIONS[@]}"; do
   eval "$version=$(curl -s https://raw.githubusercontent.com/home-assistant/version/master/$version.json | grep "ova" | cut -d '"' -f 4)"
@@ -390,7 +391,7 @@ pve_check
 ssh_check
 start_script
 
-DISK_SIZE="32G"
+
 post_to_api_vm
 
 msg_info "Validating Storage"

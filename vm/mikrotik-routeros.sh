@@ -28,6 +28,7 @@ METHOD=""
 NSAPP="mikrotik-router-os"
 var_os="mikrotik"
 var_version=" "
+DISK_SIZE="1G"
 #
 YW=$(echo "\033[33m")
 BL=$(echo "\033[36m")
@@ -214,7 +215,7 @@ function start_script() {
   fi
 }
 start_script
-DISK_SIZE="1G"
+
 post_to_api_vm
 msg_info "Validating Storage"
 while read -r line; do

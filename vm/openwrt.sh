@@ -7,6 +7,8 @@
 # https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 # Based on work from https://i12bretro.github.io/tutorials/0405.html
 
+source /dev/stdin <<< $(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/api.func)
+
 function header_info {
   clear
   cat <<"EOF"
@@ -27,6 +29,7 @@ METHOD=""
 NSAPP="openwrt-vm"
 var_os="openwrt"
 var_version=" "
+DISK_SIZE="0.5G"
 #
 GEN_MAC=02:$(openssl rand -hex 5 | awk '{print toupper($0)}' | sed 's/\(..\)/\1:/g; s/.$//')
 GEN_MAC_LAN=02:$(openssl rand -hex 5 | awk '{print toupper($0)}' | sed 's/\(..\)/\1:/g; s/.$//')
