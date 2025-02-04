@@ -31,7 +31,7 @@ msg_info "Install mergerfs"
 
 MERGERFS_VERSION="2.40.2"
 wget -q "https://github.com/trapexit/mergerfs/releases/download/${MERGERFS_VERSION}/mergerfs_${MERGERFS_VERSION}.debian-bullseye_amd64.deb"
-$STD dpkg -i "mergerfs_${MERGERFS_VERSION}.debian-bullseye_amd64.deb" || apt-get install -f -y
+$STD dpkg -i "mergerfs_${MERGERFS_VERSION}.debian-bullseye_amd64.deb" || $STD apt-get install -f -y
 
 msg_ok "Installed mergerfs"
 
@@ -41,6 +41,14 @@ echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] http://repo.m
 $STD apt-get update
 $STD apt-get install -y mongodb-org
 msg_ok  "Installed Mongo DB"
+
+msg_info "Install Docker"
+
+curl -fsSL https://get.docker.com -o get-docker.sh
+$STD sh get-docker.sh
+rm get-docker.sh
+
+msg_ok "Installed Docker"
 
 msg_info "Setting up database"
 DB_NAME=cosmos_db
@@ -71,13 +79,30 @@ chmod +x /opt/cosmos/cosmos
 msg_ok "Installed Cosmos"
 
 msg_info "Creating Cosmos Service"
-eval "/opt/cosmos/cosmos service install"
-systemctl daemon-reload
-systemctl start CosmosCloud
+cat <<EOF > /etc/systemd/system/cosmos.service
+[Unit]
+Description=Cosmos Cloud service
+ConditionFileIsExecutable=/opt/cosmos/start.sh
+
+[Service]
+StartLimitInterval=10
+StartLimitBurst=5
+ExecStart=/opt/cosmos/start.sh
+
+WorkingDirectory=/opt/cosmos
+
+Restart=always
+
+RestartSec=2
+EnvironmentFile=-/etc/sysconfig/CosmosCloud
+
+[Install]
+WantedBy=multi-user.target
+EOF
 
 msg_info "Created Service"
 
-
+mongodb://cosmos:vxd0BadXBA526@localhost:27017/cosmos_db
 motd_ssh
 customize
 
