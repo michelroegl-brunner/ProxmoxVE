@@ -352,6 +352,7 @@ arch_check
 pve_check
 ssh_check
 start_script
+DISK_SIZE="12G"
 post_to_api_vm
 
 msg_info "Validating Storage"
