@@ -209,7 +209,7 @@ function default_settings() {
   HN="opensense"
   CPU_TYPE=""
   CORE_COUNT="4"
-  RAM_SIZE="4096"
+  RAM_SIZE="8192"
   BRG="vmbr0"
   IP_ADDR=""
   NETMASK=""
