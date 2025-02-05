@@ -216,10 +216,6 @@ function default_settings() {
   VLAN=""
   MAC=$GEN_MAC
   WAN_MAC=$GEN_MAC_LAN
-  WAN_BRG="vmbr1"
-  WAN_IP_ADDR="192.168.1.1"
-  WAN_NETMASK="255.255.255.0"
-  WAN_VLAN=""
   MTU=""
   START_VM="yes"
   METHOD="default"
@@ -362,32 +358,6 @@ function advanced_settings() {
     exit-script
   fi
 
-  if WAN_BRG=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN Bridge" 8 58 vmbr0 --title "LAN BRIDGE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
-    if [ -z $WAN_BRG ]; then
-      WAN_BRG="vmbr1"
-    fi
-    echo -e "${DGN}Using LAN Bridge: ${BGN}$WAN_BRG${CL}"
-  else
-    exit-script
-  fi
-
-  if WAN_IP_ADDR=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a router IP" 8 58 $WAN_IP_ADDR --title "WAN IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
-    if [ -z $WAN_IP_ADDR ]; then
-      WAN_IP_ADDR="192.168.1.1"
-    fi
-    echo -e "${DGN}Using WAN IP ADDRESS: ${BGN}$WAN_IP_ADDR${CL}"
-  else
-    exit-script
-  fi
-
-  if WAN_NETMASK=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a router netmmask" 8 58 $WAN_NETMASK --title "WAN NETMASK" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
-    if [ -z $WAN_NETMASK ]; then
-      WAN_NETMASK="255.255.255.0"
-    fi
-    echo -e "${DGN}Using WAN NETMASK: ${BGN}$WAN_NETMASK${CL}"
-  else
-    exit-script
-  fi
 
   if MAC1=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN MAC Address" 8 58 $GEN_MAC --title "WAN MAC ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $MAC1 ]; then
@@ -423,17 +393,6 @@ function advanced_settings() {
     exit-script
   fi
 
-  if VLAN2=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN Vlan" 8 58 999 --title "LAN VLAN" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
-    if [ -z $VLAN2 ]; then
-      VLAN2=""
-      WAN_VLAN=""
-    else
-      WAN_VLAN=",tag=$VLAN2"
-    fi
-    echo -e "${DGN}Using LAN Vlan: ${BGN}$VLAN2${CL}"
-  else
-    exit-script
-  fi
 
   if MTU1=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set Interface MTU Size (leave blank for default)" 8 58 --title "MTU SIZE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $MTU1 ]; then
