@@ -1125,7 +1125,7 @@ http://dl-cdn.alpinelinux.org/alpine/latest-stable/community
 EOF'
     pct exec "$CTID" -- ash -c "apk add bash >/dev/null"
   fi
-  lxc-attach -n "$CTID" -- bash -c "$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/install/$var_install.sh)" || exit 102
+  lxc-attach -n "$CTID" -- bash -c "$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/install/$var_install.sh)" || exit $?
 
 }
 
@@ -1180,15 +1180,31 @@ EOF
 exit_script() {
   exit_code=$?  # Capture the exit status of the last executed command
   echo -e "EXIT SCRIPT IN BUILD.FUNC CALLED ${exit_code}"
+
+  #200 exit codes indicate error in create_lxc.sh
+
+
   if [ $exit_code -ne 0 ]; then  # Check if exit code is nonzero
-    if [ $exit_code -eq 100 ]; then
-      post_update_to_api "failed" "LXC Creation in /ct/create_lxc.sh failed"
+    if [ $exit_code -eq 200 ]; then
+      post_update_to_api "failed" "Error during LXC creation"
+    elif [ $exit_code -eq 201 ]; then
+      post_update_to_api "failed" "Invalid Storage class"
+    elif [ $exit_code -eq 202 ]; then
+      post_update_to_api "failed" "CTID was unset"
+    elif [ $exit_code -eq 203 ]; then
+      post_update_to_api "failed" "PCT_OSTYPE was unset"
+    elif [ $exit_code -eq 204 ]; then
+      post_update_to_api "failed" "ID cannot be less than 100"
+    elif [ $exit_code -eq 205 ]; then
+      post_update_to_api "failed" "ID already in use"
+    elif [ $exit_code -eq 206 ]; then
+      post_update_to_api "failed" "Template not found"
+    elif [ $exit_code -eq 207 ]; then
+      post_update_to_api "failed" "Error downloading template"
     elif [ $exit_code -eq 101 ]; then
       post_update_to_api "failed" "No Network connection"
-    elif [ $exit_code -eq 102 ]; then
-      return
     else
-      post_update_to_api "failed" "${exit_code}"
+      post_update_to_api "failed" "Unknown error, exit code: $exit_code"
     fi
   fi
 }
