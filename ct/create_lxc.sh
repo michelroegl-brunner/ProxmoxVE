@@ -200,3 +200,4 @@ msg_info "Creating LXC Container"
 pct create $CTID ${TEMPLATE_STORAGE}:vztmpl/${TEMPLATE} ${PCT_OPTIONS[@]} >/dev/null ||
   exit "A problem occured while trying to create container."
 msg_ok "LXC Container ${BL}$CTID${CL} ${GN}was successfully created."
+
