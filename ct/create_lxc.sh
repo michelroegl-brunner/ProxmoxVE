@@ -165,7 +165,7 @@ fi
 
 # Get template storage
 TEMPLATE_STORAGE=$(select_storage template) || exit
-msg_o "Using ${BL}$TEMPLATE_STORAGE${CL} ${GN}for Template Storage."
+msg_ok "Using ${BL}$TEMPLATE_STORAGE${CL} ${GN}for Template Storage."
 
 # Get container storage
 CONTAINER_STORAGE=$(select_storage container) || exit

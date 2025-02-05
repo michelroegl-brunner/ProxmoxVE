@@ -41,7 +41,6 @@ EOF
   RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
     -H "Content-Type: application/json" \
     -d "$JSON_PAYLOAD") 
-
   
 }
 
@@ -90,9 +89,6 @@ EOF
   RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
     -H "Content-Type: application/json" \
     -d "$JSON_PAYLOAD")
-
-  
-
 }
 
 POST_UPDATE_DONE=false
@@ -118,15 +114,11 @@ post_update_to_api() {
     "random_id": "$RANDOM_UUID"
 }
 EOF
-)
-
- 
+) 
    
   RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
       -H "Content-Type: application/json" \
-      -d "$JSON_PAYLOAD")
-
-  
+      -d "$JSON_PAYLOAD")  
 
   POST_UPDATE_DONE=true
 }
