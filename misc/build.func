@@ -15,6 +15,7 @@ variables() {
   DIAGNOSTICS="yes"                  # sets the DIAGNOSTICS variable to "yes", used for the API call.
   METHOD="default"                   # sets the METHOD variable to "default", used for the API call.
   RANDOM_UUID="$(cat /proc/sys/kernel/random/uuid)" # generates a random UUID and sets it to the RANDOM_UUDI variable.
+  ERROR="unknown"                    # sets the ERROR variable to "unknown".
 
 }
 
@@ -65,21 +66,21 @@ color() {
 
 # This function enables error handling in the script by setting options and defining a trap for the ERR signal.
 catch_errors() {
-  source /dev/stdin <<< $(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/api.func)
+  
   set -Eeuo pipefail
   trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 }
 
 # This function is called when an error occurs. It receives the exit code, line number, and command that caused the error, and displays an error message.
 error_handler() {  
-  
+  source /dev/stdin <<< $(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/api.func)
   if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
   printf "\e[?25h"
   local exit_code="$?"
   local line_number="$1"
   local command="$2"
   local error_message="${RD}[ERROR]${CL} in line ${RD}$line_number${CL}: exit code ${RD}$exit_code${CL}: while executing command ${YW}$command${CL}"
-  post_update_to_api "failed" "$error_message"
+  post_update_to_api "failed" "${command}"
   echo -e "\n$error_message\n"  
 }
 
