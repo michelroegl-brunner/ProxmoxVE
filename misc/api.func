@@ -113,7 +113,7 @@ post_update_to_api() {
     fi
     local API_URL="http://api.community-scripts.org/upload/updatestatus"    
     local status="${1:-failed}"
-    local error="${2:-unknown}"
+    local error="${2:-No Error Provided}"
 
     echo -e $error
     echo -e ${error}
