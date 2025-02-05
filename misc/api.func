@@ -42,10 +42,7 @@ EOF
     -H "Content-Type: application/json" \
     -d "$JSON_PAYLOAD") 
 
-  if [ "$RESPONSE" -ne 201 ] && [ "$RESPONSE" -ne 302 ]; then
-    msg_error "API request failed with HTTP code $RESPONSE"
-  fi
-
+  
 }
 
 post_to_api_vm() {
@@ -94,10 +91,7 @@ EOF
     -H "Content-Type: application/json" \
     -d "$JSON_PAYLOAD")
 
-  if [ "$RESPONSE" -ne 201 ] && [ "$RESPONSE" -ne 302 ]; then
-    msg_error "API request failed with HTTP code $RESPONSE"
-    echo -e ${JSON_PAYLOAD}
-  fi
+  
 
 }
 
@@ -115,8 +109,7 @@ post_update_to_api() {
     local status="${1:-failed}"
     local error="${2:-No Error Provided}"
 
-    echo -e $error
-    echo -e ${error}
+ 
 
     JSON_PAYLOAD=$(cat <<EOF
 {
@@ -127,15 +120,13 @@ post_update_to_api() {
 EOF
 )
 
-  echo -e $JSON_PAYLOAD
+ 
    
   RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
       -H "Content-Type: application/json" \
       -d "$JSON_PAYLOAD")
 
-  if [ "$RESPONSE" -ne 201 ] && [ "$RESPONSE" -ne 302 ]; then
-    msg_error "API UPDATE request failed with HTTP code $RESPONSE"
-  fi
+  
 
   POST_UPDATE_DONE=true
 }
