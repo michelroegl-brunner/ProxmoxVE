@@ -36,13 +36,11 @@ trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 
 # This function handles errors
 function error_handler() {
-  source /dev/stdin <<< $(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/api.func)
   if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
   printf "\e[?25h"
   local exit_code="$?"
   local line_number="$1"
   local command="$2"
-  post_update_to_api "failed" "${command}"
   local error_message="${RD}[ERROR]${CL} in line ${RD}$line_number${CL}: exit code ${RD}$exit_code${CL}: while executing command ${YW}$command${CL}"
   echo -e "\n$error_message\n"
 }
@@ -88,7 +86,7 @@ function msg_error() {
 }
 
 # This checks for the presence of valid Container Storage and Template Storage locations
-msg_info "Validating Storage"
+msg_ "Validating Storage"
 VALIDCT=$(pvesm status -content rootdir | awk 'NR>1')
 if [ -z "$VALIDCT" ]; then
   msg_error "Unable to detect a valid Container Storage location."
@@ -157,7 +155,7 @@ function select_storage() {
 [ "$CTID" -ge "100" ] || exit "ID cannot be less than 100."
 
 # Test if ID is in use
-if pct tatus $CTID &>/dev/null; then
+if pct status $CTID &>/dev/null; then
   echo -e "ID '$CTID' is already in use."
   unset CTID
   exit "Cannot use ID that is already in use."
@@ -173,7 +171,7 @@ msg_ok "Using ${BL}$CONTAINER_STORAGE${CL} ${GN}for Container Storage."
 
 # Update LXC template list
 msg_info "Updating LXC Template List"
-pveam pdate >/dev/null
+pveam update >/dev/null
 msg_ok "Updated LXC Template List"
 
 # Get LXC template string
