@@ -116,6 +116,7 @@ post_update_to_api() {
     local error="${2:-unknown}"
 
     echo -e $error
+    echo -e ${error}
 
     JSON_PAYLOAD=$(cat <<EOF
 {
