@@ -4,8 +4,6 @@
 # License: MIT
 # https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 
-source <(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/api.func)  
-
 # This function sets color variables for formatting output in the terminal
 color() {
   # Colors
@@ -66,7 +64,7 @@ error_handler() {
   local command="$2"
   local error_message="${RD}[ERROR]${CL} in line ${RD}$line_number${CL}: exit code ${RD}$exit_code${CL}: while executing command ${YW}$command${CL}"
   echo -e "\n$error_message"
-  if [[ "$line_number" -eq 46 ]]; then
+  if [[ "$line_number" -eq 44 ]]; then
     echo -e "The silent function has suppressed the error, run the script with verbose mode enabled, which will provide more detailed output.\n"
     post_update_to_api "failed" "No error, script ran in silent mode"
   else
