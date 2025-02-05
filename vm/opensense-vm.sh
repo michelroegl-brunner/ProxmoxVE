@@ -552,17 +552,17 @@ EOF
 msg_info "Bridge interfaces are being added."
 qm set $VMID \
   -net0 virtio,bridge=${BRG},macaddr=${MAC}${VLAN}${MTU} \
-  -net1 virtio 2>/dev/null
+  -net1 virtio,macaddr=${WAN_MAC} 2>/dev/null
 msg_ok "Bridge interfaces have been successfully added."
   
 msg_ok "Created a OpenSense VM ${CL}${BL}(${HN})"
 if [ "$START_VM" == "yes" ]; then
   msg_info "Starting OpenSense VM (Patience this takes 15 minutes)"
   qm start $VMID
-  sleep 60
+  sleep 90
   send_line_to_vm "root"
   send_line_to_vm "fetch https://raw.githubusercontent.com/opnsense/update/master/src/bootstrap/opnsense-bootstrap.sh.in"
-  sleep 5
+  sleep 10
   send_line_to_vm "sh ./opnsense-bootstrap.sh.in -y -f -r 25.1"
   sleep 900
   msg_ok "Started OpenSense VM"
