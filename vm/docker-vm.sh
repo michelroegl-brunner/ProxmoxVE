@@ -1,35 +1,31 @@
 #!/usr/bin/env bash
 
-# Copyright (c) 2021-2025 tteck
-# Author: tteck (tteckster)
-# License: MIT
-# https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
+# Copyright (c) 2021-2025 community-scripts ORG
+# Author: thost96 (thost96)
+# License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 
-source /dev/stdin <<< $(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/api.func)
+source /dev/stdin <<< $(wget -qLO - https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/api.func)
 
 function header_info {
   clear
   cat <<"EOF"
-   __  ____                __           ___  ___    ____  __ __     _    ____  ___
-  / / / / /_  __  ______  / /___  __   |__ \|__ \  / __ \/ // /    | |  / /  |/  /
- / / / / __ \/ / / / __ \/ __/ / / /   __/ /__/ / / / / / // /_    | | / / /|_/ /
-/ /_/ / /_/ / /_/ / / / / /_/ /_/ /   / __// __/_/ /_/ /__  __/    | |/ / /  / /
-\____/_.___/\__,_/_/ /_/\__/\__,_/   /____/____(_)____/  /_/       |___/_/  /_/
+    ____             __                _    ____  ___
+   / __ \____  _____/ /_____  _____   | |  / /  |/  /
+  / / / / __ \/ ___/ //_/ _ \/ ___/   | | / / /|_/ /
+ / /_/ / /_/ / /__/ ,< /  __/ /       | |/ / /  / /
+/_____/\____/\___/_/|_|\___/_/        |___/_/  /_/
 
 EOF
 }
 header_info
 echo -e "\n Loading..."
-#API VARIABLES
-RANDOM_UUID="$(cat /proc/sys/kernel/random/uuid)"
-METHOD=""
-NSAPP="ubuntu-2204-vm"
-var_os="ubuntu"
-var_version="2204"
-DISK_SIZE="32G" #########REMOVE!!!!
-#
 GEN_MAC=02:$(openssl rand -hex 5 | awk '{print toupper($0)}' | sed 's/\(..\)/\1:/g; s/.$//')
 NEXTID=$(pvesh get /cluster/nextid)
+RANDOM_UUID="$(cat /proc/sys/kernel/random/uuid)"
+METHOD=""
+NSAPP="debain12vm"
+var_os="debain"
+var_version="12"
 
 YW=$(echo "\033[33m")
 BL=$(echo "\033[36m")
@@ -47,13 +43,11 @@ THIN="discard=on,ssd=1,"
 set -e
 trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 trap cleanup EXIT
-trap 'post_update_to_api "failed" "INTERRUPTED"' SIGINT 
-trap 'post_update_to_api "failed" "TERMINATED"' SIGTERM
 function error_handler() {
   local exit_code="$?"
   local line_number="$1"
   local command="$2"
-  post_update_to_api "failed" "$command"
+  post_update_to_api "failed" "${command}"
   local error_message="${RD}[ERROR]${CL} in line ${RD}$line_number${CL}: exit code ${RD}$exit_code${CL}: while executing command ${YW}$command${CL}"
   echo -e "\n$error_message\n"
   cleanup_vmid
@@ -68,12 +62,13 @@ function cleanup_vmid() {
 
 function cleanup() {
   popd >/dev/null
+  post_update_to_api "done" "none"
   rm -rf $TEMP_DIR
 }
 
 TEMP_DIR=$(mktemp -d)
 pushd $TEMP_DIR >/dev/null
-if whiptail --backtitle "Proxmox VE Helper Scripts" --title "Ubuntu 22.04 VM" --yesno "This will create a New Ubuntu 22.04 VM. Proceed?" 10 58; then
+if whiptail --backtitle "Proxmox VE Helper Scripts" --title "Docker VM" --yesno "This will create a New Docker VM. Proceed?" 10 58; then
   :
 else
   header_info && echo -e "⚠ User exited script \n" && exit
@@ -105,7 +100,7 @@ function check_root() {
 }
 
 function pve_check() {
-  if ! pveversion | grep -Eq "pve-manager/8.[1-3]"; then
+  if ! pveversion | grep -Eq "pve-manager/8\.[1-3](\.[0-9]+)*"; then
     msg_error "This version of Proxmox Virtual Environment is not supported"
     echo -e "Requires Proxmox Virtual Environment Version 8.1 or later."
     echo -e "Exiting..."
@@ -116,10 +111,12 @@ fi
 
 function arch_check() {
   if [ "$(dpkg --print-architecture)" != "amd64" ]; then
-    msg_error "This script will not work with PiMox! \n"
-    echo -e "Exiting..."
-    sleep 2
-    exit
+    if [ "$(dpkg --print-architecture)" != "arm64" ]; then
+      msg_error "This script will not work with your CPU Architekture \n"
+      echo -e "Exiting..."
+      sleep 2
+      exit
+    fi
   fi
 }
 
@@ -143,20 +140,20 @@ function exit-script() {
 }
 
 function default_settings() {
-  METHOD="default"
   VMID="$NEXTID"
   FORMAT=",efitype=4m"
   MACHINE=""
   DISK_CACHE=""
-  HN="ubuntu"
+  HN="docker"
   CPU_TYPE=""
   CORE_COUNT="2"
-  RAM_SIZE="2048"
+  RAM_SIZE="4096"
   BRG="vmbr0"
   MAC="$GEN_MAC"
   VLAN=""
   MTU=""
-  START_VM="no"
+  START_VM="yes"
+  METHOD="default"
   echo -e "${DGN}Using Virtual Machine ID: ${BGN}${VMID}${CL}"
   echo -e "${DGN}Using Machine Type: ${BGN}i440fx${CL}"
   echo -e "${DGN}Using Disk Cache: ${BGN}None${CL}"
@@ -168,8 +165,8 @@ function default_settings() {
   echo -e "${DGN}Using MAC Address: ${BGN}${MAC}${CL}"
   echo -e "${DGN}Using VLAN: ${BGN}Default${CL}"
   echo -e "${DGN}Using Interface MTU Size: ${BGN}Default${CL}"
-  echo -e "${DGN}Start VM when completed: ${BGN}no${CL}"
-  echo -e "${BL}Creating an Ubuntu 22.04 VM using the above default settings${CL}"
+  echo -e "${DGN}Start VM when completed: ${BGN}yes${CL}"
+  echo -e "${BL}Creating a Docker VM using the above default settings${CL}"
 }
 
 function advanced_settings() {
@@ -223,9 +220,9 @@ function advanced_settings() {
     exit-script
   fi
 
-  if VM_NAME=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set Hostname" 8 58 ubuntu --title "HOSTNAME" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+  if VM_NAME=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set Hostname" 8 58 docker --title "HOSTNAME" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $VM_NAME ]; then
-      HN="ubuntu"
+      HN="docker"
       echo -e "${DGN}Using Hostname: ${BGN}$HN${CL}"
     else
       HN=$(echo ${VM_NAME,,} | tr -d ' ')
@@ -261,9 +258,9 @@ function advanced_settings() {
     exit-script
   fi
 
-  if RAM_SIZE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Allocate RAM in MiB" 8 58 2048 --title "RAM" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+  if RAM_SIZE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Allocate RAM in MiB" 8 58 4096 --title "RAM" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $RAM_SIZE ]; then
-      RAM_SIZE="2048"
+      RAM_SIZE="4096"
       echo -e "${DGN}Allocated RAM: ${BGN}$RAM_SIZE${CL}"
     else
       echo -e "${DGN}Allocated RAM: ${BGN}$RAM_SIZE${CL}"
@@ -329,8 +326,8 @@ function advanced_settings() {
     START_VM="no"
   fi
 
-  if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "ADVANCED SETTINGS COMPLETE" --yesno "Ready to create an Ubuntu 22.04 VM?" --no-button Do-Over 10 58); then
-    echo -e "${RD}Creating an Ubuntu 22.04 VM using the above advanced settings${CL}"
+  if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "ADVANCED SETTINGS COMPLETE" --yesno "Ready to create a Docker VM?" --no-button Do-Over 10 58); then
+    echo -e "${RD}Creating a Docker VM using the above advanced settings${CL}"
   else
     header_info
     echo -e "${RD}Using Advanced Settings${CL}"
@@ -385,8 +382,8 @@ else
 fi
 msg_ok "Using ${CL}${BL}$STORAGE${CL} ${GN}for Storage Location."
 msg_ok "Virtual Machine ID is ${CL}${BL}$VMID${CL}."
-msg_info "Retrieving the URL for the Ubuntu 22.04 Disk Image"
-URL=https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
+msg_info "Retrieving the URL for the Debian 12 Qcow2 Disk Image"
+URL="https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-nocloud-$(dpkg --print-architecture).qcow2"
 sleep 2
 msg_ok "${CL}${BL}${URL}${CL}"
 wget -q --show-progress $URL
@@ -416,32 +413,68 @@ for i in {0,1}; do
   eval DISK${i}_REF=${STORAGE}:${DISK_REF:-}${!disk}
 done
 
-msg_info "Creating a Ubuntu 22.04 VM"
+msg_info "Installing Pre-Requisite libguestfs-tools onto Host"
+apt-get -qq update && apt-get -qq install libguestfs-tools lsb-release -y >/dev/null
+msg_ok "Installed libguestfs-tools successfully"
+
+msg_info "Adding Docker and Docker Compose Plugin to Debian 12 Qcow2 Disk Image"
+virt-customize -q -a "${FILE}" --install qemu-guest-agent,apt-transport-https,ca-certificates,curl,gnupg,software-properties-common,lsb-release >/dev/null &&
+virt-customize -q -a "${FILE}" --run-command "mkdir -p /etc/apt/keyrings && curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg" >/dev/null &&
+virt-customize -q -a "${FILE}" --run-command "echo 'deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable' > /etc/apt/sources.list.d/docker.list" >/dev/null &&
+virt-customize -q -a "${FILE}" --run-command "apt-get update -qq && apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin" >/dev/null &&
+virt-customize -q -a "${FILE}" --run-command "systemctl enable docker" >/dev/null &&
+virt-customize -q -a "${FILE}" --run-command "echo -n > /etc/machine-id" >/dev/null
+msg_ok "Added Docker and Docker Compose Plugin to Debian 12 Qcow2 Disk Image successfully"
+
+
+msg_info "Creating a Docker VM"
 qm create $VMID -agent 1${MACHINE} -tablet 0 -localtime 1 -bios ovmf${CPU_TYPE} -cores $CORE_COUNT -memory $RAM_SIZE \
-  -name $HN -tags proxmox-helper-scripts -net0 virtio,bridge=$BRG,macaddr=$MAC$VLAN$MTU -onboot 1 -ostype l26 -scsihw virtio-scsi-pci
+  -name $HN -tags proxmox-helper-scripts,debian12,docker -net0 virtio,bridge=$BRG,macaddr=$MAC$VLAN$MTU -onboot 1 -ostype l26 -scsihw virtio-scsi-pci
 pvesm alloc $STORAGE $VMID $DISK0 4M 1>&/dev/null
 qm importdisk $VMID ${FILE} $STORAGE ${DISK_IMPORT:-} 1>&/dev/null
 qm set $VMID \
   -efidisk0 ${DISK0_REF}${FORMAT} \
   -scsi0 ${DISK1_REF},${DISK_CACHE}${THIN}size=2G \
-  -ide2 ${STORAGE}:cloudinit \
   -boot order=scsi0 \
-  -serial0 socket \
-  -description "<div align='center'><a href='https://Helper-Scripts.com'><img src='https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/images/logo-81x112.png'/></a>
+  -serial0 socket >/dev/null
+qm resize $VMID scsi0 8G >/dev/null
+qm set $VMID --agent enabled=1 >/dev/null
 
-  # Ubuntu 22.04 VM
+  DESCRIPTION=$(cat <<EOF
+<div align='center'>
+  <a href='https://Helper-Scripts.com' target='_blank' rel='noopener noreferrer'>
+    <img src='https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/images/logo-81x112.png' alt='Logo' style='width:81px;height:112px;'/>
+  </a>
 
-  <a href='https://ko-fi.com/D1D7EP4GF'><img src='https://img.shields.io/badge/&#x2615;-Buy me a coffee-blue' /></a>
-  </div>" >/dev/null
-msg_ok "Created a Ubuntu 22.04 VM ${CL}${BL}(${HN})"
+  <h2 style='font-size: 24px; margin: 20px 0;'>Docker VM</h2>
+
+  <p style='margin: 16px 0;'>
+    <a href='https://ko-fi.com/community_scripts' target='_blank' rel='noopener noreferrer'>
+      <img src='https://img.shields.io/badge/&#x2615;-Buy us a coffee-blue' alt='spend Coffee' />
+    </a>
+  </p>
+
+  <span style='margin: 0 10px;'>
+    <i class="fa fa-github fa-fw" style="color: #f5f5f5;"></i>
+    <a href='https://github.com/community-scripts/ProxmoxVE' target='_blank' rel='noopener noreferrer' style='text-decoration: none; color: #00617f;'>GitHub</a>
+  </span>
+  <span style='margin: 0 10px;'>
+    <i class="fa fa-comments fa-fw" style="color: #f5f5f5;"></i>
+    <a href='https://github.com/community-scripts/ProxmoxVE/discussions' target='_blank' rel='noopener noreferrer' style='text-decoration: none; color: #00617f;'>Discussions</a>
+  </span>
+  <span style='margin: 0 10px;'>
+    <i class="fa fa-exclamation-circle fa-fw" style="color: #f5f5f5;"></i>
+    <a href='https://github.com/community-scripts/ProxmoxVE/issues' target='_blank' rel='noopener noreferrer' style='text-decoration: none; color: #00617f;'>Issues</a>
+  </span>
+</div>
+EOF
+)
+qm set "$VMID" -description "$DESCRIPTION" >/dev/null
+
+msg_ok "Created a Docker VM ${CL}${BL}(${HN})"
 if [ "$START_VM" == "yes" ]; then
-  msg_info "Starting Ubuntu 22.04 VM"
+  msg_info "Starting Docker VM"
   qm start $VMID
-  msg_ok "Started Ubuntu 22.04 VM"
+  msg_ok "Started Docker VM"
 fi
-
-
-post_update_to_api "done" "none"
 msg_ok "Completed Successfully!\n"
-echo -e "Setup Cloud-Init before starting \n
-More info at https://github.com/tteck/Proxmox/discussions/2072 \n"

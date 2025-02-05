@@ -107,6 +107,7 @@ chmod +x /opt/cosmos/cosmos
 msg_ok "Installed Cosmos"
 
 msg_info "Creating Cosmos Service"
+sed -i "s|\"MongoDB\": *\"[^\"]*\"|\"MongoDB\": \"$MONGO_CONNECTION_STRING\"|" /var/lib/cosmos/cosmos.config.json
 cat <<EOF > /etc/systemd/system/cosmos.service
 [Unit]
 Description=Cosmos Cloud service
