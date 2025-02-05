@@ -277,6 +277,8 @@ exit_script() {
   if [ $exit_code -ne 0 ]; then  # Check if exit code is nonzero
     if [ $exit_code -eq 100 ]; then
       post_update_to_api "failed" "install.func Network check failed"
+    else 
+      post_update_to_api "failed" "install.func: Unknown error"
     fi
   fi
 }
