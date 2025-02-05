@@ -1031,6 +1031,8 @@ build_container() {
   else
     export FUNCTIONS_FILE_PATH="$(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/install.func)"
   fi
+
+  export API_FILE_PATH="$(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/api.func)"
   
   export RANDOM_UUID="$RANDOM_UUID"
   export CACHER="$APT_CACHER"
