@@ -149,18 +149,18 @@ function select_storage() {
   fi
 }
 # Test if required variables are set
-[[ "${CTID:-}" ]] || { msg_error "You need to set 'CTID' variable."; exit 202; }
-[[ "${PCT_OSTYPE:-}" ]] || { msg_error "You need to set 'PCT_OSTYPE' variable."; exit 203; }
+[[ "${CTID:-}" ]] || { msg_error "You need to set 'CTID' variable."; exit 203; }
+[[ "${PCT_OSTYPE:-}" ]] || { msg_error "You need to set 'PCT_OSTYPE' variable."; exit 204; }
 
 # Test if ID is valid
-[ "$CTID" -ge "100" ] || { msg_error "ID cannot be less than 100."; exit 204; }
+[ "$CTID" -ge "100" ] || { msg_error "ID cannot be less than 100."; exit 205; }
 
 # Test if ID is in use
 if pct status $CTID &>/dev/null; then
   echo -e "ID '$CTID' is already in use."
   unset CTID
   msg_error "Cannot use ID that is already in use."
-  exit 205
+  exit 206
 fi
 
 # Get template storage
@@ -179,7 +179,7 @@ msg_ok "Updated LXC Template List"
 # Get LXC template string
 TEMPLATE_SEARCH=${PCT_OSTYPE}-${PCT_OSVERSION:-}
 mapfile -t TEMPLATES < <(pveam available -section system | sed -n "s/.*\($TEMPLATE_SEARCH.*\)/\1/p" | sort -t - -k 2 -V)
-[ ${#TEMPLATES[@]} -gt 0 ] || { msg_error "Unable to find a template when searching for '$TEMPLATE_SEARCH'."; exit 206; }
+[ ${#TEMPLATES[@]} -gt 0 ] || { msg_error "Unable to find a template when searching for '$TEMPLATE_SEARCH'."; exit 207; }
 TEMPLATE="${TEMPLATES[-1]}"
 
 # Download LXC template if needed
@@ -187,7 +187,7 @@ if ! pveam list $TEMPLATE_STORAGE | grep -q $TEMPLATE; then
   msg_info "Downloading LXC Template"
   pveam download $TEMPLATE_STORAGE $TEMPLATE >/dev/null ||
     msg_error "A problem occured while downloading the LXC template."
-    exit 207
+    exit 208
   msg_ok "Downloaded LXC Template"
 fi
 

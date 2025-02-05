@@ -1188,17 +1188,19 @@ exit_script() {
       post_update_to_api "failed" "create_lxc.sh: Error during LXC creation"
     elif [ $exit_code -eq 201 ]; then
       post_update_to_api "failed" "create_lxc.sh Invalid Storage class"
-    elif [ $exit_code -eq 202 ]; then
-      post_update_to_api "failed" "create_lxc.sh CTID was unset"
+      elif [ $exit_code -eq 202 ]; then
+      post_update_to_api "failed" "create_lxc.sh Invalid Menu aborted"
     elif [ $exit_code -eq 203 ]; then
-      post_update_to_api "failed" "create_lxc.sh PCT_OSTYPE was unset"
+      post_update_to_api "failed" "create_lxc.sh CTID was unset"
     elif [ $exit_code -eq 204 ]; then
-      post_update_to_api "failed" "create_lxc.sh ID cannot be less than 100"
+      post_update_to_api "failed" "create_lxc.sh PCT_OSTYPE was unset"
     elif [ $exit_code -eq 205 ]; then
-      post_update_to_api "failed" "create_lxc.sh ID already in use"
+      post_update_to_api "failed" "create_lxc.sh ID cannot be less than 100"
     elif [ $exit_code -eq 206 ]; then
-      post_update_to_api "failed" "create_lxc.sh Template not found"
+      post_update_to_api "failed" "create_lxc.sh ID already in use"
     elif [ $exit_code -eq 207 ]; then
+      post_update_to_api "failed" "create_lxc.sh Template not found"
+    elif [ $exit_code -eq 208 ]; then
       post_update_to_api "failed" "create_lxc.sh Error downloading template"
     elif [ $exit_code -eq 101 ]; then
       post_update_to_api "failed" "create_lxc.sh No Network connection"
