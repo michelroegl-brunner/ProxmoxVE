@@ -211,12 +211,12 @@ function default_settings() {
   CORE_COUNT="4"
   RAM_SIZE="4096"
   BRG="vmbr0"
-  WAN_BRG="vmbr1"
   IP_ADDR=""
   NETMASK=""
   VLAN=""
   MAC=$GEN_MAC
   WAN_MAC=$GEN_MAC_LAN
+  WAN_BRG="vmbr1"
   MTU=""
   START_VM="yes"
   METHOD="default"
@@ -228,7 +228,6 @@ function default_settings() {
   echo -e "${DGN}Using LAN VLAN: ${BGN}Default${CL}"
   echo -e "${DGN}Using LAN MAC Address: ${BGN}${MAC}${CL}"
   echo -e "${DGN}Using WAN MAC Address: ${BGN}${WAN_MAC}${CL}"
-  echo -e "${DGN}Using WAN Bridge: ${BGN}${WAN_BRG}${CL}"
   echo -e "${DGN}Using Interface MTU Size: ${BGN}Default${CL}"
   echo -e "${DGN}Start VM when completed: ${BGN}yes${CL}"
   echo -e "${BL}Creating a OpenSense VM using the above default settings${CL}"
@@ -345,6 +344,7 @@ function advanced_settings() {
   else
     exit-script
   fi
+
 
   if IP_ADDR=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN IP" 8 58 $IP_ADDR --title "WAN IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $IP_ADDR ]; then
@@ -551,8 +551,7 @@ EOF
 
 msg_info "Bridge interfaces are being added."
 qm set $VMID \
-  -net0 virtio,bridge=${BRG},macaddr=${MAC}${VLAN}${MTU} \
-  -net1 virtio,macaddr=${WAN_MAC} 2>/dev/null
+  -net0 virtio,bridge=${BRG},macaddr=${MAC}${VLAN}${MTU} 2>/dev/null
 msg_ok "Bridge interfaces have been successfully added."
   
 msg_ok "Created a OpenSense VM ${CL}${BL}(${HN})"
@@ -562,8 +561,10 @@ if [ "$START_VM" == "yes" ]; then
   sleep 90
   send_line_to_vm "root"
   send_line_to_vm "fetch https://raw.githubusercontent.com/opnsense/update/master/src/bootstrap/opnsense-bootstrap.sh.in"
+  qm set $VMID \
+    -net1 virtio,bridge=${WAN_BRG}macaddr=${WAN_MAC} 2>/dev/null
   sleep 10
-  send_line_to_vm "sh ./opnsense-bootstrap.sh.in -y -f -r 25.1"
+  send_line_to_vm "sh ./opnsense-bootstrap.sh.in -y -f -r 25.1"  
   sleep 900
   msg_ok "Started OpenSense VM"
 
