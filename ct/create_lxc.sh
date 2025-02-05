@@ -152,7 +152,7 @@ function select_storage() {
 [[ "${PCT_OSTYPE:-}" ]] || exit "You need to set 'PCT_OSTYPE' variable."
 
 # Test if ID is valid
-[ "$CTID" -ge "100" ] || exit "ID cannot be less than 100."
+[ "$CTID" -ge "100" ] || { msg_error "ID cannot be less than 100."; exit 200; }
 
 # Test if ID is in use
 if pct status $CTID &>/dev/null; then
