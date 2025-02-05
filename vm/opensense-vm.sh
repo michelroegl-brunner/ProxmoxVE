@@ -211,6 +211,7 @@ function default_settings() {
   CORE_COUNT="2"
   RAM_SIZE="2048"
   BRG="vmbr0"
+  WAN_BRG="vmbr1"
   IP_ADDR=""
   NETMASK=""
   VLAN=""
@@ -228,9 +229,6 @@ function default_settings() {
   echo -e "${DGN}Using LAN MAC Address: ${BGN}${MAC}${CL}"
   echo -e "${DGN}Using WAN MAC Address: ${BGN}${WAN_MAC}${CL}"
   echo -e "${DGN}Using WAN Bridge: ${BGN}${WAN_BRG}${CL}"
-  echo -e "${DGN}Using WAN VLAN: ${BGN}Default${CL}"
-  echo -e "${DGN}Using WAN IP Address: ${BGN}${WAN_IP_ADDR}${CL}"
-  echo -e "${DGN}Using WAN NETMASK: ${BGN}${WAN_NETMASK}${CL}"
   echo -e "${DGN}Using Interface MTU Size: ${BGN}Default${CL}"
   echo -e "${DGN}Start VM when completed: ${BGN}yes${CL}"
   echo -e "${BL}Creating a OpenSense VM using the above default settings${CL}"
@@ -335,7 +333,15 @@ function advanced_settings() {
     if [ -z $BRG ]; then
       BRG="vmbr0"
     fi
-    echo -e "${DGN}Using WAN Bridge: ${BGN}$BRG${CL}"
+    echo -e "${DGN}Using LAN Bridge: ${BGN}$BRG${CL}"
+  else
+    exit-script
+  fi
+  if WAN_BRG=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN Bridge" 8 58 vmbr0 --title "WAN BRIDGE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if [ -z $WAN_BRG ]; then
+      WAN_BRG="vmbr1"
+    fi
+    echo -e "${DGN}Using WAN Bridge: ${BGN}$WAN_BRG${CL}"
   else
     exit-script
   fi
@@ -344,7 +350,7 @@ function advanced_settings() {
     if [ -z $IP_ADDR ]; then
       echo -e "${DGN}Using DHCP AS LAN IP ADDRESS${CL}"
     fi
-    echo -e "${DGN}Using WAN IP ADDRESS: ${BGN}$IP_ADDR${CL}"
+    echo -e "${DGN}Using LAN IP ADDRESS: ${BGN}$IP_ADDR${CL}"
   else
     exit-script
   fi
@@ -353,7 +359,7 @@ function advanced_settings() {
     if [ -z $NETMASK ]; then
       NETMASK=""
     fi
-    echo -e "${DGN}Using WAN NETMASK: ${BGN}$NETMASK${CL}"
+    echo -e "${DGN}Using LAN NETMASK: ${BGN}$NETMASK${CL}"
   else
     exit-script
   fi
@@ -365,7 +371,7 @@ function advanced_settings() {
     else
       MAC="$MAC1"
     fi
-    echo -e "${DGN}Using WAN MAC Address: ${BGN}$MAC${CL}"
+    echo -e "${DGN}Using LAN MAC Address: ${BGN}$MAC${CL}"
   else
     exit-script
   fi
@@ -376,7 +382,7 @@ function advanced_settings() {
     else
       WAN_MAC="$MAC2"
     fi
-    echo -e "${DGN}Using LAN MAC Address: ${BGN}$WAN_MAC${CL}"
+    echo -e "${DGN}Using WAN MAC Address: ${BGN}$WAN_MAC${CL}"
   else
     exit-script
   fi
@@ -388,7 +394,7 @@ function advanced_settings() {
     else
       VLAN=",tag=$VLAN1"
     fi
-    echo -e "${DGN}Using WAN Vlan: ${BGN}$VLAN1${CL}"
+    echo -e "${DGN}Using LAN Vlan: ${BGN}$VLAN1${CL}"
   else
     exit-script
   fi
