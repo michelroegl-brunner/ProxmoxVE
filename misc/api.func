@@ -115,6 +115,8 @@ post_update_to_api() {
     local status="${1:-failed}"
     local error="${2:-unknown}"
 
+    echo -e $error
+
     JSON_PAYLOAD=$(cat <<EOF
 {
     "status": "$status",
@@ -123,6 +125,8 @@ post_update_to_api() {
 }
 EOF
 )
+
+  echo -e $JSON_PAYLOAD
    
   RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
       -H "Content-Type: application/json" \
