@@ -173,7 +173,7 @@ msg_ok "Using ${BL}$CONTAINER_STORAGE${CL} ${GN}for Container Storage."
 
 # Update LXC template list
 msg_info "Updating LXC Template List"
-pveam update >/dev/null
+pveam pdate >/dev/null
 msg_ok "Updated LXC Template List"
 
 # Get LXC template string
