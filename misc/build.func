@@ -1125,7 +1125,7 @@ http://dl-cdn.alpinelinux.org/alpine/latest-stable/community
 EOF'
     pct exec "$CTID" -- ash -c "apk add bash >/dev/null"
   fi
-  lxc-attach -n "$CTID" -- bash -c "$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/install/$var_install.sh)" || exit
+  lxc-attach -n "$CTID" -- bash -c "$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/install/$var_install.sh)" || exit 102
 
 }
 
@@ -1185,6 +1185,8 @@ exit_script() {
       post_update_to_api "failed" "LXC Creation in /ct/create_lxc.sh failed"
     elif [ $exit_code -eq 101 ]; then
       post_update_to_api "failed" "No Network connection"
+    elif [ $exit_code -eq 102 ]; then
+      return
     else
       post_update_to_api "failed" "${exit_code}"
     fi
