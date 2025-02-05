@@ -1114,7 +1114,7 @@ EOF
 
   # This starts the container and executes <app>-install.sh
   msg_info "Starting LXC Container"
-  pct start "$CTID"
+  pct star "$CTID"
   msg_ok "Started LXC Container"
   if [ "$var_os" == "alpine" ]; then
     sleep 3
@@ -1188,6 +1188,7 @@ exit_script() {
 
 
 trap 'exit_script' EXIT
+trap 'post_update_to_api "failed" "$BASH_COMMAND"' ERR
 trap 'post_update_to_api "failed" "INTERRUPTED"' SIGINT 
 trap 'post_update_to_api "failed" "TERMINATED"' SIGTERM
 
