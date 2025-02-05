@@ -32,6 +32,7 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
+  msg_ok "${APP} updates itself automatically!"
 }
 
 start

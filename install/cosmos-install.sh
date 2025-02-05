@@ -26,7 +26,6 @@ $STD apt-get install -y \
  snapraid \
  wget \
  avahi-daemon \
- uuid-runtime \
  fdisk
 msg_ok "Installed Dependencies"
 
@@ -37,6 +36,12 @@ $STD dpkg -i "mergerfs_${MERGERFS_VERSION}.debian-bullseye_amd64.deb" || $STD ap
 rm "mergerfs_${MERGERFS_VERSION}.debian-bullseye_amd64.deb"
 msg_ok "Installed mergerfs"
 
+msg_info "Install Docker"
+curl -fsSL https://get.docker.com -o get-docker.sh
+$STD sh get-docker.sh
+rm get-docker.sh
+msg_ok "Installed Docker"
+
 msg_info "Install Mongo DB"
 curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
 echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] http://repo.mongodb.org/apt/debian bookworm/mongodb-org/8.0 main" > /etc/apt/sources.list.d/mongodb-org-8.0.list
@@ -44,12 +49,6 @@ $STD apt-get update
 $STD apt-get install -y mongodb-org
 systemctl enable -q --now mongod
 msg_ok  "Installed Mongo DB"
-
-msg_info "Install Docker"
-curl -fsSL https://get.docker.com -o get-docker.sh
-$STD sh get-docker.sh
-rm get-docker.sh
-msg_ok "Installed Docker"
 
 msg_info "Configure MongoDB"
 MONGO_ADMIN_USER="admin"
@@ -66,7 +65,7 @@ COSMOS_SECRET=$(uuidgen)
 	echo "Cosmos Password: $COSMOS_PWD"
 	echo "Cosmos Secret: $COSMOS_SECRET"
   echo "Mongo Connection String: $MONGO_CONNECTION_STRING"
-} >> ~/nodebb.creds
+} >> ~/cosmos.creds
 
 $STD mongosh <<EOF
 use admin
@@ -106,8 +105,7 @@ rmdir /opt/cosmos/cosmos-cloud-${LATEST_RELEASE_NO_V}
 chmod +x /opt/cosmos/cosmos
 msg_ok "Installed Cosmos"
 
-msg_info "Creating Cosmos Service"
-sed -i "s|\"MongoDB\": *\"[^\"]*\"|\"MongoDB\": \"$MONGO_CONNECTION_STRING\"|" /var/lib/cosmos/cosmos.config.json
+msg_info "Creating Service"
 cat <<EOF > /etc/systemd/system/cosmos.service
 [Unit]
 Description=Cosmos Cloud service
@@ -130,13 +128,14 @@ WantedBy=multi-user.target
 EOF
 
 systemctl enable -q --now cosmos.service
+sleep 5
+sed -i "s|\"MongoDB\": *\"[^\"]*\"|\"MongoDB\": \"$MONGO_CONNECTION_STRING\"|" /var/lib/cosmos/cosmos.config.json
 msg_info "Created Service"
 
 motd_ssh
 customize
 
 msg_info "Cleaning up"
-
 rm -f "/opt/cosmos/cosmos-cloud-${COSMOS_RELEASE#v}-amd64.zip"
 $STD apt-get -y autoremove
 $STD apt-get -y autoclean
