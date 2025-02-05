@@ -1187,7 +1187,7 @@ exit_script() {
     elif [ $exit_code -eq 101 ]; then
       post_update_to_api "failed" "No Network connection"
     else
-      post_update_to_api "failed" "Unknown error"
+      post_update_to_api "failed" "${exit_code}"
     fi
   fi
 }
