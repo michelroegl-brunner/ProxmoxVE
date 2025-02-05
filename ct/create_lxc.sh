@@ -113,7 +113,7 @@ function select_storage() {
     CONTENT='vztmpl'
     CONTENT_LABEL='Container template'
     ;;
-  *) false || { msg_error "Invalid storage class."; exit 201; };
+  *) false || { msg_error "Invalid storage class."; exit 201; };;
   esac
   
   # This Queries all storage locations
