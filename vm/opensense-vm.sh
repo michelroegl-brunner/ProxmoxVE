@@ -552,7 +552,7 @@ EOF
 msg_info "Bridge interfaces are being added."
 qm set $VMID \
   -net0 virtio,bridge=${BRG},macaddr=${MAC}${VLAN}${MTU} \
-  -net1 virtio,bridge=${WAN_BRG},macaddr=${WAN_MAC}${WAN_VLAN}${MTU} 2>/dev/null
+  -net1 virtio 2>/dev/null
 msg_ok "Bridge interfaces have been successfully added."
   
 msg_ok "Created a OpenSense VM ${CL}${BL}(${HN})"
