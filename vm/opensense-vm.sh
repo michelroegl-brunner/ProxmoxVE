@@ -212,6 +212,7 @@ function default_settings() {
   RAM_SIZE="8192"
   BRG="vmbr0"
   IP_ADDR=""
+  LAN_GW=""
   NETMASK=""
   VLAN=""
   MAC=$GEN_MAC
@@ -351,10 +352,18 @@ function advanced_settings() {
       echo -e "${DGN}Using DHCP AS LAN IP ADDRESS${CL}"
     fi
     echo -e "${DGN}Using LAN IP ADDRESS: ${BGN}$IP_ADDR${CL}"
+    if LAN_GW=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN IP" 8 58 $IP_ADDR --title "WAN IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if [ -z $LAN_GW ]; then
+      echo -e "${DGN}Gateway needs to be set if ip is not dhcp${CL}"
+      exit-script
+    fi
+    echo -e "${DGN}Using LAN GATEWAY ADDRESS: ${BGN}$LAN_GW${CL}"
   else
     exit-script
   fi
-
+  else
+    exit-script
+  fi
   if NETMASK=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN netmmask" 8 58 $NETMASK --title "WAN NETMASK" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $NETMASK ]; then
       NETMASK=""
@@ -566,6 +575,37 @@ if [ "$START_VM" == "yes" ]; then
   sleep 10
   send_line_to_vm "sh ./opnsense-bootstrap.sh.in -y -f -r 25.1"  
   sleep 1200
+  send_line_to_vm "root"
+  send_line_to_vm "opnsense"
+  send_line_to_vm "2"
+
+  if [ "$IP_ADDR" != "" ]; then
+    send_line_to_vm "1"
+    send_line_to_vm "n"
+    send_line_to_vm "${IP_ADDR%/*}"
+    send_line_to_vm "${IP_ADDR#*/}"
+    send_line_to_vm "${LAN_GW}"
+    send_line_to_vm "n"
+    send_line_to_vm " "
+    send_line_to_vm "n"
+    send_line_to_vm "n"
+    send_line_to_vm " "
+    send_line_to_vm "n"
+    send_line_to_vm "n"
+    send_line_to_vm "n"
+    send_line_to_vm "n"
+    send_line_to_vm "n"    
+  else
+    send_line_to_vm "1"
+    send_line_to_vm "y"
+    send_line_to_vm "n"
+    send_line_to_vm "n"  
+    send_line_to_vm " "
+    send_line_to_vm "n"
+    send_line_to_vm "n"   
+    send_line_to_vm "n"
+  fi
+
   msg_ok "Started OpenSense VM"
 
 fi
