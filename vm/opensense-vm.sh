@@ -556,7 +556,7 @@ msg_ok "Bridge interfaces have been successfully added."
   
 msg_ok "Created a OpenSense VM ${CL}${BL}(${HN})"
 if [ "$START_VM" == "yes" ]; then
-  msg_info "Starting OpenSense VM (Patience this takes 15 minutes)"
+  msg_info "Starting OpenSense VM (Patience this takes 20-30 minutes)"
   qm start $VMID
   sleep 90
   send_line_to_vm "root"
@@ -565,7 +565,7 @@ if [ "$START_VM" == "yes" ]; then
     -net1 virtio,bridge=${WAN_BRG}macaddr=${WAN_MAC} 2>/dev/null
   sleep 10
   send_line_to_vm "sh ./opnsense-bootstrap.sh.in -y -f -r 25.1"  
-  sleep 900
+  sleep 1200
   msg_ok "Started OpenSense VM"
 
 fi
