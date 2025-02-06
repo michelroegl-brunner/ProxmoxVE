@@ -68,7 +68,8 @@ post_to_api_vm() {
   pve_version=$(pveversion | awk -F'[/ ]' '{print $2}')
 
   DISK_SIZE_API=${DISK_SIZE%G}
-
+  : ${DISK_SIZE_API:=0}
+  
   JSON_PAYLOAD=$(cat <<EOF
 {
     "ct_type": 2,
@@ -93,6 +94,8 @@ EOF
   RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
     -H "Content-Type: application/json" \
     -d "$JSON_PAYLOAD")
+
+  echo -e "Response: ${RESPONSE}"
 }
 
 POST_UPDATE_DONE=false
