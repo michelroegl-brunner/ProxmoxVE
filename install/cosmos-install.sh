@@ -56,14 +56,12 @@ MONGO_ADMIN_PWD="$(openssl rand -base64 18 | cut -c1-13)"
 COSMOS_USER="cosmos"
 COSMOS_PWD="$(openssl rand -base64 18 | cut -c1-13)"
 MONGO_CONNECTION_STRING="mongodb://${COSMOS_USER}:${COSMOS_PWD}@localhost:27017/cosmos"
-COSMOS_SECRET=$(uuidgen)
 {
   echo "Cosmos-Credentials"
   echo "Mongo Database Admin User: $MONGO_ADMIN_USER"
   echo "Mongo Database Admin Password: $MONGO_ADMIN_PWD"
   echo "Cosmos User: $COSMOS_USER"
 	echo "Cosmos Password: $COSMOS_PWD"
-	echo "Cosmos Secret: $COSMOS_SECRET"
   echo "Mongo Connection String: $MONGO_CONNECTION_STRING"
 } >> ~/cosmos.creds
 
