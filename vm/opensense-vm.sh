@@ -582,8 +582,8 @@ if [ "$START_VM" == "yes" ]; then
   if [ "$IP_ADDR" != "" ]; then
     send_line_to_vm "1"
     send_line_to_vm "n"
-    send_line_to_vm "${IP_ADDR%/*}"
-    send_line_to_vm "${IP_ADDR#*/}"
+    send_line_to_vm "${IP_ADDR}"
+    send_line_to_vm "${NETMASK}"
     send_line_to_vm "${LAN_GW}"
     send_line_to_vm "n"
     send_line_to_vm " "
