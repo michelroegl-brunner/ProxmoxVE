@@ -46,6 +46,8 @@ EOF
 
 post_to_api_vm() {
 
+  echo -e "Posting to API VM"
+
   if ! command -v curl &> /dev/null; then
     return
   fi
