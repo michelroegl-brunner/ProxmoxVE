@@ -571,7 +571,7 @@ if [ "$START_VM" == "yes" ]; then
   send_line_to_vm "root"
   send_line_to_vm "fetch https://raw.githubusercontent.com/opnsense/update/master/src/bootstrap/opnsense-bootstrap.sh.in"
   qm set $VMID \
-    -net1 virtio,bridge=${WAN_BRG}macaddr=${WAN_MAC} 2>/dev/null
+    -net1 virtio,bridge=${WAN_BRG},macaddr=${WAN_MAC} 2>/dev/null
   sleep 10
   send_line_to_vm "sh ./opnsense-bootstrap.sh.in -y -f -r 25.1"  
   sleep 1200
