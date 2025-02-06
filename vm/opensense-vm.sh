@@ -212,8 +212,11 @@ function default_settings() {
   RAM_SIZE="8192"
   BRG="vmbr0"
   IP_ADDR=""
+  WAN_IP_ADDR=""
   LAN_GW=""
+  WAN_GW=""
   NETMASK=""
+  WAN_NETMASK=""
   VLAN=""
   MAC=$GEN_MAC
   WAN_MAC=$GEN_MAC_LAN
@@ -352,7 +355,7 @@ function advanced_settings() {
       echo -e "${DGN}Using DHCP AS LAN IP ADDRESS${CL}"
     fi
     echo -e "${DGN}Using LAN IP ADDRESS: ${BGN}$IP_ADDR${CL}"
-    if LAN_GW=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a GATEWAY IP" 8 58 $IP_ADDR --title "LAN GATEWAY IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if LAN_GW=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN GATEWAY IP" 8 58 $LAN_GW --title "LAN GATEWAY IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $LAN_GW ]; then
       echo -e "${DGN}Gateway needs to be set if ip is not dhcp${CL}"
       exit-script
@@ -364,7 +367,7 @@ function advanced_settings() {
   else
     exit-script
   fi
-  if NETMASK=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN netmmask" 8 58 $NETMASK --title "LAN NETMASK" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+  if NETMASK=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN netmmask (/24 for example)" 8 58 $NETMASK --title "LAN NETMASK" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $NETMASK ]; then
       NETMASK=""
     fi
@@ -372,7 +375,31 @@ function advanced_settings() {
   else
     exit-script
   fi
-
+  if WAN_IP_ADDR=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN IP" 8 58 $WAN_IP_ADDR --title "WAN IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if [ -z $WAN_IP_ADDR ]; then
+      echo -e "${DGN}Using DHCP AS WAN IP ADDRESS${CL}"
+    fi
+    echo -e "${DGN}Using WAN IP ADDRESS: ${BGN}$WAN_IP_ADDR${CL}"
+    if WAN_GW=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN GATEWAY IP" 8 58 $WAN_GW --title "WAN GATEWAY IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if [ -z $WAN_GW ]; then
+      echo -e "${DGN}Gateway needs to be set if ip is not dhcp${CL}"
+      exit-script
+    fi
+    echo -e "${DGN}Using WAN GATEWAY ADDRESS: ${BGN}$WAN_GW${CL}"
+  else
+    exit-script
+  fi
+  else
+    exit-script
+  fi
+  if WAN_NETMASK=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN netmmask (/24 for example)" 8 58 $WAN_NETMASK --title "WAN NETMASK" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if [ -z $WAN_NETMASK ]; then
+      WAN_NETMASK=""
+    fi
+    echo -e "${DGN}Using WAN NETMASK: ${BGN}$WAN_NETMASK${CL}"
+  else
+    exit-script
+  fi
 
   if MAC1=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN MAC Address" 8 58 $GEN_MAC --title "WAN MAC ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $MAC1 ]; then
@@ -605,7 +632,20 @@ if [ "$START_VM" == "yes" ]; then
     send_line_to_vm "n"   
     send_line_to_vm "n"
   fi
-
+  if [ "$WAN_IP_ADDR" != "" ]; then
+    send_line_to_vm "2"
+    send_line_to_vm "n"
+    send_line_to_vm "${WAN_IP_ADDR}"
+    send_line_to_vm "${NETMASK}"
+    send_line_to_vm "${LAN_GW}"
+    send_line_to_vm "n"
+    send_line_to_vm " "
+    send_line_to_vm "n"
+    send_line_to_vm " "
+    send_line_to_vm "n"
+    send_line_to_vm "n"
+    send_line_to_vm "n" 
+  fi
   msg_ok "Started OpenSense VM"
 
 fi
