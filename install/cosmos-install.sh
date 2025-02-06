@@ -88,6 +88,7 @@ sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/' /etc/mongod.conf
 sed -i '/security:/d' /etc/mongod.conf
 bash -c 'echo -e "\nsecurity:\n  authorization: enabled" >> /etc/mongod.conf'
 systemctl restart mongod
+sleep 5 # wait for mongodb to restart
 msg_ok "MongoDB successfully configurated" 
 
 msg_info "Install Cosmos" 
@@ -128,6 +129,8 @@ EOF
 systemctl enable -q --now cosmos.service
 sleep 5
 sed -i "s|\"MongoDB\": *\"[^\"]*\"|\"MongoDB\": \"$MONGO_CONNECTION_STRING\"|" /var/lib/cosmos/cosmos.config.json
+sed -i 's|"NewInstall": *[^,}]*|"NewInstall": false|' /var/lib/cosmos/cosmos.config.json
+systemctl restart cosmos.service
 msg_info "Created Service"
 
 motd_ssh
