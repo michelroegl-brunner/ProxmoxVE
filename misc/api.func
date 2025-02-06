@@ -88,6 +88,8 @@ post_to_api_vm() {
 EOF
 )
 
+ echo -e "Posting to API VM ${JSON_PAYLOAD}"
+
   RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -L -X POST "$API_URL" --post301 --post302 \
     -H "Content-Type: application/json" \
     -d "$JSON_PAYLOAD")
