@@ -20,11 +20,12 @@ EOF
 header_info
 echo -e "Loading..."
 #API VARIABLES
+RELEASE=$(curl -sL https://api.github.com/repos/opnsense/core/tags | jq -r '[.[] | select(.name | test("^[0-9]+\\.[0-9]+$"))] | max_by(.name) | .name')
 RANDOM_UUID="$(cat /proc/sys/kernel/random/uuid)"
 METHOD=""
-NSAPP="openwrt-vm"
-var_os="openwrt"
-var_version=" "
+NSAPP="opensense-vm"
+var_os="opensense"
+var_version="${RELEASE}"
 #
 GEN_MAC=02:$(openssl rand -hex 5 | awk '{print toupper($0)}' | sed 's/\(..\)/\1:/g; s/.$//')
 GEN_MAC_LAN=02:$(openssl rand -hex 5 | awk '{print toupper($0)}' | sed 's/\(..\)/\1:/g; s/.$//')
@@ -600,7 +601,7 @@ if [ "$START_VM" == "yes" ]; then
   qm set $VMID \
     -net1 virtio,bridge=${WAN_BRG},macaddr=${WAN_MAC} 2>/dev/null
   sleep 10
-  send_line_to_vm "sh ./opnsense-bootstrap.sh.in -y -f -r 25.1"  
+  send_line_to_vm "sh ./opnsense-bootstrap.sh.in -y -f -r ${RELEASE}"  
   sleep 1200
   send_line_to_vm "root"
   send_line_to_vm "opnsense"
