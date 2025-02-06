@@ -89,7 +89,6 @@ sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/' /etc/mongod.conf
 sed -i '/security:/d' /etc/mongod.conf
 bash -c 'echo -e "\nsecurity:\n  authorization: enabled" >> /etc/mongod.conf'
 systemctl restart mongod
-sleep 5 # wait for mongodb to restart
 msg_ok "Configured MongoDB" 
 
 msg_info "Install Cosmos" 
