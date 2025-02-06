@@ -137,7 +137,7 @@ motd_ssh
 customize
 
 msg_info "Cleaning up"
-rm -f "/opt/cosmos/cosmos-cloud-${COSMOS_RELEASE#v}-amd64.zip"
+rm -f "/opt/cosmos/cosmos-cloud-${LATEST_RELEASE#v}-amd64.zip"
 $STD apt-get -y autoremove
 $STD apt-get -y autoclean
 msg_ok "Cleaned"
