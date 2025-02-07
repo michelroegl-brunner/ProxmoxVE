@@ -70,6 +70,7 @@ error_handler() {
   else
     post_update_to_api "failed" "${command}"
   fi
+  exit 103
 }
 
 # This function displays a spinner.
