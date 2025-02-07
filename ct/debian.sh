@@ -1,4 +1,5 @@
-source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/build.func)
+: "${CSCRIPTS_BASE_URL:=https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop}"
+source <(curl -s "${CSCRIPTS_BASE_URL}/misc/build.func")
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
