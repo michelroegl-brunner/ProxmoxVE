@@ -221,18 +221,36 @@ function default_settings() {
   VLAN=""
   MAC=$GEN_MAC
   WAN_MAC=$GEN_MAC_LAN
-  WAN_BRG="vmbr1"
+  WAN_BRG="vmbr100"
   MTU=""
   START_VM="yes"
   METHOD="default"
+
+  if ! grep -q "^iface ${WAN_BRG}" /etc/network/interfaces; then
+  msg_error "WAN Bridge '${WAN_BRG}' does not exist in /etc/network/interfaces"
+  exit
+fi
+
   echo -e "${DGN}Using Virtual Machine ID: ${BGN}${VMID}${CL}"
   echo -e "${DGN}Using Hostname: ${BGN}${HN}${CL}"
   echo -e "${DGN}Allocated Cores: ${BGN}${CORE_COUNT}${CL}"
   echo -e "${DGN}Allocated RAM: ${BGN}${RAM_SIZE}${CL}"
-  echo -e "${DGN}Using LAN Bridge: ${BGN}${BRG}${CL}"
+  if ! grep -q "^iface ${BRG}" /etc/network/interfaces; then
+  msg_error "Bridge '${BRG}' does not exist in /etc/network/interfaces"
+  exit
+  else
+    echo -e "${DGN}Using LAN Bridge: ${BGN}${BRG}${CL}"
+  fi
   echo -e "${DGN}Using LAN VLAN: ${BGN}Default${CL}"
   echo -e "${DGN}Using LAN MAC Address: ${BGN}${MAC}${CL}"
   echo -e "${DGN}Using WAN MAC Address: ${BGN}${WAN_MAC}${CL}"
+  if ! grep -q "^iface ${WAN_BRG}" /etc/network/interfaces; then
+    msg_error "Bridge '${WAN_BRG}' does not exist in /etc/network/interfaces"
+    exit
+  else
+    echo -e "${DGN}Using WAN Bridge: ${BGN}${WAN_BRG}${CL}"
+  fi
+
   echo -e "${DGN}Using Interface MTU Size: ${BGN}Default${CL}"
   echo -e "${DGN}Start VM when completed: ${BGN}yes${CL}"
   echo -e "${BL}Creating a OpenSense VM using the above default settings${CL}"
@@ -337,6 +355,10 @@ function advanced_settings() {
     if [ -z $BRG ]; then
       BRG="vmbr0"
     fi
+    if ! grep -q "^iface ${BRG}" /etc/network/interfaces; then
+        msg_error "Bridge '${BRG}' does not exist in /etc/network/interfaces"
+        exit
+    fi
     echo -e "${DGN}Using LAN Bridge: ${BGN}$BRG${CL}"
   else
     exit-script
@@ -371,6 +393,10 @@ function advanced_settings() {
   if WAN_BRG=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN Bridge" 8 58 vmbr1 --title "WAN BRIDGE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $WAN_BRG ]; then
       WAN_BRG="vmbr1"
+    fi
+    if ! grep -q "^iface ${WAN_BRG}" /etc/network/interfaces; then
+      msg_error "WAN Bridge '${WAN_BRG}' does not exist in /etc/network/interfaces"
+      exit
     fi
     echo -e "${DGN}Using WAN Bridge: ${BGN}$WAN_BRG${CL}"
   else
@@ -464,6 +490,8 @@ function start_script() {
     advanced_settings
   fi
 }
+
+
 
 arch_check
 pve_check
