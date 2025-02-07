@@ -221,7 +221,7 @@ function default_settings() {
   VLAN=""
   MAC=$GEN_MAC
   WAN_MAC=$GEN_MAC_LAN
-  WAN_BRG="vmbr100"
+  WAN_BRG="vmbr1"
   MTU=""
   START_VM="yes"
   METHOD="default"
