@@ -4,7 +4,7 @@
 # Author: michelroegl-brunner
 # License: MIT |https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 
-source /dev/stdin <<< $(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/api.func)
+source /dev/stdin <<<$(wget -qLO - https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/api.func)
 
 function header_info {
   clear
@@ -64,7 +64,7 @@ function cleanup_vmid() {
 
 function cleanup() {
   popd >/dev/null
-  post_update_to_api "done" "none"  
+  post_update_to_api "done" "none"
   rm -rf $TEMP_DIR
 }
 
@@ -171,7 +171,7 @@ function pve_check() {
     echo -e "Exiting..."
     sleep 2
     exit
-fi
+  fi
 }
 
 function arch_check() {
@@ -227,17 +227,17 @@ function default_settings() {
   METHOD="default"
 
   if ! grep -q "^iface ${WAN_BRG}" /etc/network/interfaces; then
-  msg_error "WAN Bridge '${WAN_BRG}' does not exist in /etc/network/interfaces"
-  exit
-fi
+    msg_error "WAN Bridge '${WAN_BRG}' does not exist in /etc/network/interfaces"
+    exit
+  fi
 
   echo -e "${DGN}Using Virtual Machine ID: ${BGN}${VMID}${CL}"
   echo -e "${DGN}Using Hostname: ${BGN}${HN}${CL}"
   echo -e "${DGN}Allocated Cores: ${BGN}${CORE_COUNT}${CL}"
   echo -e "${DGN}Allocated RAM: ${BGN}${RAM_SIZE}${CL}"
   if ! grep -q "^iface ${BRG}" /etc/network/interfaces; then
-  msg_error "Bridge '${BRG}' does not exist in /etc/network/interfaces"
-  exit
+    msg_error "Bridge '${BRG}' does not exist in /etc/network/interfaces"
+    exit
   else
     echo -e "${DGN}Using LAN Bridge: ${BGN}${BRG}${CL}"
   fi
@@ -357,8 +357,8 @@ function advanced_settings() {
       BRG="vmbr0"
     fi
     if ! grep -q "^iface ${BRG}" /etc/network/interfaces; then
-        msg_error "Bridge '${BRG}' does not exist in /etc/network/interfaces"
-        exit
+      msg_error "Bridge '${BRG}' does not exist in /etc/network/interfaces"
+      exit
     fi
     echo -e "${DGN}Using LAN Bridge: ${BGN}$BRG${CL}"
   else
@@ -368,37 +368,36 @@ function advanced_settings() {
   if IP_ADDR=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN IP" 8 58 $IP_ADDR --title "LAN IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $IP_ADDR ]; then
       echo -e "${DGN}Using DHCP AS LAN IP ADDRESS${CL}"
-    fi
-    if [[ -n "$IP_ADDR" && ! "$IP_ADDR" =~ $ip_regex ]]; then
-      msg_error "Invalid IP Address format for LAN IP. Needs to be 0.0.0.0, was $$IP_ADDR"
-      exit
-    fi
-    echo -e "${DGN}Using LAN IP ADDRESS: ${BGN}$IP_ADDR${CL}"
-    if LAN_GW=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN GATEWAY IP" 8 58 $LAN_GW --title "LAN GATEWAY IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
-    if [ -z $LAN_GW ]; then
-      echo -e "${DGN}Gateway needs to be set if ip is not dhcp${CL}"
-      exit-script
-    fi
-    if [[ -n "$LAN_GW" && ! "$LAN_GW" =~ $ip_regex ]]; then
-      msg_error "Invalid IP Address format for Gateway. Needs to be 0.0.0.0, was $$LAN_GW"
-      exit
+    else
+      if [[ -n "$IP_ADDR" && ! "$IP_ADDR" =~ $ip_regex ]]; then
+        msg_error "Invalid IP Address format for LAN IP. Needs to be 0.0.0.0, was $$IP_ADDR"
+        exit
       fi
-    echo -e "${DGN}Using LAN GATEWAY ADDRESS: ${BGN}$LAN_GW${CL}"
-  else
-    exit-script
-  fi
-  else
-    exit-script
-  fi
-  if NETMASK=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN netmmask (24 for example)" 8 58 $NETMASK --title "LAN NETMASK" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
-    if [ -z $NETMASK ]; then
-      NETMASK=""
+      echo -e "${DGN}Using LAN IP ADDRESS: ${BGN}$IP_ADDR${CL}"
+      if LAN_GW=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN GATEWAY IP" 8 58 $LAN_GW --title "LAN GATEWAY IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+        if [ -z $LAN_GW ]; then
+          echo -e "${DGN}Gateway needs to be set if ip is not dhcp${CL}"
+          exit-script
+        fi
+        if [[ -n "$LAN_GW" && ! "$LAN_GW" =~ $ip_regex ]]; then
+          msg_error "Invalid IP Address format for Gateway. Needs to be 0.0.0.0, was $$LAN_GW"
+          exit
+        fi
+        echo -e "${DGN}Using LAN GATEWAY ADDRESS: ${BGN}$LAN_GW${CL}"
+      fi
+      if NETMASK=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN netmmask (24 for example)" 8 58 $NETMASK --title "LAN NETMASK" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+        if [ -z $NETMASK ]; then
+          echo -e "${DGN}Netmask needs to be set if ip is not dhcp${CL}"
+        fi
+        if [[ -n "$NETMASK" && ! ("$NETMASK" =~ ^[0-9]+$ && "$NETMASK" -ge 1 && "$NETMASK" -le 32) ]]; then
+          msg_error "Invalid LAN NETMASK format. Needs to be 1-32, was $$NETMASK"
+          exit
+        fi
+        echo -e "${DGN}Using LAN NETMASK: ${BGN}$NETMASK${CL}"
+      else
+        exit-script
+      fi
     fi
-    if [[ -n "$NETMASK" && ! ("$NETMASK" =~ ^[0-9]+$ && "$NETMASK" -ge 1 && "$NETMASK" -le 32) ]]; then
-      msg_error "Invalid LAN NETMASK format. Needs to be 1-32, was $$NETMASK"
-      exit
-    fi
-    echo -e "${DGN}Using LAN NETMASK: ${BGN}$NETMASK${CL}"
   else
     exit-script
   fi
@@ -419,37 +418,38 @@ function advanced_settings() {
   if WAN_IP_ADDR=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN IP" 8 58 $WAN_IP_ADDR --title "WAN IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $WAN_IP_ADDR ]; then
       echo -e "${DGN}Using DHCP AS WAN IP ADDRESS${CL}"
-    fi
-     if [[ -n "$WAN_IP_ADDR" && ! "$WAN_IP_ADDR" =~ $ip_regex ]]; then
+    else
+      if [[ -n "$WAN_IP_ADDR" && ! "$WAN_IP_ADDR" =~ $ip_regex ]]; then
         msg_error "Invalid IP Address format for WAN IP. Needs to be 0.0.0.0, was $$WAN_IP_ADDR"
         exit
       fi
       echo -e "${DGN}Using WAN IP ADDRESS: ${BGN}$WAN_IP_ADDR${CL}"
-    if WAN_GW=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN GATEWAY IP" 8 58 $WAN_GW --title "WAN GATEWAY IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
-      if [ -z $WAN_GW ]; then
-        echo -e "${DGN}Gateway needs to be set if ip is not dhcp${CL}"
+      if WAN_GW=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN GATEWAY IP" 8 58 $WAN_GW --title "WAN GATEWAY IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+        if [ -z $WAN_GW ]; then
+          echo -e "${DGN}Gateway needs to be set if ip is not dhcp${CL}"
+          exit-script
+        fi
+        if [[ -n "$WAN_GW" && ! "$WAN_GW" =~ $ip_regex ]]; then
+          msg_error "Invalid IP Address format for WAN Gateway. Needs to be 0.0.0.0, was $$WAN_GW"
+          exit
+        fi
+        echo -e "${DGN}Using WAN GATEWAY ADDRESS: ${BGN}$WAN_GW${CL}"
+      else
         exit-script
       fi
-      if [[ -n "$WAN_GW" && ! "$WAN_GW" =~ $ip_regex ]]; then
-        msg_error "Invalid IP Address format for WAN Gateway. Needs to be 0.0.0.0, was $$WAN_GW"
-        exit
+      if WAN_NETMASK=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN netmmask (24 for example)" 8 58 $WAN_NETMASK --title "WAN NETMASK" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+        if [ -z $WAN_NETMASK ]; then
+          echo -e "${DGN}WAN Netmask needs to be set if ip is not dhcp${CL}"
+        fi
+        if [[ -n "$WAN_NETMASK" && ! ("$WAN_NETMASK" =~ ^[0-9]+$ && "$WAN_NETMASK" -ge 1 && "$WAN_NETMASK" -le 32) ]]; then
+          msg_error "Invalid WAN NETMASK format. Needs to be 1-32, was $$WAN_NETMASK"
+          exit
+        fi
+        echo -e "${DGN}Using WAN NETMASK: ${BGN}$WAN_NETMASK${CL}"
+      else
+        exit-script
       fi
-    echo -e "${DGN}Using WAN GATEWAY ADDRESS: ${BGN}$WAN_GW${CL}"
-  else
-    exit-script
-  fi
-  else
-    exit-script
-  fi
-  if WAN_NETMASK=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN netmmask (24 for example)" 8 58 $WAN_NETMASK --title "WAN NETMASK" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
-    if [ -z $WAN_NETMASK ]; then
-      WAN_NETMASK=""
     fi
-    if [[ -n "$WAN_NETMASK" && ! ("$WAN_NETMASK" =~ ^[0-9]+$ && "$WAN_NETMASK" -ge 1 && "$WAN_NETMASK" -le 32) ]]; then
-      msg_error "Invalid WAN NETMASK format. Needs to be 1-32, was $$WAN_NETMASK"
-      exit
-    fi
-    echo -e "${DGN}Using WAN NETMASK: ${BGN}$WAN_NETMASK${CL}"
   else
     exit-script
   fi
@@ -516,8 +516,6 @@ function start_script() {
   fi
 }
 
-
-
 arch_check
 pve_check
 ssh_check
@@ -559,7 +557,7 @@ msg_ok "${CL}${BL}${URL}${CL}"
 wget -q --show-progress $URL
 echo -en "\e[1A\e[0K"
 FILE=Fressbsd.qcow2
-unxz -cv $(basename $URL) > ${FILE}
+unxz -cv $(basename $URL) >${FILE}
 msg_ok "Downloaded ${CL}${BL}${FILE}${CL}"
 
 STORAGE_TYPE=$(pvesm status -storage $STORAGE | awk 'NR>1 {print $2}')
@@ -593,10 +591,11 @@ qm set $VMID \
   -efidisk0 ${DISK0_REF}${FORMAT} \
   -scsi0 ${DISK1_REF},${DISK_CACHE}${THIN}size=2G \
   -boot order=scsi0 \
-  -serial0 socket >/dev/null \
-  -tags community-scripts
+  -serial0 socket \
+  -tags community-scripts >/dev/null
 qm resize $VMID scsi0 10G >/dev/null
-  DESCRIPTION=$(cat <<EOF
+DESCRIPTION=$(
+  cat <<EOF
 <div align='center'>
   <a href='https://Helper-Scripts.com' target='_blank' rel='noopener noreferrer'>
     <img src='https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/images/logo-81x112.png' alt='Logo' style='width:81px;height:112px;'/>
@@ -625,13 +624,13 @@ qm resize $VMID scsi0 10G >/dev/null
 </div>
 EOF
 )
-  qm set "$VMID" -description "$DESCRIPTION" >/dev/null  
+qm set "$VMID" -description "$DESCRIPTION" >/dev/null
 
 msg_info "Bridge interfaces are being added."
 qm set $VMID \
   -net0 virtio,bridge=${BRG},macaddr=${MAC}${VLAN}${MTU} 2>/dev/null
 msg_ok "Bridge interfaces have been successfully added."
-  
+
 msg_ok "Created a OpenSense VM ${CL}${BL}(${HN})"
 if [ "$START_VM" == "yes" ]; then
   msg_ok "Starting OpenSense VM (Patience this takes 20-30 minutes)"
@@ -665,15 +664,15 @@ if [ "$START_VM" == "yes" ]; then
     send_line_to_vm "n"
     send_line_to_vm "n"
     send_line_to_vm "n"
-    send_line_to_vm "n"    
+    send_line_to_vm "n"
   else
     send_line_to_vm "1"
     send_line_to_vm "y"
     send_line_to_vm "n"
-    send_line_to_vm "n"  
+    send_line_to_vm "n"
     send_line_to_vm " "
     send_line_to_vm "n"
-    send_line_to_vm "n"   
+    send_line_to_vm "n"
     send_line_to_vm "n"
   fi
   #we need to wait for the Config changes to be saved
@@ -691,13 +690,11 @@ if [ "$START_VM" == "yes" ]; then
     send_line_to_vm " "
     send_line_to_vm "n"
     send_line_to_vm "n"
-    send_line_to_vm "n" 
+    send_line_to_vm "n"
   fi
   sleep 10
   send_line_to_vm "0"
   msg_ok "Started OpenSense VM"
-
-  
 
 fi
 msg_ok "Completed Successfully!\n"
@@ -708,4 +705,3 @@ else
   echo -e "${INFO}${YW} LAN IP was DHCP.${CL}"
   echo -e "${INFO}${BGN}To find the IP login to the VM Shell${CL}"
 fi
-
