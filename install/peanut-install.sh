@@ -36,6 +36,7 @@ msg_ok "Installed NUT"
 msg_info "Installing Peanut"
 #RELEASE=$(curl -sL https://api.github.com/repos/Brandawg93/PeaNUT/releases/latest | grep '"tag_name":' | cut -d'"' -f4)
 RELEASE="v4.4.4"
+echo -e $RELEASE
 wget -qO peanut.tar.gz https://api.github.com/repos/Brandawg93/PeaNUT/tarball/${RELEASE}
 mkdir -p /opt/peanut
 tar -xzf peanut.tar.gz -C /opt/peanut --strip-components 1
