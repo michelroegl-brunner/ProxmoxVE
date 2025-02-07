@@ -5,7 +5,7 @@
 # License: MIT
 # https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/LICENSE
 : "${CSCRIPTS_BASE_URL:=https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop}"
-source <(curl -s "${CSCRIPTS_BASE_URL}/misc/build.func")
+source <(curl -s "${CSCRIPTS_BASE_URL}/misc/api.func")
 
 variables() {
   NSAPP=$(echo ${APP,,} | tr -d ' ') # This function sets the NSAPP variable by converting the value of the APP variable to lowercase and removing any spaces.
