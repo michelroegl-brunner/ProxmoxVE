@@ -370,7 +370,7 @@ function advanced_settings() {
       echo -e "${DGN}Using DHCP AS LAN IP ADDRESS${CL}"
     else
       if [[ -n "$IP_ADDR" && ! "$IP_ADDR" =~ $ip_regex ]]; then
-        msg_error "Invalid IP Address format for LAN IP. Needs to be 0.0.0.0, was $$IP_ADDR"
+        msg_error "Invalid IP Address format for LAN IP. Needs to be 0.0.0.0, was $IP_ADDR"
         exit
       fi
       echo -e "${DGN}Using LAN IP ADDRESS: ${BGN}$IP_ADDR${CL}"
@@ -380,7 +380,7 @@ function advanced_settings() {
           exit-script
         fi
         if [[ -n "$LAN_GW" && ! "$LAN_GW" =~ $ip_regex ]]; then
-          msg_error "Invalid IP Address format for Gateway. Needs to be 0.0.0.0, was $$LAN_GW"
+          msg_error "Invalid IP Address format for Gateway. Needs to be 0.0.0.0, was $LAN_GW"
           exit
         fi
         echo -e "${DGN}Using LAN GATEWAY ADDRESS: ${BGN}$LAN_GW${CL}"
@@ -390,7 +390,7 @@ function advanced_settings() {
           echo -e "${DGN}Netmask needs to be set if ip is not dhcp${CL}"
         fi
         if [[ -n "$NETMASK" && ! ("$NETMASK" =~ ^[0-9]+$ && "$NETMASK" -ge 1 && "$NETMASK" -le 32) ]]; then
-          msg_error "Invalid LAN NETMASK format. Needs to be 1-32, was $$NETMASK"
+          msg_error "Invalid LAN NETMASK format. Needs to be 1-32, was $NETMASK"
           exit
         fi
         echo -e "${DGN}Using LAN NETMASK: ${BGN}$NETMASK${CL}"
@@ -420,7 +420,7 @@ function advanced_settings() {
       echo -e "${DGN}Using DHCP AS WAN IP ADDRESS${CL}"
     else
       if [[ -n "$WAN_IP_ADDR" && ! "$WAN_IP_ADDR" =~ $ip_regex ]]; then
-        msg_error "Invalid IP Address format for WAN IP. Needs to be 0.0.0.0, was $$WAN_IP_ADDR"
+        msg_error "Invalid IP Address format for WAN IP. Needs to be 0.0.0.0, was $WAN_IP_ADDR"
         exit
       fi
       echo -e "${DGN}Using WAN IP ADDRESS: ${BGN}$WAN_IP_ADDR${CL}"
@@ -430,7 +430,7 @@ function advanced_settings() {
           exit-script
         fi
         if [[ -n "$WAN_GW" && ! "$WAN_GW" =~ $ip_regex ]]; then
-          msg_error "Invalid IP Address format for WAN Gateway. Needs to be 0.0.0.0, was $$WAN_GW"
+          msg_error "Invalid IP Address format for WAN Gateway. Needs to be 0.0.0.0, was $WAN_GW"
           exit
         fi
         echo -e "${DGN}Using WAN GATEWAY ADDRESS: ${BGN}$WAN_GW${CL}"
@@ -442,7 +442,7 @@ function advanced_settings() {
           echo -e "${DGN}WAN Netmask needs to be set if ip is not dhcp${CL}"
         fi
         if [[ -n "$WAN_NETMASK" && ! ("$WAN_NETMASK" =~ ^[0-9]+$ && "$WAN_NETMASK" -ge 1 && "$WAN_NETMASK" -le 32) ]]; then
-          msg_error "Invalid WAN NETMASK format. Needs to be 1-32, was $$WAN_NETMASK"
+          msg_error "Invalid WAN NETMASK format. Needs to be 1-32, was $WAN_NETMASK"
           exit
         fi
         echo -e "${DGN}Using WAN NETMASK: ${BGN}$WAN_NETMASK${CL}"
@@ -474,25 +474,6 @@ function advanced_settings() {
   else
     exit-script
   fi
-
-  #if VLAN1=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN Vlan (leave blank for default)" 8 58 --title "WAN VLAN" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
-  #  if [ -z $VLAN1 ]; then
-  #    VLAN1="Default"
-  #    VLAN=""
-  #  else
-  #    VLAN=",tag=$VLAN1"
-  #  fi
-  #  echo -e "${DGN}Using LAN Vlan: ${BGN}$VLAN1${CL}"
-  #else
-  #  exit-script
-  #fi
-
-  if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "START VIRTUAL MACHINE" --yesno "Start VM when completed?" 10 58); then
-    START_VM="yes"
-  else
-    START_VM="no"
-  fi
-  echo -e "${DGN}Start VM when completed: ${BGN}$START_VM${CL}"
 
   if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "ADVANCED SETTINGS COMPLETE" --yesno "Ready to create OpenSense VM?" --no-button Do-Over 10 58); then
     echo -e "${RD}Creating a OpenSense VM using the above advanced settings${CL}"
@@ -631,71 +612,69 @@ qm set $VMID \
 msg_ok "Bridge interfaces have been successfully added."
 
 msg_ok "Created a OpenSense VM ${CL}${BL}(${HN})"
-if [ "$START_VM" == "yes" ]; then
-  msg_ok "Starting OpenSense VM (Patience this takes 20-30 minutes)"
-  qm start $VMID
-  sleep 90
-  send_line_to_vm "root"
-  send_line_to_vm "fetch https://raw.githubusercontent.com/opnsense/update/master/src/bootstrap/opnsense-bootstrap.sh.in"
-  qm set $VMID \
-    -net1 virtio,bridge=${WAN_BRG},macaddr=${WAN_MAC} 2>/dev/null
-  sleep 10
-  send_line_to_vm "sh ./opnsense-bootstrap.sh.in -y -f -r ${RELEASE}"
-  msg_ok "OpenSense VM is being installed, do not close the terminal, or the installation will fail."
-  #We need to wait for the OpenSense build proccess to finish, this takes a few minutes
-  sleep 1000
-  send_line_to_vm "root"
-  send_line_to_vm "opnsense"
-  send_line_to_vm "2"
+msg_ok "Starting OpenSense VM (Patience this takes 20-30 minutes)"
+qm start $VMID
+sleep 90
+send_line_to_vm "root"
+send_line_to_vm "fetch https://raw.githubusercontent.com/opnsense/update/master/src/bootstrap/opnsense-bootstrap.sh.in"
+qm set $VMID \
+  -net1 virtio,bridge=${WAN_BRG},macaddr=${WAN_MAC} 2>/dev/null
+sleep 10
+send_line_to_vm "sh ./opnsense-bootstrap.sh.in -y -f -r ${RELEASE}"
+msg_ok "OpenSense VM is being installed, do not close the terminal, or the installation will fail."
+#We need to wait for the OpenSense build proccess to finish, this takes a few minutes
+sleep 1000
+send_line_to_vm "root"
+send_line_to_vm "opnsense"
+send_line_to_vm "2"
 
-  if [ "$IP_ADDR" != "" ]; then
-    send_line_to_vm "1"
-    send_line_to_vm "n"
-    send_line_to_vm "${IP_ADDR}"
-    send_line_to_vm "${NETMASK}"
-    send_line_to_vm "${LAN_GW}"
-    send_line_to_vm "n"
-    send_line_to_vm " "
-    send_line_to_vm "n"
-    send_line_to_vm "n"
-    send_line_to_vm " "
-    send_line_to_vm "n"
-    send_line_to_vm "n"
-    send_line_to_vm "n"
-    send_line_to_vm "n"
-    send_line_to_vm "n"
-  else
-    send_line_to_vm "1"
-    send_line_to_vm "y"
-    send_line_to_vm "n"
-    send_line_to_vm "n"
-    send_line_to_vm " "
-    send_line_to_vm "n"
-    send_line_to_vm "n"
-    send_line_to_vm "n"
-  fi
-  #we need to wait for the Config changes to be saved
-  sleep 20
-  if [ "$WAN_IP_ADDR" != "" ]; then
-    send_line_to_vm "2"
-    send_line_to_vm "2"
-    send_line_to_vm "n"
-    send_line_to_vm "${WAN_IP_ADDR}"
-    send_line_to_vm "${NETMASK}"
-    send_line_to_vm "${LAN_GW}"
-    send_line_to_vm "n"
-    send_line_to_vm " "
-    send_line_to_vm "n"
-    send_line_to_vm " "
-    send_line_to_vm "n"
-    send_line_to_vm "n"
-    send_line_to_vm "n"
-  fi
-  sleep 10
-  send_line_to_vm "0"
-  msg_ok "Started OpenSense VM"
-
+if [ "$IP_ADDR" != "" ]; then
+  send_line_to_vm "1"
+  send_line_to_vm "n"
+  send_line_to_vm "${IP_ADDR}"
+  send_line_to_vm "${NETMASK}"
+  send_line_to_vm "${LAN_GW}"
+  send_line_to_vm "n"
+  send_line_to_vm " "
+  send_line_to_vm "n"
+  send_line_to_vm "n"
+  send_line_to_vm " "
+  send_line_to_vm "n"
+  send_line_to_vm "n"
+  send_line_to_vm "n"
+  send_line_to_vm "n"
+  send_line_to_vm "n"
+else
+  send_line_to_vm "1"
+  send_line_to_vm "y"
+  send_line_to_vm "n"
+  send_line_to_vm "n"
+  send_line_to_vm " "
+  send_line_to_vm "n"
+  send_line_to_vm "n"
+  send_line_to_vm "n"
 fi
+#we need to wait for the Config changes to be saved
+sleep 20
+if [ "$WAN_IP_ADDR" != "" ]; then
+  send_line_to_vm "2"
+  send_line_to_vm "2"
+  send_line_to_vm "n"
+  send_line_to_vm "${WAN_IP_ADDR}"
+  send_line_to_vm "${NETMASK}"
+  send_line_to_vm "${LAN_GW}"
+  send_line_to_vm "n"
+  send_line_to_vm " "
+  send_line_to_vm "n"
+  send_line_to_vm " "
+  send_line_to_vm "n"
+  send_line_to_vm "n"
+  send_line_to_vm "n"
+fi
+sleep 10
+send_line_to_vm "0"
+msg_ok "Started OpenSense VM"
+
 msg_ok "Completed Successfully!\n"
 if [ "$IP_ADDR" != "" ]; then
   echo -e "${INFO}${YW} Access it using the following URL:${CL}"
