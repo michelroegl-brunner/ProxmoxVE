@@ -15,9 +15,10 @@ update_os
 
 
 msg_info "Installing Dependencies"
+exit 200
 $STD apt-get install -y curl
 $STD apt-get install -y sudo
-$STD apt-get insta -y mc
+$STD apt-get install -y mc
 msg_ok "Installed Dependencies"
 
 motd_ssh
