@@ -1179,7 +1179,6 @@ EOF
 exit_script() {
   exit_code=$?  # Capture the exit status of the last executed command
   #200 exit codes indicate error in create_lxc.sh
-  #100 exit codes indicate error in install.func -> Post to api is done there.
 
   if [ $exit_code -ne 0 ]; then  # Check if exit code is nonzero
     case $exit_code in
@@ -1192,7 +1191,6 @@ exit_script() {
         206) post_update_to_api "failed" "create_lxc.sh ID already in use" ;;
         207) post_update_to_api "failed" "create_lxc.sh Template not found" ;;
         208) post_update_to_api "failed" "create_lxc.sh Error downloading template" ;;
-        100) return ;;
         101) post_update_to_api "failed" "create_lxc.sh No Network connection" ;;
         *)   post_update_to_api "failed" "Unknown error, exit code: $exit_code" ;;
     esac
