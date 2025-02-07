@@ -247,14 +247,14 @@ update_motd_ip() {
 # Function to download & save header files
 get_header() {
   local app_name=$(echo ${APP,,} | tr -d ' ') 
-  local header_url="${CSCRIPTS_BASE_URL}/ct/headers/${app_name}"
+  local header_url="https://github.com/community-scripts/ProxmoxVE/raw/main/ct/headers/${app_name}"
   local local_header_path="/usr/local/community-scripts/headers/${app_name}"
 
   mkdir -p "/usr/local/community-scripts/headers"
 
   # Check if local file already present
   if [ ! -f "$local_header_path" ]; then
-    curl -qO "$local_header_path" "$header_url"
+    curl -s "$header_url" -o "$local_header_path"
     if [ $? -ne 0 ]; then
       echo -e "${WARN}${BOLD}${YLW}Failed to download header for ${app_name}. No header will be displayed.${CL}"
       return 1

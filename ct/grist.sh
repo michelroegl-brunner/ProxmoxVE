@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/build.func)
+: "${CSCRIPTS_BASE_URL:=https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop}"
+source <(curl -s "${CSCRIPTS_BASE_URL}/misc/build.func")
 # Source: https://github.com/gristlabs/grist-core
 
 # App Default Values

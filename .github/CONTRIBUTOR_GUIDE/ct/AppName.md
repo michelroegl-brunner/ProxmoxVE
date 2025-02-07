@@ -52,7 +52,8 @@ source <(curl -s https://raw.githubusercontent.com/[USER]/[REPO]/refs/heads/[BRA
 Final script:
 
 ```bash
-source <(curl -s https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop/misc/build.func)
+: "${CSCRIPTS_BASE_URL:=https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop}"
+source <(curl -s "${CSCRIPTS_BASE_URL}/misc/build.func")
 ```
 
 ### 1.3 **Metadata**
