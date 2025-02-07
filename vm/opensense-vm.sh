@@ -618,6 +618,7 @@ if [ "$START_VM" == "yes" ]; then
     -net1 virtio,bridge=${WAN_BRG},macaddr=${WAN_MAC} 2>/dev/null
   sleep 10
   send_line_to_vm "sh ./opnsense-bootstrap.sh.in -y -f -r ${RELEASE}"
+  msg_ok "OpenSense VM is being installed, do not close the terminal, or the installation will fail."
   #We need to wait for the OpenSense build proccess to finish, this takes a few minutes
   sleep 1000
   send_line_to_vm "root"
