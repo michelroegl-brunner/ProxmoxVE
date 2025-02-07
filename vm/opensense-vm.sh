@@ -9,12 +9,12 @@ source /dev/stdin <<< $(wget -qLO - https://raw.githubusercontent.com/michelroeg
 function header_info {
   clear
   cat <<"EOF"
-   ____                  _____                    
-  / __ \____  ___  ____ / ___/___  ____  ________ 
- / / / / __ \/ _ \/ __ \\__ \/ _ \/ __ \/ ___/ _ \
-/ /_/ / /_/ /  __/ / / /__/ /  __/ / / (__  )  __/
-\____/ .___/\___/_/ /_/____/\___/_/ /_/____/\___/ 
-    /_/                                           
+   ____             _____                    
+  / __ \____  ____ / ___/___  ____  ________ 
+ / / / / __ \/ __ \\__ \/ _ \/ __ \/ ___/ _ \
+/ /_/ / /_/ / / / /__/ /  __/ / / (__  )  __/
+\____/ .___/_/ /_/____/\___/_/ /_/____/\___/ 
+    /_/                                                                             
 EOF
 }
 header_info
@@ -23,8 +23,8 @@ echo -e "Loading..."
 RELEASE=$(curl -sL https://api.github.com/repos/opnsense/core/tags | jq -r '[.[] | select(.name | test("^[0-9]+\\.[0-9]+$"))] | max_by(.name) | .name')
 RANDOM_UUID="$(cat /proc/sys/kernel/random/uuid)"
 METHOD=""
-NSAPP="opensense-vm"
-var_os="opensense"
+NSAPP="opnsense-vm"
+var_os="opnsense"
 var_version="${RELEASE}"
 #
 GEN_MAC=02:$(openssl rand -hex 5 | awk '{print toupper($0)}' | sed 's/\(..\)/\1:/g; s/.$//')
@@ -207,7 +207,7 @@ function default_settings() {
   FORMAT=",efitype=4m"
   MACHINE=""
   DISK_CACHE=""
-  HN="opensense"
+  HN="opnsense"
   CPU_TYPE=""
   CORE_COUNT="4"
   RAM_SIZE="8192"
@@ -315,7 +315,7 @@ function advanced_settings() {
     exit-script
   fi
 
-  if CORE_COUNT=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Allocate CPU Cores" 8 58 $CORE_COUNT --title "CORE COUNT" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+  if CORE_COUNT=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Allocate CPU Cores" 8 58 4 --title "CORE COUNT" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $CORE_COUNT ]; then
       CORE_COUNT="2"
     fi
@@ -324,7 +324,7 @@ function advanced_settings() {
     exit-script
   fi
 
-  if RAM_SIZE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Allocate RAM in MiB" 8 58 $RAM_SIZE --title "RAM" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+  if RAM_SIZE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Allocate RAM in MiB" 8 58 4096 --title "RAM" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $RAM_SIZE ]; then
       RAM_SIZE="4096"
     fi
@@ -341,15 +341,6 @@ function advanced_settings() {
   else
     exit-script
   fi
-  if WAN_BRG=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN Bridge" 8 58 vmbr1 --title "WAN BRIDGE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
-    if [ -z $WAN_BRG ]; then
-      WAN_BRG="vmbr1"
-    fi
-    echo -e "${DGN}Using WAN Bridge: ${BGN}$WAN_BRG${CL}"
-  else
-    exit-script
-  fi
-
 
   if IP_ADDR=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a LAN IP" 8 58 $IP_ADDR --title "LAN IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $IP_ADDR ]; then
@@ -376,6 +367,16 @@ function advanced_settings() {
   else
     exit-script
   fi
+
+  if WAN_BRG=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN Bridge" 8 58 vmbr1 --title "WAN BRIDGE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if [ -z $WAN_BRG ]; then
+      WAN_BRG="vmbr1"
+    fi
+    echo -e "${DGN}Using WAN Bridge: ${BGN}$WAN_BRG${CL}"
+  else
+    exit-script
+  fi
+
   if WAN_IP_ADDR=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN IP" 8 58 $WAN_IP_ADDR --title "WAN IP ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $WAN_IP_ADDR ]; then
       echo -e "${DGN}Using DHCP AS WAN IP ADDRESS${CL}"
@@ -424,30 +425,17 @@ function advanced_settings() {
     exit-script
   fi
 
-  if VLAN1=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN Vlan (leave blank for default)" 8 58 --title "WAN VLAN" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
-    if [ -z $VLAN1 ]; then
-      VLAN1="Default"
-      VLAN=""
-    else
-      VLAN=",tag=$VLAN1"
-    fi
-    echo -e "${DGN}Using LAN Vlan: ${BGN}$VLAN1${CL}"
-  else
-    exit-script
-  fi
-
-
-  if MTU1=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set Interface MTU Size (leave blank for default)" 8 58 --title "MTU SIZE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
-    if [ -z $MTU1 ]; then
-      MTU1="Default"
-      MTU=""
-    else
-      MTU=",mtu=$MTU1"
-    fi
-    echo -e "${DGN}Using Interface MTU Size: ${BGN}$MTU1${CL}"
-  else
-    exit-script
-  fi
+  #if VLAN1=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN Vlan (leave blank for default)" 8 58 --title "WAN VLAN" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+  #  if [ -z $VLAN1 ]; then
+  #    VLAN1="Default"
+  #    VLAN=""
+  #  else
+  #    VLAN=",tag=$VLAN1"
+  #  fi
+  #  echo -e "${DGN}Using LAN Vlan: ${BGN}$VLAN1${CL}"
+  #else
+  #  exit-script
+  #fi
 
   if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "START VIRTUAL MACHINE" --yesno "Start VM when completed?" 10 58); then
     START_VM="yes"
@@ -593,7 +581,7 @@ msg_ok "Bridge interfaces have been successfully added."
   
 msg_ok "Created a OpenSense VM ${CL}${BL}(${HN})"
 if [ "$START_VM" == "yes" ]; then
-  msg_info "Starting OpenSense VM (Patience this takes 20-30 minutes)"
+  msg_ok "Starting OpenSense VM (Patience this takes 20-30 minutes)"
   qm start $VMID
   sleep 90
   send_line_to_vm "root"
@@ -601,8 +589,9 @@ if [ "$START_VM" == "yes" ]; then
   qm set $VMID \
     -net1 virtio,bridge=${WAN_BRG},macaddr=${WAN_MAC} 2>/dev/null
   sleep 10
-  send_line_to_vm "sh ./opnsense-bootstrap.sh.in -y -f -r ${RELEASE}"  
-  sleep 1200
+  send_line_to_vm "sh ./opnsense-bootstrap.sh.in -y -f -r ${RELEASE}"
+  #We need to wait for the OpenSense build proccess to finish, this takes a few minutes
+  sleep 1000
   send_line_to_vm "root"
   send_line_to_vm "opnsense"
   send_line_to_vm "2"
@@ -633,7 +622,10 @@ if [ "$START_VM" == "yes" ]; then
     send_line_to_vm "n"   
     send_line_to_vm "n"
   fi
+  #we need to wait for the Config changes to be saved
+  sleep 20
   if [ "$WAN_IP_ADDR" != "" ]; then
+    send_line_to_vm "2"
     send_line_to_vm "2"
     send_line_to_vm "n"
     send_line_to_vm "${WAN_IP_ADDR}"
@@ -647,8 +639,19 @@ if [ "$START_VM" == "yes" ]; then
     send_line_to_vm "n"
     send_line_to_vm "n" 
   fi
+  sleep 10
+  send_line_to_vm "0"
   msg_ok "Started OpenSense VM"
+
+  
 
 fi
 msg_ok "Completed Successfully!\n"
+if [ "$IP_ADDR" != "" ]; then
+  echo -e "${INFO}${YW} Access it using the following URL:${CL}"
+  echo -e "${TAB}${GATEWAY}${BGN}http://${IP}${CL}"
+else
+  echo -e "${INFO}${YW} LAN IP was DHCP.${CL}"
+  echo -e "${INFO}${BGN}To find the IP login to the VM Shell${CL}"
+fi
 

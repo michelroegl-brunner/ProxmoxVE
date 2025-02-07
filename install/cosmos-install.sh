@@ -129,7 +129,6 @@ EOF
 systemctl enable -q --now cosmos.service
 sleep 5
 sed -i "s|\"MongoDB\": *\"[^\"]*\"|\"MongoDB\": \"$MONGO_CONNECTION_STRING\"|" /var/lib/cosmos/cosmos.config.json
-sed -i 's|"NewInstall": *[^,}]*|"NewInstall": false|' /var/lib/cosmos/cosmos.config.json
 systemctl restart cosmos.service
 msg_info "Created Service"
 
