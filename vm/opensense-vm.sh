@@ -20,7 +20,7 @@ EOF
 header_info
 echo -e "Loading..."
 #API VARIABLES
-RELEASE=$(curl -sL https://api.github.com/repos/opnsense/core/tags | jq -r '[.[] | select(.name | test("^[0-9]+\\.[0-9]+$"))] | max_by(.name) | .name')
+RELEASE=$(curl -sL https://api.github.com/repos/opnsense/core/tags | grep -oP '"name": "\K[0-9]+\.[0-9]+' | sort -V | tail -n 1)
 RANDOM_UUID="$(cat /proc/sys/kernel/random/uuid)"
 METHOD=""
 NSAPP="opnsense-vm"
@@ -453,7 +453,6 @@ function advanced_settings() {
   else
     exit-script
   fi
-
   if MAC1=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a WAN MAC Address" 8 58 $GEN_MAC --title "WAN MAC ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z $MAC1 ]; then
       MAC="$GEN_MAC"
