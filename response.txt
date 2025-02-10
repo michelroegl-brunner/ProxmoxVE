@@ -1,1 +1,1 @@
-invalid character '$' after object key:value pair
+{"message":"Data saved successfully"}

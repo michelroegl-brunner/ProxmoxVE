@@ -1,6 +1,7 @@
-#!/usr/bin/bash
-
+#!/usr/bin/env bash
 : "${CSCRIPTS_BASE_URL:=https://raw.githubusercontent.com/michelroegl-brunner/ProxmoxVE/refs/heads/develop}"
+echo "${CSCRIPTS_BASE_URL}"
+export CSCRIPTS_BASE_URL="$CSCRIPTS_BASE_URL"
 source <(curl -s "${CSCRIPTS_BASE_URL}/misc/build.func")
 
 # Copyright (c) 2021-2025 community-scripts ORG
