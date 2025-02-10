@@ -34,6 +34,8 @@ INFO="${TAB}💡${TAB}${CL}"
 set -Eeuo pipefail
 trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 
+SPINNER_PID=""
+
 # This function handles errors
 function error_handler() {
   if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
@@ -64,6 +66,7 @@ function spinner() {
 
 # This function displays an informational message with a yellow color.
 function msg_info() {
+  if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
   local msg="$1"
   echo -ne "${TAB}${YW}${HOLD}${msg}${HOLD}"
   spinner &

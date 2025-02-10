@@ -20,6 +20,10 @@ var_unprivileged="1"
 # App Output & Base Settings
 header_info "$APP"
 base_settings
+msg_info "Testing"
+sleep 5
+msg_info "Still testing"
+sleep 20
 
 # Core
 variables
