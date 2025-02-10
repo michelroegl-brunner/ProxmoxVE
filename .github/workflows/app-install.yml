@@ -9,7 +9,10 @@ on:
 
 jobs:
   run-install-script:
-    runs-on: ubuntu-latest  # Debian-based runner
+    runs-on: ubuntu-latest  
+    container:
+      image: debian:latest
+    
     steps:
       - name: Checkout PR branch with full history
         uses: actions/checkout@v4
@@ -36,8 +39,14 @@ jobs:
     
           echo "SCRIPT=$CHANGED_FILE" >> $GITHUB_ENV
 
+      - name: Replace $FUNCTION_FILE_PATH
+        run: |
+          sed -i 's|source /dev/stdin <<<"$FUNCTIONS_FILE_PATH"|source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/install.func)|' ${{ env.SCRIPT }}
       - name: Make script executable
         run: chmod +x ${{ env.SCRIPT }}
 
+      - name: Install curl
+        run: apt update && apt install -y curl
+        
       - name: Run install script
-        run: ./${{ env.SCRIPT }}
+        run: sudo ./${{ env.SCRIPT }}
