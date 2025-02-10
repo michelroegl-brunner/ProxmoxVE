@@ -267,7 +267,7 @@ get_header() {
 # This function sets the APP-Name into an ASCII Header in Slant, figlet needed on proxmox main node.
 header_info() {
   local app_name=$(echo ${APP,,} | tr -d ' ') 
-  local header_content
+  local header_content  
 
   # Download & save Header-File locally
   header_content=$(get_header "$app_name")
