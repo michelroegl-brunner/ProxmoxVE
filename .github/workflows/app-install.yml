@@ -60,10 +60,11 @@ jobs:
         id: run-install
         run: |
           set +e  # Allow commands to fail
-          for FILE in ${{ env.CT_FILES }}; do
+          git status
+          for FILE in ${{ env.CT_FILES }}; do            
             echo "Running: $FILE"
-            STRIPPED_NAME="${FILE#ct/}"  # Remove 'ct/' prefix
-            STRIPPED_NAME="${STRIPPED_NAME%.sh}"  # Remove '.sh' extension
+            STRIPPED_NAME="${FILE#ct/}"  
+            STRIPPED_NAME="${STRIPPED_NAME%.sh}"  
             echo "$STRIPPED_NAME"
             sed -i 's|source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)|source .github/workflows/scripts/app-test/pr-build.func|g' "$FILE"
             git checkout origin/main .github/workflows/scripts/app-test/pr-build.func
@@ -71,7 +72,9 @@ jobs:
             git checkout origin/main .github/workflows/scripts/app-test/pr-create-lxc.sh
             if [[ ! -f install/"$STRIPPED_NAME-install.sh" ]]; then
               echo "No install script found for $STRIPPED_NAME"
-              continue
+              exit 1
+            else
+              echo "Found install script for $STRIPPED_NAME"
             fi
             chmod +x $FILE
             chmod +x .github/workflows/scripts/app-test/pr-create-lxc.sh
