@@ -1,4 +1,4 @@
-name: Run PR Install Script
+name: Run Scripts on PVE Node
 on:
   pull_request:
     branches:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   run-install-script:
-    runs-on: pvehost   
+    runs-on: pvehost
     steps:          
       - name: Checkout PR branch
         uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
           echo "Changed files: $CHANGED_FILES"  
           echo "SCRIPT=$CHANGED_FILES" >> $GITHUB_ENV
 
-      - name: Check if install script is changed
+      - name: Get scripts
         id: check-install-script
         run: |
           ALL_FILES=()
@@ -52,7 +52,7 @@ jobs:
           echo "$ALL_FILES"
           echo "ALL_FILES=$ALL_FILES" >> $GITHUB_ENV
         
-      - name: Run script
+      - name: Run scripts
         id: run-install
         continue-on-error: true
         run: |
@@ -112,7 +112,7 @@ jobs:
             fi            
           done
       
-      - name: Post error comments if install scripts failed
+      - name: Post error comments
         run: |
           ERROR="false"
           SEARCH_LINE=".github/workflows/scripts/app-test/pr-build.func: line 113:"
@@ -126,8 +126,7 @@ jobs:
             ERROR_MSG=$(cat result_$STRIPPED_NAME.log)
       
             if [ -n "$ERROR_MSG" ]; then
-              ERROR_MSG_ESCAPED=$(echo "$ERROR_MSG" | sed 's/[&/\]/\\&/g')
-              CLEANED_ERROR_MSG=$(echo "$ERROR_MSG_ESCAPED" | sed "s|$SEARCH_LINE.*||")
+              CLEANED_ERROR_MSG=$(echo "$ERROR_MSG" | sed "s|$SEARCH_LINE.*||")
               echo "Posting error message for $FILE"
               echo ${CLEANED_ERROR_MSG}
               gh pr comment ${{ github.event.pull_request.number }} \

@@ -3,7 +3,6 @@
 # Author: michelroegl-brunner
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 
-# This function sets color variables for formatting output in the terminal
 color() {
   return
 }
