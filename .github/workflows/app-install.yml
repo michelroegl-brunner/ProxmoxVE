@@ -86,7 +86,6 @@ jobs:
             if [ -n "$ERROR_MSG" ]; then
               echo "ERROR in $STRIPPED_NAME: $ERROR_MSG"
               echo "ERROR_MSG_$STRIPPED_NAME=$ERROR_MSG" > result_$STRIPPED_NAME.log
-              echo "ERROR_MSG_$STRIPPED_NAME=$(printf '%s' "$ERROR_MSG" | sed 's/[^[:print:]\t]//g')" >> $GITHUB_ENV
 
             fi
           done
