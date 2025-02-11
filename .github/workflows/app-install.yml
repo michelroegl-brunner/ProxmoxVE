@@ -34,59 +34,66 @@ jobs:
       - name: Check if install script is changed
         id: check-install-script
         run: |
-          INSTALL_FILES=""
-          CT_FILES=""
-                    
-          for FILE in ${{ env.SCRIPT }}; do
-             if [[ $FILE =~ ^install/.*-install\.sh$ ]]; then
-               INSTALL_FILES+=" $FILE"              
-             elif [[ $FILE =~ ^ct/.*\.sh$ ]]; then
-               CT_FILES+=" $FILE"
-             fi
-          done
+          ALL_FILES=()
+          ADDED_FILES=()  
+          for FILE in ${{ env.SCRIPT }}; do            
+            if [[ $FILE =~ ^install/.*-install\.sh$ ]] || [[ $FILE =~ ^ct/.*\.sh$ ]]; then             
+              BASE_FILE=$(basename "$FILE")      
+              if [[ ! " ${ADDED_FILES[@]} " =~ " $BASE_FILE " ]]; then
+                ALL_FILES+=("$FILE")
+                ADDED_FILES+=("$BASE_FILE")  # Mark this script as added
+              fi
+            fi
+          done  
+          ALL_FILES=$(echo "${ALL_FILES[@]}" | xargs)
+          echo "All scripts: $ALL_FILES"
+          echo "ALL_FILES=$ALL_FILES" >> $GITHUB_ENV
         
-          INSTALL_FILES=$(echo $INSTALL_FILES | xargs)
-          CT_FILES=$(echo $CT_FILES | xargs)
-        
-          echo "Install scripts: $INSTALL_FILES"
-          echo "CT scripts: $CT_FILES"
-        
-          echo "INSTALL_FILES=$INSTALL_FILES" >> $GITHUB_ENV
-          echo "CT_FILES=$CT_FILES" >> $GITHUB_ENV
-        
-      - name: Run each ct script and capture error message
+      - name: Run script
         id: run-install
         continue-on-error: true
         run: |
-          set +e  # Allow commands to fail
-          for FILE in ${{ env.CT_FILES }}; do            
+          set +e  
+          #run for each files in /ct
+          for FILE in ${{ env.ALL_FILES }}; do            
             echo "Running: $FILE"
             STRIPPED_NAME="${FILE#ct/}"  
-            STRIPPED_NAME="${STRIPPED_NAME%.sh}"
-            sed -i 's|source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)|source .github/workflows/scripts/app-test/pr-build.func|g' "$FILE"
+            STRIPPED_NAME="${STRIPPED_NAME%.sh}"           
+            if [[ $FILE =~ ^install/.*-install\.sh$ ]]; then
+              CT_SCRIPT="ct/$STRIPPED_NAME.sh"
+              if [[ ! -f $CT_SCRIPT ]]; then
+                echo "No CT script found for $STRIPPED_NAME"
+                exit 1
+              fi
+                echo "Found CT script for $STRIPPED_NAME"
+                chmod +x "$CT_SCRIPT"
+                RUNNING_FILE=$CT_SCRIPT
+            elif [[ $FILE =~ ^ct/.*\.sh$ ]]; then
+              INSTALL_SCRIPT="install/$STRIPPED_NAME-install.sh"
+              if [[ ! -f $INSTALL_SCRIPT ]]; then
+                echo "No install script found for $STRIPPED_NAME"
+                exit 1
+              fi
+                sed -i 's|source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)|source .github/workflows/scripts/app-test/pr-build.func|g' "$FILE"
+                echo "Found install script for $STRIPPED_NAME"
+                chmod +x "$INSTALL_SCRIPT"
+                RUNNING_FILE=$FILE
+            fi
             git checkout origin/main .github/workflows/scripts/app-test/pr-build.func
             git checkout origin/main .github/workflows/scripts/app-test/pr-install.func
             git checkout origin/main .github/workflows/scripts/app-test/pr-alpine-install.func
             git checkout origin/main .github/workflows/scripts/app-test/pr-create-lxc.sh
-            if [[ ! -f install/"$STRIPPED_NAME-install.sh" ]]; then
-              echo "No install script found for $STRIPPED_NAME"
-              exit 1
-            else
-              echo "Found install script for $STRIPPED_NAME"
-              chmod +x install/"$STRIPPED_NAME-install.sh"
-            fi
-            chmod +x $FILE
+            chmod +x $RUNNING_FILE         
             chmod +x .github/workflows/scripts/app-test/pr-create-lxc.sh
             chmod +x .github/workflows/scripts/app-test/pr-install.func
             chmod +x .github/workflows/scripts/app-test/pr-alpine-install.func
             chmod +x .github/workflows/scripts/app-test/pr-build.func
 
-            ERROR_MSG=$(./$FILE 2>&1 > /dev/null)
+            ERROR_MSG=$(./$RUNNING_FILE 2>&1 > /dev/null)
             echo "Finished running $FILE"
             if [ -n "$ERROR_MSG" ]; then
               echo "ERROR in $STRIPPED_NAME: $ERROR_MSG"
               echo "$ERROR_MSG" > result_$STRIPPED_NAME.log
-
             fi
           done
           set -e  # Restore exit-on-error
@@ -107,7 +114,7 @@ jobs:
         run: |
           ERROR="false"
           SEARCH_LINE=".github/workflows/scripts/app-test/pr-build.func: line 113:"
-          for FILE in ${{ env.CT_FILES }}; do
+          for FILE in ${{ env.ALL_FILES }}; do
             STRIPPED_NAME="${FILE#ct/}"
             STRIPPED_NAME="${STRIPPED_NAME%.sh}"
 
