@@ -75,6 +75,7 @@ jobs:
               exit 1
             else
               echo "Found install script for $STRIPPED_NAME"
+              chmod +x install/"$STRIPPED_NAME-install.sh"
               pwd
               ls /root/actions-runner/_work/ProxmoxVE/ProxmoxVE/install/
             fi
