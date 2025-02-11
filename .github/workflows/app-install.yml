@@ -58,6 +58,7 @@ jobs:
         
       - name: Run each ct script and capture error message
         id: run-install
+        continue-on-error: true
         run: |
           set +e  # Allow commands to fail
           for FILE in ${{ env.CT_FILES }}; do            
@@ -80,13 +81,12 @@ jobs:
             chmod +x .github/workflows/scripts/app-test/pr-install.func
             chmod +x .github/workflows/scripts/app-test/pr-build.func
 
-            echo "Running: $FILE"
             ERROR_MSG=$(./$FILE 2>&1 > /dev/null)
             echo "Finished running $FILE"
             if [ -n "$ERROR_MSG" ]; then
               echo "ERROR in $STRIPPED_NAME: $ERROR_MSG"
               echo "$ERROR_MSG" > result_$STRIPPED_NAME.log
-              echo "ERROR_MSG_$STRIPPED_NAME=$ERROR_MSG" >> $GITHUB_ENV
+             echo "ERROR_MSG_$STRIPPED_NAME=$(echo "$ERROR_MSG" | base64)" >> $GITHUB_ENV
             fi
           done
           set -e  # Restore exit-on-error
@@ -107,13 +107,14 @@ jobs:
         if: ${{ env.CT_FILES != '' }}
         run: |
           for FILE in ${{ env.CT_FILES }}; do
-            ERROR_MSG_VAR="ERROR_MSG_$FILE"
-            ERROR_MSG=${!ERROR_MSG_VAR}  # Indirect variable expansion
+            STRIPPED_NAME="${FILE#ct/}"
+            STRIPPED_NAME="${STRIPPED_NAME%.sh}"
+
+            ERROR_MSG=$(echo "$ERROR_MSG_$STRIPPED_NAME" | base64 --decode)
       
             if [ -n "$ERROR_MSG" ]; then
-              ERROR_MSG_ESCAPED=$(echo "$ERROR_MSG" | sed 's/[&/\]/\\&/g')  # Escape special characters
+              ERROR_MSG_ESCAPED=$(echo "$ERROR_MSG" | sed 's/[&/\]/\\&/g')
               
-              # Post an error comment to the pull request with the captured error message
               echo "Posting error message for $FILE..."
               gh pr comment ${{ github.event.pull_request.number }} \
                 --body "The install script **$FILE** failed with the following message: ***$ERROR_MSG_ESCAPED***"
