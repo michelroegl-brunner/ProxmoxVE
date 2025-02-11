@@ -7,7 +7,7 @@ variables() {
 }
 
 NEXTID=$(pvesh get /cluster/nextid)
-
+timezone=$(cat /etc/timezone)
 header_info(){ 
   return  
 }
@@ -163,6 +163,7 @@ build_container() {
   export PCT_OSTYPE="$var_os"
   export PCT_OSVERSION="$var_version"
   export PCT_DISK_SIZE="$DISK_SIZE"
+  export tz="$timezone"
   export PCT_OPTIONS="
     -features $FEATURES
     -hostname $HN
