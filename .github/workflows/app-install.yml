@@ -85,7 +85,7 @@ jobs:
             echo "Finished running $FILE"
             if [ -n "$ERROR_MSG" ]; then
               echo "ERROR in $STRIPPED_NAME: $ERROR_MSG"
-              echo "ERROR_MSG_$STRIPPED_NAME=$ERROR_MSG" > result_$STRIPPED_NAME.log
+              echo "$ERROR_MSG" > result_$STRIPPED_NAME.log
 
             fi
           done
@@ -102,10 +102,10 @@ jobs:
                 pct destroy $container_id
             fi            
           done
-
       
       - name: Post error comments if install scripts failed
         run: |
+          ERROR="false"
           for FILE in ${{ env.CT_FILES }}; do
             STRIPPED_NAME="${FILE#ct/}"
             STRIPPED_NAME="${STRIPPED_NAME%.sh}"
@@ -121,7 +121,11 @@ jobs:
               echo "Posting error message for $FILE..."
               gh pr comment ${{ github.event.pull_request.number }} \
                 --body "The install script **$FILE** failed with the following message: ***$ERROR_MSG_ESCAPED***"
+              ERROR="true"
             fi
           done
+          if [[ $ERROR == "true" ]]; then
+            exit 1
+          fi
       
   
