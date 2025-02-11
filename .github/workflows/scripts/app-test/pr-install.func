@@ -22,6 +22,7 @@ error_handler() {
   exit "$error_message"
 }
 verb_ip6() {
+    STD=""
     return
 }
 
