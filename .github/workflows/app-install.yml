@@ -3,6 +3,9 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - 'install/**'
+      - 'ct/**'
 
 jobs:
   run-install-script:
@@ -39,7 +42,6 @@ jobs:
           for FILE in ${{ env.SCRIPT }}; do           
             if [[ $FILE =~ ^install/.*-install\.sh$ ]] || [[ $FILE =~ ^ct/.*\.sh$ ]]; then             
               STRIPPED_NAME=$(basename "$FILE" | sed 's/-install//' | sed 's/\.sh$//')
-              echo "Stripped name: $STRIPPED_NAME"  
               if [[ ! " ${ADDED_FILES[@]} " =~ " $STRIPPED_NAME " ]]; then
                 ALL_FILES+=("$FILE")
                 ADDED_FILES+=("$STRIPPED_NAME")  # Mark this base file as added (without the path)
@@ -47,7 +49,7 @@ jobs:
             fi
           done
           ALL_FILES=$(echo "${ALL_FILES[@]}" | xargs)
-          echo "All scripts: $ALL_FILES"
+          echo "$ALL_FILES"
           echo "ALL_FILES=$ALL_FILES" >> $GITHUB_ENV
         
       - name: Run script
@@ -127,7 +129,7 @@ jobs:
               ERROR_MSG_ESCAPED=$(echo "$ERROR_MSG" | sed 's/[&/\]/\\&/g')
               CLEANED_ERROR_MSG=$(echo "$ERROR_MSG_ESCAPED" | sed "s|$SEARCH_LINE.*||")
               echo "Posting error message for $FILE"
-              echo $CLEANED_ERROR_MSG
+              echo ${CLEANED_ERROR_MSG}
               gh pr comment ${{ github.event.pull_request.number }} \
                 --body "The install script **$FILE** failed with the following message: ***${CLEANED_ERROR_MSG}***"
               ERROR="true"
