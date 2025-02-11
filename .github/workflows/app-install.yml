@@ -60,12 +60,10 @@ jobs:
         id: run-install
         run: |
           set +e  # Allow commands to fail
-          git status
           for FILE in ${{ env.CT_FILES }}; do            
             echo "Running: $FILE"
             STRIPPED_NAME="${FILE#ct/}"  
-            STRIPPED_NAME="${STRIPPED_NAME%.sh}"  
-            echo "$STRIPPED_NAME"
+            STRIPPED_NAME="${STRIPPED_NAME%.sh}"
             sed -i 's|source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)|source .github/workflows/scripts/app-test/pr-build.func|g' "$FILE"
             git checkout origin/main .github/workflows/scripts/app-test/pr-build.func
             git checkout origin/main .github/workflows/scripts/app-test/pr-install.func
@@ -83,8 +81,6 @@ jobs:
             chmod +x .github/workflows/scripts/app-test/pr-build.func
 
             echo "Running: $FILE"
-            ./$FILE
-            exit 1
             ERROR_MSG=$(./$FILE 2>&1 > /dev/null)
             
             if [ -n "$ERROR_MSG" ]; then
