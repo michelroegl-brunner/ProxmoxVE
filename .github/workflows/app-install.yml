@@ -79,6 +79,8 @@ jobs:
             fi
             chmod +x $FILE
             chmod +x .github/workflows/scripts/app-test/pr-create-lxc.sh
+            chmod +x .github/workflows/scripts/app-test/pr-install.func
+            chmod +x .github/workflows/scripts/app-test/pr-build.func
 
             echo "Running: $FILE"
             ./$FILE
