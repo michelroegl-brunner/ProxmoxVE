@@ -39,11 +39,9 @@ jobs:
                     
           for FILE in ${{ env.SCRIPT }}; do
              if [[ $FILE =~ ^install/.*-install\.sh$ ]]; then
-               INSTALL_FILES+=" $FILE"
-               echo "Install script: $FILE"
+               INSTALL_FILES+=" $FILE"              
              elif [[ $FILE =~ ^ct/.*\.sh$ ]]; then
                CT_FILES+=" $FILE"
-               echo "CT script: $FILE"
              fi
           done
         
@@ -83,7 +81,7 @@ jobs:
             chmod +x .github/workflows/scripts/app-test/pr-alpine-install.func
             chmod +x .github/workflows/scripts/app-test/pr-build.func
 
-            ERROR_MSG=$(./$FILE 2>&1)
+            ERROR_MSG=$(./$FILE 2>&1 > /dev/null)
             echo "Finished running $FILE"
             if [ -n "$ERROR_MSG" ]; then
               echo "ERROR in $STRIPPED_NAME: $ERROR_MSG"
