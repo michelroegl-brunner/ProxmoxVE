@@ -59,8 +59,8 @@ jobs:
           set +e  
           #run for each files in /ct
           for FILE in ${{ env.ALL_FILES }}; do            
-            echo "Running: $FILE"
             STRIPPED_NAME=$(basename "$FILE" | sed 's/-install//' | sed 's/\.sh$//')
+            echo "Running Test for: $STRIPPED_NAME"
             if [[ $FILE =~ ^install/.*-install\.sh$ ]]; then
               CT_SCRIPT="ct/$STRIPPED_NAME.sh"
               if [[ ! -f $CT_SCRIPT ]]; then
@@ -91,6 +91,7 @@ jobs:
             chmod +x .github/workflows/scripts/app-test/pr-alpine-install.func
             chmod +x .github/workflows/scripts/app-test/pr-build.func
 
+            echo "Executing $RUNNING_FILE"
             ERROR_MSG=$(./$RUNNING_FILE 2>&1 > /dev/null)
             echo "Finished running $FILE"
             if [ -n "$ERROR_MSG" ]; then
