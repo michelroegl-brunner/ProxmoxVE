@@ -93,15 +93,16 @@ jobs:
       
       - name: Cleanup PVE Node
         run: |
-          containers=$(pct list | tail -n +2 | awk '{print $0 " " $4}')
-          for container in $containers; do
-            id=$(echo $container | awk '{print $1}')
-            status=$(echo $container | awk '{print $2}')
-            if [ "$status" == "running" ]; then
-              pct stop $id
+          containers=$(pct list | tail -n +2 | awk '{print $0 " " $4}' | awk '{print $1}')
+        
+          for container_id in $containers; do
+            status=$(pct status $container_id)
+            if [[ $status == "running" ]]; then
+              pct stop $container_id
             fi
-            pct destroy $id
+            pct destroy $container_id
           done
+
       
       - name: Post error comments if install scripts fail
         if: ${{ env.CT_FILES != '' }}
