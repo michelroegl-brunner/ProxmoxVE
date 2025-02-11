@@ -138,7 +138,7 @@ build_container() {
   "
   echo "Container ID: $CTID"
 
-  
+
   # This executes create_lxc.sh and creates the container and .conf file
   bash /root/actions-runner/_work/ProxmoxVE/ProxmoxVE/.github/workflows/scripts/app-test/pr-create-lxc.sh
 
@@ -200,6 +200,18 @@ EOF
     exit 1
   fi
 
-  lxc-attach -n "$CTID" -- bash -x -c "$(< /root/actions-runner/_work/ProxmoxVE/ProxmoxVE/install/$var_install.sh)"
+  lxc-attach -n "$CTID" -- bash -c "$(< /root/actions-runner/_work/ProxmoxVE/ProxmoxVE/install/$var_install.sh)"
 
+}
+
+description(){
+  status=$(pct status $CT_ID)
+  if [ "$status" == "status: running" ]; then
+      echo -e "Stopping container $CT_ID..."
+      pct stop $CT_ID &
+      sleep 5
+      echo -e "Container $CT_ID stopped."
+  fi
+  echo -e "Destroying container $CT_ID..."
+  pct destroy "$CT_ID" -f &
 }
