@@ -246,14 +246,5 @@ EOF
 }
 
 description(){
-  status=$(pct status $CT_ID)
-  if [ "$status" == "status: running" ]; then
-      echo -e "Stopping container $CT_ID..."
-      pct stop $CT_ID &
-      sleep 5
-      echo -e "Container $CT_ID stopped."
-  fi
-  echo -e "Destroying container $CT_ID..."
-  pct destroy "$CT_ID" -f &
-  echo -e "Destroyed container $CT_ID..."
+ return
 }
