@@ -62,7 +62,7 @@ jobs:
           set +e  # Allow commands to fail
           for FILE in ${{ env.CT_FILES }}; do
             echo "Running: $FILE"
-            STRIPPED_NAME="${FILENAME#ct/}"  # Remove 'ct/' prefix
+            STRIPPED_NAME="${FILE#ct/}"  # Remove 'ct/' prefix
             STRIPPED_NAME="${STRIPPED_NAME%.sh}"  # Remove '.sh' extension
             echo "$STRIPPED_NAME"
             sed -i 's|source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)|source .github/workflows/scripts/app-test/pr-build.func|g' "$FILE"
