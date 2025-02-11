@@ -106,6 +106,7 @@ jobs:
       - name: Post error comments if install scripts failed
         run: |
           ERROR="false"
+          SEARCH_LINE=".github/workflows/scripts/app-test/pr-build.func: line 113:"
           for FILE in ${{ env.CT_FILES }}; do
             STRIPPED_NAME="${FILE#ct/}"
             STRIPPED_NAME="${STRIPPED_NAME%.sh}"
@@ -117,10 +118,16 @@ jobs:
       
             if [ -n "$ERROR_MSG" ]; then
               ERROR_MSG_ESCAPED=$(echo "$ERROR_MSG" | sed 's/[&/\]/\\&/g')
-              
+              CLEANED_ERROR_MSG=$(echo "$ERROR_MSG_ESCAPED" | awk -v search="$SEARCH_LINE" '
+              {
+                  if ($0 ~ search) {
+                      exit
+                  }
+                  print
+              }')              
               echo "Posting error message for $FILE..."
               gh pr comment ${{ github.event.pull_request.number }} \
-                --body "The install script **$FILE** failed with the following message: ***$ERROR_MSG_ESCAPED***"
+                --body "The install script **$FILE** failed with the following message: ***$CLEANED_ERROR_MSG***"
               ERROR="true"
             fi
           done
