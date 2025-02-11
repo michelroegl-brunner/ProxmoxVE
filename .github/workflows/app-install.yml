@@ -75,6 +75,8 @@ jobs:
               exit 1
             else
               echo "Found install script for $STRIPPED_NAME"
+              pwd
+              ls /root/actions-runner/_work/ProxmoxVE/ProxmoxVE/install/
             fi
             chmod +x $FILE
             chmod +x .github/workflows/scripts/app-test/pr-create-lxc.sh
