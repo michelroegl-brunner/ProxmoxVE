@@ -36,15 +36,16 @@ jobs:
         run: |
           ALL_FILES=()
           ADDED_FILES=()  
-          for FILE in ${{ env.SCRIPT }}; do            
+          for FILE in ${{ env.SCRIPT }}; do           
             if [[ $FILE =~ ^install/.*-install\.sh$ ]] || [[ $FILE =~ ^ct/.*\.sh$ ]]; then             
-              BASE_FILE=$(basename "$FILE")      
-              if [[ ! " ${ADDED_FILES[@]} " =~ " $BASE_FILE " ]]; then
+              STRIPPED_NAME=$(basename "$FILE" | sed 's/-install//')
+              echo "Stripped name: $STRIPPED_NAME"  
+              if [[ ! " ${ADDED_FILES[@]} " =~ " $STRIPPED_NAME " ]]; then
                 ALL_FILES+=("$FILE")
-                ADDED_FILES+=("$BASE_FILE")  # Mark this script as added
+                ADDED_FILES+=("$STRIPPED_NAME")  # Mark this base file as added (without the path)
               fi
             fi
-          done  
+          done
           ALL_FILES=$(echo "${ALL_FILES[@]}" | xargs)
           echo "All scripts: $ALL_FILES"
           echo "ALL_FILES=$ALL_FILES" >> $GITHUB_ENV
