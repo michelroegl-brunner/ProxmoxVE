@@ -76,7 +76,7 @@ jobs:
                 echo "No install script found for $STRIPPED_NAME"
                 exit 1
               fi
-                sed -i 's|source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)|source .github/workflows/scripts/app-test/pr-build.func|g' "$FILE"
+                
                 echo "Found install script for $STRIPPED_NAME"
                 chmod +x "$INSTALL_SCRIPT"
                 RUNNING_FILE=$FILE
@@ -90,6 +90,7 @@ jobs:
             chmod +x .github/workflows/scripts/app-test/pr-install.func
             chmod +x .github/workflows/scripts/app-test/pr-alpine-install.func
             chmod +x .github/workflows/scripts/app-test/pr-build.func
+            sed -i 's|source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)|source .github/workflows/scripts/app-test/pr-build.func|g' "$RUNNING_FILE"
             ./$RUNNING_FILE
             exit 1
             echo "Executing $RUNNING_FILE"
