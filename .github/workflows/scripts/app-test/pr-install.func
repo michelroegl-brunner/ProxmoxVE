@@ -40,7 +40,8 @@ msg_error() {
   local msg="$1"
   echo -e "${msg}\n"
 }
-
+  RETRY_NUM=10
+  RETRY_EVERY=3
 setting_up_container() {
   
   for ((i = RETRY_NUM; i > 0; i--)); do
