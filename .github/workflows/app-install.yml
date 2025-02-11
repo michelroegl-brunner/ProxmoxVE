@@ -118,13 +118,7 @@ jobs:
       
             if [ -n "$ERROR_MSG" ]; then
               ERROR_MSG_ESCAPED=$(echo "$ERROR_MSG" | sed 's/[&/\]/\\&/g')
-              CLEANED_ERROR_MSG=$(echo "$ERROR_MSG_ESCAPED" | awk -v search="$SEARCH_LINE" '
-              {
-                  if ($0 ~ search) {
-                      exit
-                  }
-                  print
-              }')              
+              CLEANED_ERROR_MSG=$(echo "$ERROR_MSG_ESCAPED" | sed "s/$SEARCH_LINE.*//")
               echo "Posting error message for $FILE"
               echo $CLEANED_ERROR_MSG
               gh pr comment ${{ github.event.pull_request.number }} \
