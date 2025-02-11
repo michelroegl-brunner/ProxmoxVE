@@ -125,7 +125,8 @@ jobs:
                   }
                   print
               }')              
-              echo "Posting error message for $FILE..."
+              echo "Posting error message for $FILE"
+              echo $CLEANED_ERROR_MSG
               gh pr comment ${{ github.event.pull_request.number }} \
                 --body "The install script **$FILE** failed with the following message: ***$CLEANED_ERROR_MSG***"
               ERROR="true"
