@@ -1123,7 +1123,7 @@ EOF'
 
 }
 
-# This function sets the description of the container.
+# This function se of the container.
 description() {
   IP=$(pct exec "$CTID" ip a s dev eth0 | awk '/inet / {print $2}' | cut -d/ -f1)
 
