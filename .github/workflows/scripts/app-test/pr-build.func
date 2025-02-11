@@ -240,7 +240,14 @@ EOF
     msg_error "No install script found for $APP"
     exit 1
   fi
-
+    if [ "$var_os" == "alpine" ]; then
+    sleep 3
+    pct exec "$CTID" -- /bin/sh -c 'cat <<EOF >/etc/apk/repositories
+http://dl-cdn.alpinelinux.org/alpine/latest-stable/main
+http://dl-cdn.alpinelinux.org/alpine/latest-stable/community
+EOF'
+    pct exec "$CTID" -- ash -c "apk add bash >/dev/null"
+  fi
   lxc-attach -n "$CTID" -- bash -c "$(< /root/actions-runner/_work/ProxmoxVE/ProxmoxVE/install/$var_install.sh)"
 
 }
