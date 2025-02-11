@@ -44,6 +44,7 @@ msg_error() {
 
 RETRY_NUM=10
 RETRY_EVERY=3
+i=$RETRY_NUM
 
 setting_up_container() {
   while [ $i -gt 0 ]; do
