@@ -201,6 +201,6 @@ EOF
     exit 1
   fi
 
-  lxc-attach -n "$CTID" -- bash -x -c $(cat /root/actions-runner/_work/ProxmoxVE/ProxmoxVE/install/$var_install.sh)
+  lxc-attach -n "$CTID" -- bash -x -c "$(< /root/actions-runner/_work/ProxmoxVE/ProxmoxVE/install/$var_install.sh)"
 
 }
