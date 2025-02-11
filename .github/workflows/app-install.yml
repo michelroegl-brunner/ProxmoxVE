@@ -82,11 +82,11 @@ jobs:
 
             echo "Running: $FILE"
             ERROR_MSG=$(./$FILE 2>&1 > /dev/null)
-            
+            echo "Finished running $FILE"
             if [ -n "$ERROR_MSG" ]; then
-              echo "ERROR in $FILE: $ERROR_MSG"
-              echo "$ERROR_MSG" > result_$FILE.log
-              echo "ERROR_MSG_$FILE=$ERROR_MSG" >> $GITHUB_ENV
+              echo "ERROR in $STRIPPED_NAME: $ERROR_MSG"
+              echo "$ERROR_MSG" > result_$STRIPPED_NAME.log
+              echo "ERROR_MSG_$STRIPPED_NAME=$ERROR_MSG" >> $GITHUB_ENV
             fi
           done
           set -e  # Restore exit-on-error
