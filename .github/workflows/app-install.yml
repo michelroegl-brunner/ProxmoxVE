@@ -1,4 +1,4 @@
-name: Run Scripts on PVE Node
+name: Run Scripts on PVE Node for testing
 on:
   pull_request:
     branches:
