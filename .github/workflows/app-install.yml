@@ -85,7 +85,7 @@ jobs:
             echo "Finished running $FILE"
             if [ -n "$ERROR_MSG" ]; then
               echo "ERROR in $STRIPPED_NAME: $ERROR_MSG"
-              echo "$ERROR_MSG" > result_$STRIPPED_NAME.log
+              echo "ERROR_MSG_$STRIPPED_NAME=$ERROR_MSG" > result_$STRIPPED_NAME.log
               echo "ERROR_MSG_$STRIPPED_NAME=$(printf '%s' "$ERROR_MSG" | sed 's/[^[:print:]\t]//g')" >> $GITHUB_ENV
 
             fi
@@ -97,22 +97,24 @@ jobs:
           containers=$(pct list | tail -n +2 | awk '{print $0 " " $4}' | awk '{print $1}')
         
           for container_id in $containers; do
-            status=$(pct status $container_id)
+            status=$(pct status $container_id | awk '{print $2}')
             if [[ $status == "running" ]]; then
-              pct stop $container_id
-            fi
-            pct destroy $container_id
+                pct stop $container_id
+                pct destroy $container_id
+            fi            
           done
 
       
-      - name: Post error comments if install scripts fail
-        if: ${{ env.CT_FILES != '' }}
+      - name: Post error comments if install scripts failed
         run: |
           for FILE in ${{ env.CT_FILES }}; do
             STRIPPED_NAME="${FILE#ct/}"
             STRIPPED_NAME="${STRIPPED_NAME%.sh}"
 
-            ERROR_MSG=$(echo "$ERROR_MSG_$STRIPPED_NAME")
+            if [[ ! -f result_$STRIPPED_NAME.log ]]; then
+              continue
+            fi
+            ERROR_MSG=$(cat result_$STRIPPED_NAME.log)
       
             if [ -n "$ERROR_MSG" ]; then
               ERROR_MSG_ESCAPED=$(echo "$ERROR_MSG" | sed 's/[&/\]/\\&/g')
