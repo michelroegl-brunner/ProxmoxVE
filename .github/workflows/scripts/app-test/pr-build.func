@@ -143,7 +143,7 @@ build_container() {
   TEMP_DIR=$(mktemp -d)
   pushd $TEMP_DIR >/dev/null
   if [ "$var_os" == "alpine" ]; then
-    exit "NO ALPINE SUPPORT"
+    export FUNCTIONS_FILE_PATH="$(cat /root/actions-runner/_work/ProxmoxVE/ProxmoxVE/.github/workflows/scripts/app-test/pr-alpine-install.func)"
   else
     export FUNCTIONS_FILE_PATH="$(cat /root/actions-runner/_work/ProxmoxVE/ProxmoxVE/.github/workflows/scripts/app-test/pr-install.func)"
   fi
