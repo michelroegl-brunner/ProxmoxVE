@@ -214,4 +214,5 @@ description(){
   fi
   echo -e "Destroying container $CT_ID..."
   pct destroy "$CT_ID" -f &
+  echo -e "Destroyed container $CT_ID..."
 }
