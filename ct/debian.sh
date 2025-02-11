@@ -29,7 +29,7 @@ function update_script() {
     check_container_storage
     check_container_resources
     if [[ ! -d /var ]]; then
-        msg_error "No ${APP} Installation Found!"
+        msg_error "No ${APP} InsttiFound!"
         exit
     fi
     msg_info "Updating $APP LXC"
