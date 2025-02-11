@@ -38,7 +38,7 @@ jobs:
           ADDED_FILES=()  
           for FILE in ${{ env.SCRIPT }}; do           
             if [[ $FILE =~ ^install/.*-install\.sh$ ]] || [[ $FILE =~ ^ct/.*\.sh$ ]]; then             
-              STRIPPED_NAME=$(basename "$FILE" | sed 's/-install//')
+              STRIPPED_NAME=$(basename "$FILE" | sed 's/-install//' | sed 's/\.sh$//')
               echo "Stripped name: $STRIPPED_NAME"  
               if [[ ! " ${ADDED_FILES[@]} " =~ " $STRIPPED_NAME " ]]; then
                 ALL_FILES+=("$FILE")
@@ -58,8 +58,7 @@ jobs:
           #run for each files in /ct
           for FILE in ${{ env.ALL_FILES }}; do            
             echo "Running: $FILE"
-            STRIPPED_NAME="${FILE#ct/}"  
-            STRIPPED_NAME="${STRIPPED_NAME%.sh}"           
+            STRIPPED_NAME=$(basename "$FILE" | sed 's/-install//' | sed 's/\.sh$//')
             if [[ $FILE =~ ^install/.*-install\.sh$ ]]; then
               CT_SCRIPT="ct/$STRIPPED_NAME.sh"
               if [[ ! -f $CT_SCRIPT ]]; then
