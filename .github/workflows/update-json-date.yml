@@ -71,7 +71,7 @@ jobs:
               if [[ -z "$current_json_date" || "$current_json_date" != "$current_date" ]]; then
                 echo "Updating $file with date $current_date"
                 jq --arg date "$current_date" '.date_created = $date' "$file" > temp.json && mv temp.json "$file"
-                git add --intent-to-add "$file"
+                git add "$file"
               else
                 echo "Date in $file is already up to date."
               fi
