@@ -1,0 +1,21 @@
+
+name: Delete JSON DATE PR Update Branch
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  delete_branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Delete PR Update Branch
+        if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'pr-update-json-')
+        run: |
+          echo "Deleting branch ${GITHUB_REF##*/}..."
+          git push origin --delete ${GITHUB_REF##*/}
