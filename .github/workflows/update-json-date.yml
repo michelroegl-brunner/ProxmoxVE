@@ -51,7 +51,7 @@ jobs:
         run: |
           current_date=$(date +"%Y-%m-%d")
 
-          for json_file in ${{ env.$JSON_FILES }}; do
+          for json_file in ${{ env.JSON_FILES }}; do
               current_json_date=$(jq -r '.date_created' "$json_file")
 
               if [[ "$current_json_date" != "$current_date" ]]; then
