@@ -97,11 +97,27 @@ jobs:
         if: env.changed == 'true'
         run: |
           git commit -m "Add new JSON files"
-          git checkout -b pr-update-json-files
+          
+          git stash
+
+          git checkout -b pr-update-json-files || git checkout pr-update-json-files
+          
           git pull --rebase origin pr-update-json-files || git rebase --skip
+          
+          git stash pop || echo "No stashed changes to apply."
+
+          git diff --name-only --diff-filter=U | while read file; do
+            git checkout --ours "$file" || echo "Skipping $file"
+            git add "$file"
+          done
+
+          # Continue rebase if necessary
+          git rebase --continue || echo "No rebase needed."
+
+          # Push updates
           git push origin pr-update-json-files
 
-
+          # Check if PR exists
           PR_NUMBER=$(gh pr list --head "pr-update-json-files" --json number --jq '.[].number')
 
           if [ -n "$PR_NUMBER" ]; then
