@@ -12,7 +12,7 @@ jobs:
   update-app-files:
     runs-on: ubuntu-latest
     env: 
-    BRANCH_NAME: pr-update-json-$(date +'%Y%m%d%H%M%S')
+      BRANCH_NAME: pr-update-json-$(date +'%Y%m%d%H%M%S')
 
     permissions:
       contents: write
