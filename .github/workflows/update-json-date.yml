@@ -30,9 +30,15 @@ jobs:
         run: |
           echo "GH_TOKEN=${GH_TOKEN}" >> $GITHUB_ENV
 
-      # Step 1: Checkout repository
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Get Newly Added JSON Files
+        id: new_json_files
+        run: |
+          git diff --name-only --diff-filter=A ${{ github.event.before }} ${{ github.sha }} | grep '^json/.*\.json$' > new_files.txt || true
+          echo "New files detected:"
+          cat new_files.txt || echo "No new files."
 
       # Step 2: Disable file mode changes detection
       - name: Disable file mode changes
@@ -44,20 +50,14 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Get changed files in PR
-        id: changed-files
-        run: | 
-          CHANGED_FILES=$(gh pr diff --name-only ${{ github.event.pull_request.number }})  
-          CHANGED_FILES=$(echo "$CHANGED_FILES" | tr '\n' ' ')  
-          echo "Changed files: $CHANGED_FILES"  
-          echo "JSON_FILES=$CHANGED_FILES" >> $GITHUB_ENV
-
       - name: Change JSON Date
         id: change-json-date
         run: |
           current_date=$(date +"%Y-%m-%d")
 
-          for json_file in ${{ env.JSON_FILES }}; do
+          while IFS= read -r file; do
+            if [[ -f "$file" ]]; then
+              echo "Processing $file..."
               current_json_date=$(jq -r '.date_created' "$json_file")
 
               if [[ "$current_json_date" != "$current_date" ]]; then
@@ -67,8 +67,7 @@ jobs:
                 echo "Date in $json_file is already up to date."
               fi
             fi
-          done
-
+          done < new_files.txt
 
       # Step 6: Check if there are any changes
       - name: Check if there are any changes
