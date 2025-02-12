@@ -101,9 +101,14 @@ jobs:
           # Commit the changes
           git commit -m "Update date in json"
 
-          # Ensure we're on the correct branch and push the commit
+          # Ensure we're on the correct branch
           git checkout pr-update-json || git checkout -b pr-update-json
-          git push origin pr-update-json  # No force push here
+
+          # Pull the latest changes from the remote branch to avoid conflicts
+          git pull origin pr-update-json --rebase
+
+          # Push the changes (no force push)
+          git push origin pr-update-json
 
           # Check if a PR already exists
           PR_NUMBER=$(gh pr list --head "pr-update-json" --base main --json number --jq '.[].number')
