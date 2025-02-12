@@ -32,11 +32,20 @@ jobs:
 
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Ensure we have the last two commits
+
+      - name: Get Previous Commit
+        id: prev_commit
+        run: |
+          PREV_COMMIT=$(git rev-parse HEAD^)
+          echo "Previous commit: $PREV_COMMIT"
+          echo "prev_commit=$PREV_COMMIT" >> $GITHUB_ENV
 
       - name: Get Newly Added JSON Files
         id: new_json_files
         run: |
-          git diff --name-only --diff-filter=A ${{ github.event.before }} ${{ github.sha }} | grep '^json/.*\.json$' > new_files.txt || true
+          git diff --name-only --diff-filter=A ${{ env.prev_commit }} HEAD | grep '^json/.*\.json$' > new_files.txt || true
           echo "New files detected:"
           cat new_files.txt || echo "No new files."
 
@@ -68,6 +77,8 @@ jobs:
               fi
             fi
           done < new_files.txt
+
+          rm new_files.txt
 
       # Step 6: Check if there are any changes
       - name: Check if there are any changes
