@@ -98,13 +98,16 @@ jobs:
       - name: Commit and create PR if changes exist
         if: env.changed == 'true'
         run: |
+          # Commit the changes
           git commit -m "Update date in json"
-          git checkout -b pr-update-json
-          git push origin pr-update-json --force
-      
+
+          # Ensure we're on the correct branch and push the commit
+          git checkout pr-update-json || git checkout -b pr-update-json
+          git push origin pr-update-json  # No force push here
+
           # Check if a PR already exists
           PR_NUMBER=$(gh pr list --head "pr-update-json" --base main --json number --jq '.[].number')
-      
+
           if [ -n "$PR_NUMBER" ]; then
             echo "PR already exists. Updating it."
             # Update the existing PR (no need to create a new one)
@@ -118,9 +121,9 @@ jobs:
                          --base main \
                          --label "automated pr"
           fi
-              env:
-                GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-      
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+
       - name: Approve pull request
         if: env.changed == 'true'
         env:
