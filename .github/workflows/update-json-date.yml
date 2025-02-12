@@ -70,10 +70,10 @@ jobs:
               current_json_date=$(jq -r '.date_created' "$json_file")
 
               if [[ "$current_json_date" != "$current_date" ]]; then
-                echo "Updating $json_file with date $current_date"
-                jq --arg date "$current_date" '.date_created = $date' "$json_file" > temp.json && mv temp.json "$json_file"
+                echo "Updating $file with date $current_date"
+                jq --arg date "$current_date" '.date_created = $date' "$file" > temp.json && mv temp.json "$file"
               else
-                echo "Date in $json_file is already up to date."
+                echo "Date in $file is already up to date."
               fi
             fi
           done < new_files.txt
