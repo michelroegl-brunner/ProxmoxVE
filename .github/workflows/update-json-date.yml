@@ -1,3 +1,5 @@
+name: Update JSON Date
+
 on:
   push:
     branches:
