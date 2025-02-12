@@ -13,11 +13,11 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v3
-        
+
       - name: Delete PR Update Branch
         if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'pr-update-json-')
         run: |
-          PR_BRANCH="${github.event.pull_request.head.ref}"
+          PR_BRANCH="${{ github.event.pull_request.head.ref }}"
           echo "Deleting branch $PR_BRANCH..."
 
           # Avoid deleting the default branch (e.g., main)
