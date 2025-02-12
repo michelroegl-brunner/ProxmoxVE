@@ -11,6 +11,8 @@ on:
 jobs:
   update-app-files:
     runs-on: ubuntu-latest
+    env: 
+    BRANCH_NAME: pr-update-json-$(date +'%Y%m%d%H%M%S')
 
     permissions:
       contents: write
@@ -99,7 +101,7 @@ jobs:
         if: env.changed == 'true'
         run: |
          
-          BRANCH_NAME="pr-update-json-$(date +'%Y%m%d%H%M%S')"
+          
           git commit -m "Update date in json"
           git checkout -b $BRANCH_NAME
           git push origin $BRANCH_NAME
@@ -117,7 +119,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PR_NUMBER=$(gh pr list --head "pr-update-json-files" --json number --jq '.[].number')
+          PR_NUMBER=$(gh pr list --head ""${BRANCH_NAME}" --json number --jq '.[].number')
           if [ -n "$PR_NUMBER" ]; then
             gh pr review $PR_NUMBER --approve
           fi
@@ -127,7 +129,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PR_NUMBER=$(gh pr list --head "pr-update-json-files" --json number --jq '.[].number')
+          PR_NUMBER=$(gh pr list --head ""${BRANCH_NAME}" --json number --jq '.[].number')
           if [ -n "$PR_NUMBER" ]; then
             gh pr review $PR_NUMBER --approve
           fi
