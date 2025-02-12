@@ -95,17 +95,31 @@ jobs:
 
       - name: Commit and create PR if new files exist
         if: env.changed == 'true'
+      - name: Commit and create PR if new files exist
+        if: env.changed == 'true'
         run: |
           git commit -m "Add new JSON files"
           
+          # Stash local changes before switching branches
           git stash
 
+          # Checkout or create the PR branch
           git checkout -b pr-update-json-files || git checkout pr-update-json-files
           
-          git pull --rebase origin pr-update-json-files || git rebase --skip
+          # Check if the branch exists on the remote
+          git fetch origin
+          if git show-ref --verify --quiet refs/remotes/origin/pr-update-json-files; then
+            echo "Remote branch pr-update-json-files exists. Pulling latest changes."
+            git pull --rebase origin pr-update-json-files || git rebase --skip
+          else
+            echo "Remote branch pr-update-json-files doesn't exist. Pushing local branch to remote."
+            git push --set-upstream origin pr-update-json-files
+          fi
           
+          # Apply stashed changes
           git stash pop || echo "No stashed changes to apply."
 
+          # Automatically resolve conflicts by keeping local versions
           git diff --name-only --diff-filter=U | while read file; do
             git checkout --ours "$file" || echo "Skipping $file"
             git add "$file"
@@ -132,6 +146,8 @@ jobs:
                          --label "automated pr"
           fi
         env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
 
       - name: Approve pull request
