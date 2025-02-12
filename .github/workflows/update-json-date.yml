@@ -98,7 +98,9 @@ jobs:
         run: |
           git commit -m "Add new JSON files"
           git checkout -b pr-update-json-files
+          git pull --rebase origin pr-update-json-files || git rebase --skip
           git push origin pr-update-json-files
+
 
           PR_NUMBER=$(gh pr list --head "pr-update-json-files" --json number --jq '.[].number')
 
