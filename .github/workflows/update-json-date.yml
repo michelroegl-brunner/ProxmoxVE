@@ -62,22 +62,23 @@ jobs:
       - name: Change JSON Date
         id: change-json-date
         run: |
-          current_date=$(date +"%Y-%m-%d")
-
           while IFS= read -r file; do
+            # Skip empty lines
+            [[ -z "$file" ]] && continue
+
             if [[ -f "$file" ]]; then
               echo "Processing $file..."
-              current_json_date=$(jq -r '.date_created' "$json_file")
-
-              if [[ "$current_json_date" != "$current_date" ]]; then
+              current_json_date=$(jq -r '.date_created // empty' "$file")
+              if [[ -z "$current_json_date" || "$current_json_date" != "$current_date" ]]; then
                 echo "Updating $file with date $current_date"
                 jq --arg date "$current_date" '.date_created = $date' "$file" > temp.json && mv temp.json "$file"
               else
                 echo "Date in $file is already up to date."
               fi
+            else
+              echo "Warning: File $file not found!"
             fi
           done < new_files.txt
-
           rm new_files.txt
 
       # Step 6: Check if there are any changes
