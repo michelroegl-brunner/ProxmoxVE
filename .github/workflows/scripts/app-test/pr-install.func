@@ -76,8 +76,9 @@ network_check() {
 }
 
 update_os() {
-  apt-get update &>/dev/null
-  apt-get -o Dpkg::Options::="--force-confold" -y dist-upgrade  &>/dev/null
+  export DEBIAN_FRONTEND=noninteractive
+  apt-get update >/dev/null 2>&1
+  apt-get -o Dpkg::Options::="--force-confold" -y dist-upgrade  >/dev/null 2>&1
   rm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED  
 }
 
