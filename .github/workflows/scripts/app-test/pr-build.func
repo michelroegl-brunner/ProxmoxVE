@@ -129,7 +129,7 @@ msg_error() {
   echo -e "${msg}\n"
 }
 start(){
-  default_settings
+  dbase_settings
   return
 }
 
