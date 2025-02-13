@@ -69,7 +69,8 @@ jobs:
               CT_SCRIPT="ct/$STRIPPED_NAME.sh"
               if [[ ! -f $CT_SCRIPT ]]; then
                 echo "No CT script found for $STRIPPED_NAME"
-                exit 1
+                ERROR_MSG="No CT script found for $FILE"
+                continue
               fi
                 echo "Found CT script for $STRIPPED_NAME"
                 chmod +x "$CT_SCRIPT"
@@ -78,7 +79,8 @@ jobs:
               INSTALL_SCRIPT="install/$STRIPPED_NAME-install.sh"
               if [[ ! -f $INSTALL_SCRIPT ]]; then
                 echo "No install script found for $STRIPPED_NAME"
-                exit 1
+                ERROR_MSG="No install script found for $FILE"
+                continue
               fi
                 
                 echo "Found install script for $STRIPPED_NAME"
