@@ -35,6 +35,8 @@ jobs:
           CHANGED_FILES=$(echo "$CHANGED_FILES" | tr '\n' ' ')  
           echo "Changed files: $CHANGED_FILES"  
           echo "SCRIPT=$CHANGED_FILES" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
 
       - name: Get scripts
         id: check-install-script
