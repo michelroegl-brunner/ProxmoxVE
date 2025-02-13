@@ -11,11 +11,13 @@ jobs:
   run-install-script:
     runs-on: pvehost
     steps:          
-      - name: Checkout PR branch
+      - name: Checkout PR branch (supports forks)
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0  
+          repository: ${{ github.event.pull_request.head.repo.full_name }}  # Ensure it checks out the forked repo
+          fetch-depth: 0          
+          
       - name: Add Git safe directory
         run: |
           git config --global --add safe.directory /__w/ProxmoxVE/ProxmoxVE
