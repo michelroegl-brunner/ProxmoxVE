@@ -7,10 +7,11 @@
 color() {
   return
 }
-SCRIPT_NAME=$(basename "$0")
+
+SCRIPT_NAME="${BASH_SOURCE[0]:-unknown_script}"
 
 catch_errors() {
-  set -Euo pipefail
+  set -Euoe pipefail
   trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 }
 
