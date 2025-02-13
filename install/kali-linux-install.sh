@@ -28,6 +28,8 @@ gpg --export ED444FF07D8D0BF6  > /etc/apt/trusted.gpg.d/kali-rolling.gpg
 msg_ok "Added Kali Linux Repository"
 
 msg_info "Updating System"
+export DEBIAN_FRONTEND=noninteractive
+export DEBCONF_NOWARNINGS=yes
 $STD apt-get update
 $STD apt-get -y upgrade
 msg_ok "Updated System"	
