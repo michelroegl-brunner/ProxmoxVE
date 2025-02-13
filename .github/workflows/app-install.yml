@@ -133,6 +133,7 @@ jobs:
               echo "Posting error message for $FILE"
               echo ${CLEANED_ERROR_MSG}
               gh pr comment ${{ github.event.pull_request.number }} \
+                --repo ${{ github.repository }} \
                 --body ":warning: The script _**$FILE**_ failed with the following message: <br> <div><strong>${CLEANED_ERROR_MSG}</strong></div>"
 
               
