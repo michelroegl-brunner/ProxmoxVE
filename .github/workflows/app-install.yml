@@ -57,6 +57,12 @@ jobs:
           ALL_FILES=$(echo "${ALL_FILES[@]}" | xargs)
           echo "$ALL_FILES"
           echo "ALL_FILES=$ALL_FILES" >> $GITHUB_ENV
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v3
+        id: hello
+        with:
+          message: |
+            Hello world ! :wave:
         
       - name: Run scripts
         id: run-install
@@ -120,6 +126,12 @@ jobs:
                 pct destroy $container_id
             fi            
           done
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v3
+        id: hello
+        with:
+          message: |
+            Hello world ! :wave:
 
       - name: Post error comments
         run: |
