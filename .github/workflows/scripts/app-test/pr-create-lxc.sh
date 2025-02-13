@@ -123,58 +123,45 @@ if pct status $CTID &>/dev/null; then
   exit 206
 fi
 
-# Get template storage
 TEMPLATE_STORAGE=$(select_storage template) || exit
-msg_ok "Using  $TEMPLATE_STORAGE   for Template Storage."
 
-# Get container storage
 CONTAINER_STORAGE=$(select_storage container) || exit
-msg_ok "Using  $CONTAINER_STORAGE   for Container Storage."
 
-# Update LXC template list
-msg_info "Updating LXC Template List"
 pveam update >/dev/null
-msg_ok "Updated LXC Template List"
 
-# Get LXC template string
+
 TEMPLATE_SEARCH=${PCT_OSTYPE}-${PCT_OSVERSION:-}
 mapfile -t TEMPLATES < <(pveam available -section system | sed -n "s/.*\($TEMPLATE_SEARCH.*\)/\1/p" | sort -t - -k 2 -V)
 [ ${#TEMPLATES[@]} -gt 0 ] || { msg_error "Unable to find a template when searching for '$TEMPLATE_SEARCH'."; exit 207; }
 TEMPLATE="${TEMPLATES[-1]}"
 
 TEMPLATE_PATH="/var/lib/vz/template/cache/$TEMPLATE"
-# Check if template exists, if corrupt remove and redownload
+
 if ! pveam list "$TEMPLATE_STORAGE" | grep -q "$TEMPLATE"; then
   [[ -f "$TEMPLATE_PATH" ]] && rm -f "$TEMPLATE_PATH"
-  msg_info "Downloading LXC Template"
   pveam download "$TEMPLATE_STORAGE" "$TEMPLATE" >/dev/null ||
     { msg_error "A problem occurred while downloading the LXC template."; exit 208; }
-  msg_ok "Downloaded LXC Template"
 fi
 
-# Check and fix subuid/subgid
+
 grep -q "root:100000:65536" /etc/subuid || echo "root:100000:65536" >> /etc/subuid
 grep -q "root:100000:65536" /etc/subgid || echo "root:100000:65536" >> /etc/subgid
 
-# Combine all options
 PCT_OPTIONS=(${PCT_OPTIONS[@]:-${DEFAULT_PCT_OPTIONS[@]}})
 [[ " ${PCT_OPTIONS[@]} " =~ " -rootfs " ]] || PCT_OPTIONS+=(-rootfs "$CONTAINER_STORAGE:${PCT_DISK_SIZE:-8}")
 
-echo "${PCT_OPTIONS[@]}"
 
-# Create container with template integrity check
-msg_info "Creating LXC Container"
   if ! pct create "$CTID" "${TEMPLATE_STORAGE}:vztmpl/${TEMPLATE}" "${PCT_OPTIONS[@]}" &>/dev/null; then
       [[ -f "$TEMPLATE_PATH" ]] && rm -f "$TEMPLATE_PATH"
       
-    msg_ok "Template integrity check completed"
+
     pveam download "$TEMPLATE_STORAGE" "$TEMPLATE" >/dev/null ||    
       { msg_error "A problem occurred while re-downloading the LXC template."; exit 208; }
     
-    msg_ok "Re-downloaded LXC Template"
+
     if ! pct create "$CTID" "${TEMPLATE_STORAGE}:vztmpl/${TEMPLATE}" "${PCT_OPTIONS[@]}" &>/dev/null; then
         msg_error "A problem occurred while trying to create container after re-downloading template."
       exit 200
     fi
   fi
-msg_ok "LXC Container  $CTID   was successfully created."
+

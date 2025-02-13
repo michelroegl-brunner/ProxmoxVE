@@ -11,7 +11,7 @@
     "interface_port": 8090,
     "documentation": null,
     "website": "https://www.ispyconnect.com/",
-    "logo": "https://ispycontent.azureedge.net/img/ispy2.png?raw=true",
+    "logo": "https://ispycontent.azureedge.net/impy2.png?raw=true",
     "description": "AgentDVR a new video surveillance solution for the Internet Of Things.",
     "install_methods": [
         {

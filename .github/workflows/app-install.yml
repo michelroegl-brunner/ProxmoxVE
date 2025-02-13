@@ -1,6 +1,8 @@
 name: Run Scripts on PVE Node for testing
+permissions:
+    pull-requests: write
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
     paths:
@@ -11,11 +13,13 @@ jobs:
   run-install-script:
     runs-on: pvehost
     steps:          
-      - name: Checkout PR branch
+      - name: Checkout PR branch (supports forks)
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0  
+          repository: ${{ github.event.pull_request.head.repo.full_name }}  # Ensure it checks out the forked repo
+          fetch-depth: 0          
+          
       - name: Add Git safe directory
         run: |
           git config --global --add safe.directory /__w/ProxmoxVE/ProxmoxVE
@@ -26,13 +30,15 @@ jobs:
         run: |
           echo "GH_TOKEN=${GH_TOKEN}" >> $GITHUB_ENV
 
-      - name: Get changed files in PR
-        id: changed-files
-        run: | 
-          CHANGED_FILES=$(gh pr diff --name-only ${{ github.event.pull_request.number }})  
-          CHANGED_FILES=$(echo "$CHANGED_FILES" | tr '\n' ' ')  
-          echo "Changed files: $CHANGED_FILES"  
+      - name: Get Changed Files
+        run: |
+          CHANGED_FILES=$(gh pr diff ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --name-only)
+          CHANGED_FILES=$(echo "$CHANGED_FILES" | tr '\n' ' ')
+          echo "Changed files: $CHANGED_FILES"
           echo "SCRIPT=$CHANGED_FILES" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
 
       - name: Get scripts
         id: check-install-script
@@ -51,7 +57,7 @@ jobs:
           ALL_FILES=$(echo "${ALL_FILES[@]}" | xargs)
           echo "$ALL_FILES"
           echo "ALL_FILES=$ALL_FILES" >> $GITHUB_ENV
-        
+     
       - name: Run scripts
         id: run-install
         continue-on-error: true
@@ -65,7 +71,8 @@ jobs:
               CT_SCRIPT="ct/$STRIPPED_NAME.sh"
               if [[ ! -f $CT_SCRIPT ]]; then
                 echo "No CT script found for $STRIPPED_NAME"
-                exit 1
+                ERROR_MSG="No CT script found for $FILE"
+                continue
               fi
                 echo "Found CT script for $STRIPPED_NAME"
                 chmod +x "$CT_SCRIPT"
@@ -74,7 +81,8 @@ jobs:
               INSTALL_SCRIPT="install/$STRIPPED_NAME-install.sh"
               if [[ ! -f $INSTALL_SCRIPT ]]; then
                 echo "No install script found for $STRIPPED_NAME"
-                exit 1
+                ERROR_MSG="No install script found for $FILE"
+                continue
               fi
                 
                 echo "Found install script for $STRIPPED_NAME"
@@ -112,11 +120,12 @@ jobs:
                 pct destroy $container_id
             fi            
           done
-      
+   
+
       - name: Post error comments
         run: |
           ERROR="false"
-          SEARCH_LINE=".github/workflows/scripts/app-test/pr-build.func: line"
+          SEARCH_LINE=".github/workflows/scripts/app-test/pr-build.func: line 252"
           for FILE in ${{ env.ALL_FILES }}; do
             STRIPPED_NAME=$(basename "$FILE" | sed 's/-install//' | sed 's/\.sh$//')
             if [[ ! -f result_$STRIPPED_NAME.log ]]; then
@@ -129,16 +138,19 @@ jobs:
               echo "Posting error message for $FILE"
               echo ${CLEANED_ERROR_MSG}
               gh pr comment ${{ github.event.pull_request.number }} \
+                --repo ${{ github.repository }} \
                 --body ":warning: The script _**$FILE**_ failed with the following message: <br> <div><strong>${CLEANED_ERROR_MSG}</strong></div>"
 
               
               ERROR="true"
-              echo "ERROR=$ERROR" >> $GITHUB_ENV
             fi
           done
+          echo "ERROR=$ERROR" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Fail if error
-        if: ${{ env.ERROR }} == 'true'
+        if: ${{ env.ERROR == 'true' }}
         run: exit 1 
       
   
