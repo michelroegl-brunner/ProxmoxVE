@@ -30,12 +30,13 @@ jobs:
 
       - name: Get Changed Files
         run: |
-            CHANGED_FILES=$(gh pr diff ${{ github.event.pull_request.number }} --repo ${{ github.event.pull_request.head.repo.full_name }} --name-only)
-            CHANGED_FILES=$(echo "$CHANGED_FILES" | tr '\n' ' ')
-            echo "Changed files: $CHANGED_FILES"
-            echo "SCRIPT=$CHANGED_FILES" >> $GITHUB_ENV
+          CHANGED_FILES=$(gh pr diff ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --name-only)
+          CHANGED_FILES=$(echo "$CHANGED_FILES" | tr '\n' ' ')
+          echo "Changed files: $CHANGED_FILES"
+          echo "SCRIPT=$CHANGED_FILES" >> $GITHUB_ENV
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
 
       - name: Get scripts
         id: check-install-script
