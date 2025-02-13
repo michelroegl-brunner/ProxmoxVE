@@ -3,7 +3,7 @@
 # Author: michelroegl-brunner
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 
-# This function sets color variables for formatting output in the terminal
+
 color() {
   return
 }
@@ -12,7 +12,7 @@ catch_errors() {
   trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 }
 
-# This function handles errors
+
 error_handler() {
   local line_number="$1"
   local command="$2"
@@ -41,8 +41,9 @@ msg_error() {
   local msg="$1"
   echo -e "${msg}\n"
 }
-  RETRY_NUM=10
-  RETRY_EVERY=3
+
+RETRY_NUM=10
+RETRY_EVERY=3
 setting_up_container() {
 
   sed -i "/$LANG/ s/\(^# \)//" /etc/locale.gen
@@ -66,8 +67,6 @@ setting_up_container() {
   fi
   rm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED
   systemctl disable -q --now systemd-networkd-wait-online.service
-  msg_ok "Set up Container OS"
-  msg_ok "Network Connected: $(hostname -I)"
 }
 
 network_check() {
@@ -77,11 +76,9 @@ network_check() {
 }
 
 update_os() {
-  msg_info "Updating Container OS"
-  apt-get update
+  apt-get update &>/dev/null
   apt-get -o Dpkg::Options::="--force-confold" -y dist-upgrade  &>/dev/null
-  rm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED  &>/dev/null
-  msg_ok "Updated Container OS"
+  rm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED  
 }
 
 motd_ssh() {
