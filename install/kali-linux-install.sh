@@ -24,7 +24,7 @@ msg_ok "Installed Dependencies"
 msg_info "Adding Kali Linux Repository"
 wget -q -O - https://archive.kali.org/archive-key.asc | gpg --import
 echo "deb http://http.kali.org/kali kali-rolling main non-free contrib" > /etc/apt/sources.list.d/kali.list
-gpg --export ED444FF07D8D0BF6  > /etc/apt/trusted.gpg.d/kali-rolling.gpg
+$STD gpg --export ED444FF07D8D0BF6  > /etc/apt/trusted.gpg.d/kali-rolling.gpg
 msg_ok "Added Kali Linux Repository"
 
 msg_info "Updating System"
