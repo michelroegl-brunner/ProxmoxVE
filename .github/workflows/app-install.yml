@@ -1,4 +1,6 @@
 name: Run Scripts on PVE Node for testing
+permissions:
+    pull-requests: write
 on:
   pull_request:
     branches:
@@ -119,10 +121,6 @@ jobs:
             fi            
           done
 
-      - name: Authenticate GitHub CLI with PAT
-        run: |
-           echo ${{ secrets.PAT_TOKEN }} | gh auth login --with-token
-      
       - name: Post error comments
         run: |
           ERROR="false"
@@ -148,7 +146,7 @@ jobs:
           done
           echo "ERROR=$ERROR" >> $GITHUB_ENV
         env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Fail if error
         if: ${{ env.ERROR == 'true' }}
