@@ -24,7 +24,7 @@ error_handler() {
 verb_ip6() {
     
     STD="silent"
-    silent() { "$@" >/dev/null 2>&1; }
+    silent() { "$@" >/dev/null; }
     return
 }
 
