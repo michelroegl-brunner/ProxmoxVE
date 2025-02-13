@@ -8,7 +8,7 @@ color() {
   return
 }
 catch_errors() {
-  set -Eeuo pipefail
+  set -Euo pipefail
   trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
 }
 
@@ -22,7 +22,9 @@ error_handler() {
   exit 300
 }
 verb_ip6() {
-    STD=""
+    
+    STD="silent"
+    silent() { "$@" >/dev/null 2>&1; }
     return
 }
 
