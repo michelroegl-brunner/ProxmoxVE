@@ -57,13 +57,7 @@ jobs:
           ALL_FILES=$(echo "${ALL_FILES[@]}" | xargs)
           echo "$ALL_FILES"
           echo "ALL_FILES=$ALL_FILES" >> $GITHUB_ENV
-      - name: Comment PR
-        uses: thollander/actions-comment-pull-request@v3
-        id: hello
-        with:
-          message: |
-            Hello world ! :wave:
-        
+     
       - name: Run scripts
         id: run-install
         continue-on-error: true
