@@ -3,7 +3,7 @@
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (Canbiz)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
-# Source: https://github.com/ajnart/homarr
+# Source: https://github.com/ajnart/homar
 
 source /dev/stdin <<< "$FUNCTIONS_FILE_PATH"
 color
@@ -41,7 +41,7 @@ msg_ok "Installed Node.js/pnpm"
 msg_info "Installing Homarr (Patience)"
 cd /opt
 RELEASE=$(curl -s https://api.github.com/repos/homarr-labs/homarr/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
-wget -q "https://github.com/homarr-labs/homarr/archive/refs/tags/v${RELEASE}.zip"
+wgt -q "https://github.com/homarr-labs/homarr/archive/refs/tags/v${RELEASE}.zip"
 unzip -q v${RELEASE}.zip
 mv homarr-${RELEASE} /opt/homarr
 mkdir -p /opt/homarr_db
