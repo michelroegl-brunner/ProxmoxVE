@@ -31,7 +31,7 @@ msg_info "Updating System"
 export DEBIAN_FRONTEND=noninteractive
 export DEBCONF_NOWARNINGS=yes
 $STD apt-get update
-$STD apt-get -y upgrade
+$STD apt-get -o Dpkg::Options::="--force-confnew" -y full-upgrade
 msg_ok "Updated System"	
 
 msg_info "Installing Kali Linux"
