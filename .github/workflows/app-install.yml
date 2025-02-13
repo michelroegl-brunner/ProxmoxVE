@@ -126,12 +126,7 @@ jobs:
                 pct destroy $container_id
             fi            
           done
-      - name: Comment PR
-        uses: thollander/actions-comment-pull-request@v3
-        id: hello
-        with:
-          message: |
-            Hello world ! :wave:
+   
 
       - name: Post error comments
         run: |
