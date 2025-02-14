@@ -91,10 +91,10 @@ jobs:
                   for i in {4..7}; do
                   LINE=$(sed -n "${i}p" "$FILE")
                       case $i in
-                          4) [[ $LINE == $EXPECTED_AUTHOR* ]] || printf "Line %d was: '%s' | Should start with: '%s'\n" "$i" "$LINE" "$EXPECTED_AUTHOR" >> result_$FILE.log ;;
-                          5) [[ $LINE == "$EXPECTED_LICENSE" ]] || printf "Line %d was: '%s' | Should be: '%s'\n" "$i" "$LINE" "$EXPECTED_LICENSE" >> result_$FILE.log ;;
-                          6) [[ $LINE == $EXPECTED_SOURCE* ]] || printf "Line %d was: '%s' | Should start with: '%s'\n" "$i" "$LINE" "$EXPECTED_SOURCE" >> result_$FILE.log ;;
-                          7) [[ -z $LINE ]] || printf "Line %d was: '%s' | Should be empty\n" "$i" "$LINE" >> result_$FILE.log ;;
+                          4) [[ $LINE == $EXPECTED_AUTHOR* ]] || printf "Line %d was: '%s' | Should start with: '%s'\n" "$i" "$LINE" "$EXPECTED_AUTHOR" >> $LOG_FILE ;;
+                          5) [[ $LINE == "$EXPECTED_LICENSE" ]] || printf "Line %d was: '%s' | Should be: '%s'\n" "$i" "$LINE" "$EXPECTED_LICENSE" >> $LOG_FILE ;;
+                          6) [[ $LINE == $EXPECTED_SOURCE* ]] || printf "Line %d was: '%s' | Should start with: '%s'\n" "$i" "$LINE" "$EXPECTED_SOURCE" >> $LOG_FILE ;;
+                          7) [[ -z $LINE ]] || printf "Line %d was: '%s' | Should be empty\n" "$i" "$LINE" >> $LOG_FILE ;;
                       esac
                   done
                   
@@ -165,7 +165,7 @@ jobs:
               fi
 
           elif [[ $FILE =~ ^install/.*-install\.sh$ ]]; then
-              LOG_FILE="result_$FILE.log"
+              LOG_FILE="$LOG_FILE"
               > "$LOG_FILE" # Clear previous log content
 
               FIRST_LINE=$(sed -n '1p' "$FILE")
@@ -188,10 +188,10 @@ jobs:
               for i in {4..7}; do
               LINE=$(sed -n "${i}p" "$FILE")
                   case $i in
-                      4) [[ $LINE == $EXPECTED_AUTHOR* ]] || printf "Line %d was: '%s' | Should start with: '%s'\n" "$i" "$LINE" "$EXPECTED_AUTHOR" >> result_$FILE.log ;;
-                      5) [[ $LINE == "$EXPECTED_LICENSE" ]] || printf "Line %d was: '%s' | Should be: '%s'\n" "$i" "$LINE" "$EXPECTED_LICENSE" >> result_$FILE.log ;;
-                      6) [[ $LINE == $EXPECTED_SOURCE* ]] || printf "Line %d was: '%s' | Should start with: '%s'\n" "$i" "$LINE" "$EXPECTED_SOURCE" >> result_$FILE.log ;;
-                      7) [[ -z $LINE ]] || printf "Line %d was: '%s' | Should be empty\n" "$i" "$LINE" >> result_$FILE.log ;;
+                      4) [[ $LINE == $EXPECTED_AUTHOR* ]] || printf "Line %d was: '%s' | Should start with: '%s'\n" "$i" "$LINE" "$EXPECTED_AUTHOR" >> $LOG_FILE ;;
+                      5) [[ $LINE == "$EXPECTED_LICENSE" ]] || printf "Line %d was: '%s' | Should be: '%s'\n" "$i" "$LINE" "$EXPECTED_LICENSE" >> $LOG_FILE ;;
+                      6) [[ $LINE == $EXPECTED_SOURCE* ]] || printf "Line %d was: '%s' | Should start with: '%s'\n" "$i" "$LINE" "$EXPECTED_SOURCE" >> $LOG_FILE ;;
+                      7) [[ -z $LINE ]] || printf "Line %d was: '%s' | Should be empty\n" "$i" "$LINE" >> $LOG_FILE ;;
                   esac
               done
 
@@ -226,7 +226,7 @@ jobs:
         run: |
           ERROR="false"
           for FILE in ${{ env.ALL_FILES }}; do
-            if [[ ! -f result_$FILE.log ]]; then
+            if [[ ! -f $LOG_FILE ]]; then
               continue
             fi
             FILE_STRIPPED="${FILE##*/}"
