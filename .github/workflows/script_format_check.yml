@@ -62,17 +62,6 @@ jobs:
         id: run-install
         continue-on-error: true
         run: |
-
-          LINE 8:source /dev/stdin <<< "$FUNCTIONS_FILE_PATH"
-                color
-                verb_ip6
-                catch_errors
-                setting_up_container
-                network_check
-                update_os
-
-                msg_info "Installing Dependencies"
-
           for FILE in ${{ env.ALL_FILES }}; do            
             STRIPPED_NAME=$(basename "$FILE" | sed 's/-install//' | sed 's/\.sh$//')
             echo "Running Test for: $STRIPPED_NAME"
