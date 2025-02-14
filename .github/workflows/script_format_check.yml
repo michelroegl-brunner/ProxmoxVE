@@ -259,6 +259,7 @@ jobs:
                 echo 'Last line was ${line} | Should be: msg_ok "Cleaned"' > result_$FILE.log
               fi
             fi
+            cat result_$FILE.log
           done          
 
       - name: Post error comments
