@@ -165,8 +165,6 @@ jobs:
                   [[ "$LINE" != "${EXPECTED[$((i-16))]}" ]] && echo "Line $i was $LINE | Should be: ${EXPECTED[$((i-16))]}" >> "$LOG_FILE"
               done
           elif [[ $FILE =~ ^install/.*-install\.sh$ ]]; then
-              LOG_FILE="$LOG_FILE"
-              > "$LOG_FILE" # Clear previous log content
 
               FIRST_LINE=$(sed -n '1p' "$FILE")
               [[ "$FIRST_LINE" != "#!/bin/bash" ]] && echo "Line 1 was $FIRST_LINE | Should be: #!/bin/bash" >> "$LOG_FILE"
