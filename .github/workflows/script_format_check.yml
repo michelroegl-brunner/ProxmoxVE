@@ -38,31 +38,12 @@ jobs:
           echo "SCRIPT=$CHANGED_FILES" >> $GITHUB_ENV
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
-
-      - name: Get scripts
-        id: check-install-script
-        run: |
-          ALL_FILES=()
-          ADDED_FILES=()  
-          for FILE in ${{ env.SCRIPT }}; do           
-            if [[ $FILE =~ ^install/.*-install\.sh$ ]] || [[ $FILE =~ ^ct/.*\.sh$ ]]; then             
-              STRIPPED_NAME=$(basename "$FILE" | sed 's/-install//' | sed 's/\.sh$//')
-              if [[ ! " ${ADDED_FILES[@]} " =~ " $STRIPPED_NAME " ]]; then
-                ALL_FILES+=("$FILE")
-                ADDED_FILES+=("$STRIPPED_NAME")  # Mark this base file as added (without the path)
-              fi
-            fi
-          done
-          ALL_FILES=$(echo "${ALL_FILES[@]}" | xargs)
-          echo "$ALL_FILES"
-          echo "ALL_FILES=$ALL_FILES" >> $GITHUB_ENV
-     
+            
       - name: Check scripts
         id: run-install
         continue-on-error: true
         run: |
-          for FILE in ${{ env.ALL_FILES }}; do
+          for FILE in ${{ env.SCRIPT }}; do
               STRIPPED_NAME=$(basename "$FILE" | sed 's/-install//' | sed 's/\.sh$//')
               echo "Running Test for: $STRIPPED_NAME"
               FILE_STRIPPED="${FILE##*/}"
