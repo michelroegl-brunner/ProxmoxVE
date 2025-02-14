@@ -65,7 +65,9 @@ jobs:
           for FILE in ${{ env.ALL_FILES }}; do
               STRIPPED_NAME=$(basename "$FILE" | sed 's/-install//' | sed 's/\.sh$//')
               echo "Running Test for: $STRIPPED_NAME"
-              LOG_FILE="result_$FILE.log"
+              FILE_STRIPPED="${FILE##*/}"
+              LOG_FILE="result_$FILE_STRIPPED.log"
+
               if [[ $FILE =~ ^ct/.*\.sh$ ]]; then
 
                   FIRST_LINE=$(sed -n '1p' "$FILE")
@@ -227,7 +229,8 @@ jobs:
             if [[ ! -f result_$FILE.log ]]; then
               continue
             fi
-            ERROR_MSG=$(cat result_$FILE.log)
+            FILE_STRIPPED="${FILE##*/}"
+            ERROR_MSG=$(cat result_$FILE_STRIPPED.log)
       
             if [ -n "$ERROR_MSG" ]; then
               echo "Posting error message for $FILE"
