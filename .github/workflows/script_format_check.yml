@@ -118,7 +118,7 @@ jobs:
                 thirteenth_line=$(sed -n '13p' your_script.sh)
                 echo 'Line 13 was ${thirteenth_line} | Should be: var_os="[debain|alpine|ubuntu]"' > result_$FILE.log
               fi
-              if [[ $(sed -n '14p' "$FILE") != var_version=* ]]; then
+              if [[ "$(sed -n '14p' "$FILE")" != var_version=* ]]; then
                 fourteenth_line=$(sed -n '14p' your_script.sh)
                 echo 'Line 14 was ${fourteenth_line} | Should be: var_version="[OS-VERSION]"' > result_$FILE.log
               fi
