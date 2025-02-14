@@ -70,33 +70,39 @@ jobs:
 
               if [[ $FILE =~ ^ct/.*\.sh$ ]]; then
 
-                  FIRST_LINE=$(sed -n '1p' "$FILE")
-                  [[ "$FIRST_LINE" != "#!/bin/bash" ]] && echo "Line 1 was $FIRST_LINE | Should be: #!/bin/bash" >> "$LOG_FILE"
+                FIRST_LINE=$(sed -n '1p' "$FILE")
+                [[ "$FIRST_LINE" != "#!/usr/bin/env bash" ]] && echo "Line 1 was $FIRST_LINE | Should be: #!/usr/bin/env bash" >> "$LOG_FILE"
+                SECOND_LINE=$(sed -n '2p' "$FILE")
+                [[ "$SECOND_LINE" != "source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)" ]] && 
+                echo "Line 2 was $SECOND_LINE | Should be: source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)" >> "$LOG_FILE"
+                THIRD_LINE=$(sed -n '3p' "$FILE")
+                 if ! [[ "$THIRD_LINE" =~ ^#\ Copyright\ \(c\)\ [0-9]{4}-[0-9]{4}\ community-scripts\ ORG$ || "$THIRD_LINE" =~ ^Copyright\ \(c\)\ [0-9]{4}-[0-9]{4}\ tteck$ ]]; then
+                     echo "Line 3 was $THIRD_LINE | Should be: # Copyright (c) 2021-2025 community-scripts ORG" >> "$LOG_FILE"
+                 fi
+      
+                 EXPECTED_AUTHOR="# Author:"
+              EXPECTED_LICENSE="# License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE"
+              EXPECTED_SOURCE="# Source:"
+              EXPECTED_EMPTY=""
 
-                  SECOND_LINE=$(sed -n '2p' "$FILE")
-                  [[ "$SECOND_LINE" != "source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)" ]] && 
-                  echo "Line 2 was $SECOND_LINE | Should be: source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)" >> "$LOG_FILE"
-
-                  THIRD_LINE=$(sed -n '3p' "$FILE")
-                  if ! [[ "$THIRD_LINE" =~ ^#\ Copyright\ \(c\)\ [0-9]{4}-[0-9]{4}\ community-scripts\ ORG$ || "$THIRD_LINE" =~ ^Copyright\ \(c\)\ [0-9]{4}-[0-9]{4}\ tteck$ ]]; then
-                      echo "Line 3 was $THIRD_LINE | Should be: # Copyright (c) 2021-2025 community-scripts ORG" >> "$LOG_FILE"
-                  fi
-
-                  EXPECTED=(
-                      EXPECTED_AUTHOR="# Author:"
-                      EXPECTED_LICENSE="# License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE"
-                      EXPECTED_SOURCE="# Source:"
-                      EXPECTED_EMPTY=""
-                  )
-                  for i in {4..7}; do
+              for i in {4..7}; do
                   LINE=$(sed -n "${i}p" "$FILE")
-                      case $i in
-                          4) [[ $LINE == $EXPECTED_AUTHOR* ]] || printf "Line %d was: '%s' | Should start with: '%s'\n" "$i" "$LINE" "$EXPECTED_AUTHOR" >> $LOG_FILE ;;
-                          5) [[ $LINE == "$EXPECTED_LICENSE" ]] || printf "Line %d was: '%s' | Should be: '%s'\n" "$i" "$LINE" "$EXPECTED_LICENSE" >> $LOG_FILE ;;
-                          6) [[ $LINE == $EXPECTED_SOURCE* ]] || printf "Line %d was: '%s' | Should start with: '%s'\n" "$i" "$LINE" "$EXPECTED_SOURCE" >> $LOG_FILE ;;
-                          7) [[ -z $LINE ]] || printf "Line %d was: '%s' | Should be empty\n" "$i" "$LINE" >> $LOG_FILE ;;
-                      esac
-                  done
+
+                  case $i in
+                      4) 
+                          [[ $LINE == $EXPECTED_AUTHOR* ]] || printf "Line %d was: '%s' | Should start with: '%s'\n" "$i" "$LINE" "$EXPECTED_AUTHOR" >> $LOG_FILE
+                          ;;
+                      5) 
+                          [[ "$LINE" == "$EXPECTED_LICENSE" ]] || printf "Line %d was: '%s' | Should be: '%s'\n" "$i" "$LINE" "$EXPECTED_LICENSE" >> $LOG_FILE
+                          ;;
+                      6) 
+                          [[ $LINE == $EXPECTED_SOURCE* ]] || printf "Line %d was: '%s' | Should start with: '%s'\n" "$i" "$LINE" "$EXPECTED_SOURCE" >> $LOG_FILE
+                          ;;
+                      7) 
+                          [[ -z $LINE ]] || printf "Line %d was: '%s' | Should be empty\n" "$i" "$LINE" >> $LOG_FILE
+                          ;;
+                  esac
+              done
                   
               
               EXPECTED_PREFIXES=(
