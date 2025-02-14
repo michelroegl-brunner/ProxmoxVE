@@ -11,7 +11,7 @@ on:
 
 jobs:
   run-install-script:
-    runs-on: unbutu-latest
+    runs-on: pvehost
     steps:          
       - name: Checkout PR branch (supports forks)
         uses: actions/checkout@v4
