@@ -67,9 +67,7 @@ jobs:
               echo "Running Test for: $STRIPPED_NAME"
 
               if [[ $FILE =~ ^ct/.*\.sh$ ]]; then
-                  LOG_FILE="result_$FILE.log"
-                  > "$LOG_FILE" # Clear previous log content
-
+                
                   FIRST_LINE=$(sed -n '1p' "$FILE")
                   [[ "$FIRST_LINE" != "#!/bin/bash" ]] && echo "Line 1 was $FIRST_LINE | Should be: #!/bin/bash" >> "$LOG_FILE"
 
