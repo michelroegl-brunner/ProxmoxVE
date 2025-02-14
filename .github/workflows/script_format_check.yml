@@ -226,11 +226,11 @@ jobs:
         run: |
           ERROR="false"
           for FILE in ${{ env.ALL_FILES }}; do
+            LOG_FILE="result_${FILE##*/}"
             if [[ ! -f $LOG_FILE ]]; then
               continue
             fi
-            FILE_STRIPPED="${FILE##*/}"
-            ERROR_MSG=$(cat result_$FILE_STRIPPED.log)
+            ERROR_MSG=$(cat $LOG_FILE)
       
             if [ -n "$ERROR_MSG" ]; then
               echo "Posting error message for $FILE"
