@@ -114,7 +114,7 @@ jobs:
                 twelveth_line=$(sed -n '12p' $FILE)
                 echo 'Line 12 was ${twelveth_line} | Should be: var_disk="[NUMBER]"' > result_$FILE.log
               fi
-              if [[ "$(sed -n '13p' "$FILE")" != var_os=* || ! "${line#*=}" =~ ^(debian|alpine|ubuntu)$
+              if [[ "$(sed -n '13p' "$FILE")" != var_os=* || ! "${line#*=}" =~ ^(debian|alpine|ubuntu)$ ]]; then
                 thirteenth_line=$(sed -n '13p' $FILE)
                 echo 'Line 13 was ${thirteenth_line} | Should be: var_os="[debain|alpine|ubuntu]"' > result_$FILE.log
               fi
