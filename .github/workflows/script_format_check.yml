@@ -166,8 +166,8 @@ jobs:
               done
 
               LAST_LINE=$(sed -n '$p' "$FILE")
-              if ! [[ "$LAST_LINE" =~ ^echo\ -e\ \${TAB}\${GATEWAY}\${BGN}http\://${IP}(:[0-9]+)?(/[^ ]*)?\${CL}$ ]]; then
-                  echo "Last line was $LAST_LINE | Should be: echo -e \"\${TAB}\${GATEWAY}\${BGN}http://\${IP}\${CL}\"" >> "$LOG_FILE"
+              if ! [[ "$LAST_LINE" =~ ^echo\ -e\ \${TAB}\${GATEWAY}\${BGN}http\:\/\/\${IP}(:[0-9]+)?(\/[^ ]*)?\${CL}$ ]]; then
+                  echo "Last line was $LAST_LINE | Should be: echo -e \"\${TAB}\${GATEWAY}\${BGN}http://\${IP}[PORT/DIR]\${CL}\"" >> "$LOG_FILE"
               fi
 
           elif [[ $FILE =~ ^install/.*-install\.sh$ ]]; then
