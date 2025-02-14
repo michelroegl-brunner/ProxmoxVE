@@ -89,7 +89,7 @@ jobs:
                 chmod +x "$INSTALL_SCRIPT"
                 RUNNING_FILE=$FILE
             fi
-            git remote add community-scripts https://github.com/username/repo-name.git
+            git remote add community-scripts https://github.com/community-scripts/ProxmoxVE.git
             git checkout community-scripts/main -- .github/workflows/scripts/app-test/pr-build.func
             git checkout community-scripts/main -- .github/workflows/scripts/app-test/pr-install.func
             git checkout community-scripts/main -- .github/workflows/scripts/app-test/pr-alpine-install.func
