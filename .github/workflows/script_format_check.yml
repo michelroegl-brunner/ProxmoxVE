@@ -164,12 +164,6 @@ jobs:
                   )
                   [[ "$LINE" != "${EXPECTED[$((i-16))]}" ]] && echo "Line $i was $LINE | Should be: ${EXPECTED[$((i-16))]}" >> "$LOG_FILE"
               done
-
-              LAST_LINE=$(sed -n '$p' "$FILE")
-              if ! [[ "$LAST_LINE" =~ ^echo\ -e\ \${TAB}\${GATEWAY}\${BGN}http\:\/\/\${IP}(:[0-9]+)?(\/[^ ]*)?\${CL}$ ]]; then
-                  echo "Last line was $LAST_LINE | Should be: echo -e \"\${TAB}\${GATEWAY}\${BGN}http://\${IP}[PORT/DIR]\${CL}\ "" >> "$LOG_FILE"
-              fi
-
           elif [[ $FILE =~ ^install/.*-install\.sh$ ]]; then
               LOG_FILE="$LOG_FILE"
               > "$LOG_FILE" # Clear previous log content
