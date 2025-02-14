@@ -80,7 +80,7 @@ jobs:
                      echo "Line 3 was $THIRD_LINE | Should be: # Copyright (c) 2021-2025 community-scripts ORG" >> "$LOG_FILE"
                  fi
       
-                 EXPECTED_AUTHOR="# Author:"
+                EXPECTED_AUTHOR="# Author:"
               EXPECTED_LICENSE="# License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE"
               EXPECTED_SOURCE="# Source:"
               EXPECTED_EMPTY=""
@@ -232,7 +232,9 @@ jobs:
         run: |
           ERROR="false"
           for FILE in ${{ env.ALL_FILES }}; do
-            LOG_FILE="result_${FILE##*/}"
+            FILE_STRIPPED="${FILE##*/}"
+            LOG_FILE="result_$FILE_STRIPPED.log"
+            echo $LOG_FILE
             if [[ ! -f $LOG_FILE ]]; then
               continue
             fi
