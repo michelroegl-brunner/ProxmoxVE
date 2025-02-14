@@ -145,6 +145,7 @@ jobs:
                   )
                   [[ "$LINE" != "${EXPECTED[$((i-16))]}" ]] && echo "Line $i was $LINE | Should be: ${EXPECTED[$((i-16))]}" >> "$LOG_FILE"
               done
+            cat "$LOG_FILE"
           elif [[ $FILE =~ ^install/.*-install\.sh$ ]]; then
 
               FIRST_LINE=$(sed -n '1p' "$FILE")
@@ -196,8 +197,9 @@ jobs:
             [[ "$LAST_3_LINES" != *"$STD apt-get -y autoremove"* ]] && echo 'Third to last line should be: $STD apt-get -y autoremove' >> "$LOG_FILE"
             [[ "$LAST_3_LINES" != *"$STD apt-get -y autoclean"* ]] && echo 'Second to last line should be: $STD apt-get -y clean' >> "$LOG_FILE"
             [[ "$LAST_3_LINES" != *'msg_ok "Cleaned"'* ]] && echo 'Last line should be: msg_ok "Cleaned"' >> "$LOG_FILE"
-            fi
-            cat "$LOG_FILE"
+          cat "$LOG_FILE"
+          fi
+            
           done
 
 
