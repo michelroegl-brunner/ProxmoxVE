@@ -206,7 +206,7 @@ jobs:
       - name: Post error comments
         run: |
           ERROR="false"
-          for FILE in ${{ env.ALL_FILES }}; do
+          for FILE in ${{ env.SCRIPT }}; do
             FILE_STRIPPED="${FILE##*/}"
             LOG_FILE="result_$FILE_STRIPPED.log"
             echo $LOG_FILE
