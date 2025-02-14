@@ -1,0 +1,303 @@
+name: Script Format Check
+permissions:
+    pull-requests: write
+on:
+  pull_request_target:
+    branches:
+      - main
+    paths:
+      - 'install/*.sh'
+      - 'ct/*.sh'
+
+jobs:
+  run-install-script:
+    runs-on: unbutu-latest
+    steps:          
+      - name: Checkout PR branch (supports forks)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}  # Ensure it checks out the forked repo
+          fetch-depth: 0          
+          
+      - name: Add Git safe directory
+        run: |
+          git config --global --add safe.directory /__w/ProxmoxVE/ProxmoxVE
+      
+      - name: Set up GH_TOKEN
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "GH_TOKEN=${GH_TOKEN}" >> $GITHUB_ENV
+
+      - name: Get Changed Files
+        run: |
+          CHANGED_FILES=$(gh pr diff ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --name-only)
+          CHANGED_FILES=$(echo "$CHANGED_FILES" | tr '\n' ' ')
+          echo "Changed files: $CHANGED_FILES"
+          echo "SCRIPT=$CHANGED_FILES" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+
+      - name: Get scripts
+        id: check-install-script
+        run: |
+          ALL_FILES=()
+          ADDED_FILES=()  
+          for FILE in ${{ env.SCRIPT }}; do           
+            if [[ $FILE =~ ^install/.*-install\.sh$ ]] || [[ $FILE =~ ^ct/.*\.sh$ ]]; then             
+              STRIPPED_NAME=$(basename "$FILE" | sed 's/-install//' | sed 's/\.sh$//')
+              if [[ ! " ${ADDED_FILES[@]} " =~ " $STRIPPED_NAME " ]]; then
+                ALL_FILES+=("$FILE")
+                ADDED_FILES+=("$STRIPPED_NAME")  # Mark this base file as added (without the path)
+              fi
+            fi
+          done
+          ALL_FILES=$(echo "${ALL_FILES[@]}" | xargs)
+          echo "$ALL_FILES"
+          echo "ALL_FILES=$ALL_FILES" >> $GITHUB_ENV
+     
+      - name: Check scripts
+        id: run-install
+        continue-on-error: true
+        run: |
+
+          LINE 8:source /dev/stdin <<< "$FUNCTIONS_FILE_PATH"
+                color
+                verb_ip6
+                catch_errors
+                setting_up_container
+                network_check
+                update_os
+
+                msg_info "Installing Dependencies"
+
+          for FILE in ${{ env.ALL_FILES }}; do            
+            STRIPPED_NAME=$(basename "$FILE" | sed 's/-install//' | sed 's/\.sh$//')
+            echo "Running Test for: $STRIPPED_NAME"
+            if [[ $FILE =~ ^ct/.*\.sh$ ]]; then
+              if [[ $(sed -n '1p' "$FILE") != "#!/bin/bash" ]]; then
+                first_line=$(sed -n '1p' your_script.sh)
+                echo 'Line 1 was ${first_line} | Should be: #!/bin/bash' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '2p' "$FILE") != "source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)" ]]; then
+                second_line=$(sed -n '2p' your_script.sh)
+                echo 'Line 2 was ${second_line} | Should be: source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)' > result_$STRIPPED_NAME.log
+              fi
+              if [[ ! $(sed -n '3p' "$FILE") =~ ^#\ Copyright\ \(c\)\ [0-9]{4}-[0-9]{4}\ community-scripts\ ORG$ && ! $(sed -n '3p' "$FILE") =~ ^Copyright\ \(c\)\ [0-9]{4}-[0-9]{4}\ tteck$ ]]; then
+                third_line=$(sed -n '3p' your_script.sh)
+                echo 'Line 3 was ${third_line} | Should be: # Copyright (c) 2021-2025 community-scripts ORG' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '4p' "$FILE") != "# Author"* ]]; then
+                fourth_line=$(sed -n '4p' your_script.sh)
+                echo 'Line 4 was ${fourth_line} | Should be: # Author: [YOUR NAME]' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '5p' "$FILE") != "# License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE" ]]; then
+                fifth_line=$(sed -n '5p' your_script.sh)
+                echo 'Line 5 was ${fifth_line} | Should be: # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '6p' "$FILE") != "# Source: "* ]]; then
+                sixth_line=$(sed -n '6p' your_script.sh)
+                echo 'Line 6 was ${sixth_line} | Should be: # Source: [URL TO SOURCE]' > result_$STRIPPED_NAME.log
+              fi
+              if [[ -z "$(sed -n '7p' "$FILE")" ]]; then
+                seventh_line=$(sed -n '7p' your_script.sh)
+                echo 'Line 7 was ${seventh_line} | Should be: [EMPTY]' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '8p' "$FILE") != APP=* || -z "$(sed -n '8p' "$FILE" | cut -d'=' -f2)" ]]; then
+                eighth_line=$(sed -n '8p' your_script.sh)
+                echo 'Line 8 was ${eighth_line} | Should be: APP="[APP_NAME]"' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '9p' "$FILE") != var_tags=* || -z "${line#*=}" || ! "$line" =~ ^var_tags=([^;]+(;[^;]+)*)?$ ]]; then
+                ninth_line=$(sed -n '9p' your_script.sh)
+                echo 'Line 9 was ${ninth_line} | Should be: var_tags="[TAG1;TAG2]"' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '10p' "$FILE") != var_cpu=* || ! "${line#*=}" =~ ^[0-9]+$ ]]; then
+                tenth_line=$(sed -n '10p' your_script.sh)
+                echo 'Line 10 was ${tenth_line} | Should be: var_cpu="[NUMBER]"' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '11p' "$FILE") != var_ram=* || ! "${line#*=}" =~ ^[0-9]+$ ]]; then
+                eleventh_line=$(sed -n '11p' your_script.sh)
+                echo 'Line 11 was ${eleventh_line} | Should be: var_ram="[NUMBER]"' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '12p' "$FILE") != var_disk=* || ! "${line#*=}" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+                twelveth_line=$(sed -n '12p' your_script.sh)
+                echo 'Line 12 was ${twelveth_line} | Should be: var_disk="[NUMBER]"' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '13p' "$FILE") != var_os="" || ! "${line#*=}" =~ ^(debian|alpine|ubuntu)$
+                thirteenth_line=$(sed -n '13p' your_script.sh)
+                echo 'Line 13 was ${thirteenth_line} | Should be: var_os="[debain|alpine|ubuntu]"' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '14p' "$FILE") != var_version=* ]]; then
+                fourteenth_line=$(sed -n '14p' your_script.sh)
+                echo 'Line 14 was ${fourteenth_line} | Should be: var_version="[OS-VERSION]"' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '15p' "$FILE") != var_unprivileged=* || ! "${line#*=}" =~ ^(0|1)$ ]]; then
+                fifteenth_line=$(sed -n '15p' your_script.sh)
+                echo 'Line 15 was ${fifteenth_line} | Should be: var_unprivileged="[0|1]"' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '16p' "$FILE") != "header_info "$APP" ]]; then
+                sixteenth_line=$(sed -n '16p' your_script.sh)
+                echo 'Line 16 was ${sixteenth_line} | Should be: header_info "$APP"' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '17p' "$FILE") != "variables ]]; then
+                seventeenth_line=$(sed -n '17p' your_script.sh)
+                echo 'Line 17 was ${seventeenth_line} | Should be: variables' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '18p' "$FILE") != "color ]]; then
+                eighteenth_line=$(sed -n '18p' your_script.sh)
+                echo 'Line 18 was ${eighteenth_line} | Should be: color' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '19p' "$FILE") != "catch_errors ]]; then
+                nineteenth_line=$(sed -n '19p' your_script.sh)
+                echo 'Line 19 was ${nineteenth_line} | Should be: catch_errors' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '20p' "$FILE") != "function update_script() { ]]; then
+                twentieth_line=$(sed -n '20p' your_script.sh)
+                echo 'Line 20 was ${twentieth_line} | Should be: function update_script() {' > result_$STRIPPED_NAME.log
+              fi
+
+              if [[ $(sed -n '$p' "$FILE") =~ ^echo\ -e\ \${TAB}\${GATEWAY}\${BGN}http\://${IP}(:[0-9]+)?(/[^ ]*)?\${CL}$ ]]; then
+                line=$(sed -n '$p' your_script.sh)
+                echo 'Last line was ${line} | Should be: echo -e "${INFO}${YW} Access it using the following URL:${CL}" or echo -e "${TAB}${GATEWAY}${BGN}http://${IP}${CL}"' > result_$STRIPPED_NAME.log
+
+                if [[ $(sed -n '$!{n;p}' "$FILE") == "echo -e \"\${INFO}\${YW} Access it using the following URL:\${CL}\"" ]]; then
+                  line=$(sed -n '$!{n;p}' your_script.sh)
+                  echo 'Second to last line was ${line} | Should be: echo -e "${INFO}${YW} Access it using the following URL:${CL}"' > result_$STRIPPED_NAME.log
+                fi
+                if [[ $(head -n -2 "$FILE" | tail -n 1) == "echo -e \"\${CREATING}\${GN}\${APP} setup has been successfully initialized!\${CL}\"" ]]; then
+                  line=$(head -n -2 your_script.sh | tail -n 1)
+                  echo 'Third Line from below ${line} | Should be: echo -e "${CREATING}${GN}${APP} setup has been successfully initialized!${CL}"' > result_$STRIPPED_NAME.log
+                fi
+                if [[ $(head -n -3 "$FILE" | tail -n 1) == "msg_ok "Completed Successfully!\n" ]]; then
+                  line=$(head -n -3 your_script.sh | tail -n 1)
+                  echo 'Fourth Line from below ${line} | Should be: msg_ok "Completed Successfully!"' > result_$STRIPPED_NAME.log
+                fi
+                if [[ -z $(head -n -4 "$FILE" | tail -n 1) ]]; then
+                  line=$(head -n -4 your_script.sh | tail -n 1)
+                  echo 'Fift Line from below ${line} | Should be: [EMPTY]' > result_$STRIPPED_NAME.log
+                fi
+                if [[ $(head -n -5 "$FILE" | tail -n 1) == "description" ]]; then
+                  line=$(head -n -5 your_script.sh | tail -n 1)
+                  echo 'Sixth Line from below ${line} | Should be: description' > result_$STRIPPED_NAME.log
+                fi
+                if [[ $(head -n -6 "$FILE" | tail -n 1) == "build_container" ]]; then
+                  line=$(head -n -6 your_script.sh | tail -n 1)
+                  echo 'Seventh Line from below ${line} | Should be: "build_container"' > result_$STRIPPED_NAME.log
+                fi
+                if [[ $(head -n -7 "$FILE" | tail -n 1) == "start" ]]; then
+                  line=$(head -n -7 your_script.sh | tail -n 1)
+                  echo 'Eighth Line from below ${line} | Should be: start' > result_$STRIPPED_NAME.log
+                fi
+              fi
+              # APP-install.sh              
+            elif [[ $FILE =~ ^install/.*-install\.sh$ ]]; then
+              if [[ $(sed -n '1p' "$FILE") != "#!/bin/bash" ]]; then
+                first_line=$(sed -n '1p' your_script.sh)
+                echo 'Line 1 was ${first_line} | Should be: #!/bin/bash' > result_$STRIPPED_NAME.log
+              fi
+              if [[ -z "$(sed -n '2p' "$FILE")" ]]; then
+                line=$(sed -n '2p' your_script.sh)
+                echo 'Line 2 was ${seventh_line} | Should be: [EMPTY]' > result_$STRIPPED_NAME.log
+              fi
+              if [[ ! $(sed -n '3p' "$FILE") =~ ^#\ Copyright\ \(c\)\ [0-9]{4}-[0-9]{4}\ community-scripts\ ORG$ && ! $(sed -n '3p' "$FILE") =~ ^Copyright\ \(c\)\ [0-9]{4}-[0-9]{4}\ tteck$ ]]; then
+                third_line=$(sed -n '3p' your_script.sh)
+                echo 'Line 3 was ${third_line} | Should be: # Copyright (c) 2021-2025 community-scripts ORG' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '4p' "$FILE") != "# Author"* ]]; then
+                fourth_line=$(sed -n '4p' your_script.sh)
+                echo 'Line 4 was ${fourth_line} | Should be: # Author: [YOUR NAME]' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '5p' "$FILE") != "# License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE" ]]; then
+                fifth_line=$(sed -n '5p' your_script.sh)
+                echo 'Line 5 was ${fifth_line} | Should be: # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '6p' "$FILE") != "# Source: "* ]]; then
+                sixth_line=$(sed -n '6p' your_script.sh)
+                echo 'Line 6 was ${sixth_line} | Should be: # Source: [URL TO SOURCE]' > result_$STRIPPED_NAME.log
+              fi
+              if [[ -z "$(sed -n '7p' "$FILE")" ]]; then
+                seventh_line=$(sed -n '7p' your_script.sh)
+                echo 'Line 7 was ${seventh_line} | Should be: [EMPTY]' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '8p' "$FILE") source /dev/stdin <<< "$FUNCTIONS_FILE_PATH" ]]; then
+                eighth_line=$(sed -n '8p' your_script.sh)
+                echo 'Line 8 was ${eighth_line} | Should be: source /dev/stdin <<< "$FUNCTIONS_FILE_PATH"' > result_$STRIPPED_NAME.log                
+              fi
+              if [[ $(sed -n '9p' "$FILE") != "color ]]; then
+                ninth_line=$(sed -n '9p' your_script.sh)
+                echo 'Line 9 was ${ninth_line} | Should be: color' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '10p' "$FILE") != "verb_ip6 ]]; then
+                tenth_line=$(sed -n '10p' your_script.sh)
+                echo 'Line 10 was ${tenth_line} | Should be: verb_ip6' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '11p' "$FILE") != "catch_errors ]]; then
+                eleventh_line=$(sed -n '11p' your_script.sh)
+                echo 'Line 11 was ${eleventh_line} | Should be: catch_errors' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '12p' "$FILE") != "setting_up_container ]]; then
+                twelveth_line=$(sed -n '12p' your_script.sh)
+                echo 'Line 12 was ${twelveth_line} | Should be: setting_up_container' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '13p' "$FILE") != "network_check ]]; then
+                thirteenth_line=$(sed -n '13p' your_script.sh)
+                echo 'Line 13 was ${thirteenth_line} | Should be: network_check' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '14p' "$FILE") != "update_os ]]; then
+                fourteenth_line=$(sed -n '14p' your_script.sh)
+                echo 'Line 14 was ${fourteenth_line} | Should be: update_os' > result_$STRIPPED_NAME.log
+              fi
+              if [[ -z "$(sed -n '15p' "$FILE")" ]]; then
+                seventh_line=$(sed -n '15p' your_script.sh)
+                echo 'Line 15 was ${seventh_line} | Should be: [EMPTY]' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(sed -n '16p' "$FILE") != "msg_info "Installing Dependencies" ]]; then
+                fifteenth_line=$(sed -n '15p' your_script.sh)
+                echo 'Line 16 was ${fifteenth_line} | Should be: msg_info "Installing Dependencies"' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(tail -n 3 "$FILE") == *"$STD apt-get -y autoremove"* ]]; then
+                line=$(tail -n 3 your_script.sh)
+                echo 'Third to last line was ${line} | Should be: $STD apt-get -y autoremove' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(tail -n 2 "$FILE") == *"$STD apt-get -y autoclean"* ]]; then
+                line=$(tail -n 2 your_script.sh)
+                echo 'Second to last line was ${line} | Should be: $STD apt-get -y clean' > result_$STRIPPED_NAME.log
+              fi
+              if [[ $(tail -n 1 "$FILE") == *"msg_ok \"Cleaned\""* ]]; then
+                line=$(tail -n 1 your_script.sh)
+                echo 'Last line was ${line} | Should be: msg_ok "Cleaned"' > result_$STRIPPED_NAME.log
+              fi
+            fi
+          done          
+
+      - name: Post error comments
+        run: |
+          ERROR="false"
+          for FILE in ${{ env.ALL_FILES }}; do
+            if [[ ! -f result_$FILE.log ]]; then
+              continue
+            fi
+            ERROR_MSG=$(cat result_$FILE.log)
+      
+            if [ -n "$ERROR_MSG" ]; then
+              echo "Posting error message for $FILE"
+              echo ${ERROR_MSG}
+              gh pr comment ${{ github.event.pull_request.number }} \
+                --repo ${{ github.repository }} \
+                --body ":warning: The script _**$FILE**_ has the following formatting errors: <br> <div><strong>${ERROR_MSG}</strong></div>"
+
+              
+              ERROR="true"
+            fi
+          done
+          echo "ERROR=$ERROR" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fail if error
+        if: ${{ env.ERROR == 'true' }}
+        run: exit 1 
+      
+  
