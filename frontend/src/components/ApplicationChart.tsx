@@ -30,7 +30,9 @@ import { Pie } from "react-chartjs-2";
 ChartJS.register(ArcElement, ChartTooltip, Legend, ChartDataLabels);
 
 interface ApplicationChartProps {
-  data: { nsapp: string }[];
+
+  data: { [key: string]: number };
+
 }
 
 const ITEMS_PER_PAGE = 20;
@@ -58,8 +60,8 @@ export default function ApplicationChart({ data }: ApplicationChartProps) {
   const [tableLimit, setTableLimit] = useState(ITEMS_PER_PAGE);
 
   // Calculate application counts
-  const appCounts = data.reduce((acc, item) => {
-    acc[item.nsapp] = (acc[item.nsapp] || 0) + 1;
+  const appCounts = Object.entries(data).reduce((acc, [key, value]) => {
+    acc[key] = (acc[key] || 0) + value;
     return acc;
   }, {} as Record<string, number>);
 
