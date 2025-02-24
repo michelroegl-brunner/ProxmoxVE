@@ -131,23 +131,22 @@ jobs:
 
             let newReleaseNotes = `## ${today}\n\n### Changes\n\n`;
             for (const { title, notes, subCategories } of categorizedPRs) {
+              const hasSubcategories = subCategories && subCategories.length > 0;
               const hasMainNotes = notes.length > 0;
-              const hasSubNotes = subCategories && subCategories.some(sub => sub.notes && sub.notes.length > 0);
-
-              if (hasMainNotes || hasSubNotes) {
-                newReleaseNotes += `### ${title}\n\n`;
-
-                // Add main category notes
-                if (hasMainNotes) {
-                  newReleaseNotes += `${notes.join("\n")}\n\n`;
-                }
-
-                // Add subcategory notes
-                if (hasSubNotes) {
-                  for (const { title: subTitle, notes: subNotes } of subCategories) {
-                    if (subNotes && subNotes.length > 0) {
-                      newReleaseNotes += `#### ${subTitle}\n\n${subNotes.join("\n")}\n\n`;
-                    }
+              const hasSubNotes = hasSubcategories && subCategories.some(sub => sub.notes && sub.notes.length > 0);
+        
+              // Only show the main category if it has notes and NO subcategories
+              if (!hasSubcategories && hasMainNotes) {
+                newReleaseNotes += `### ${title}\n\n${notes.join("\n")}\n\n`;
+              }
+        
+              // Show subcategories if they have notes
+              if (hasSubcategories && hasSubNotes) {
+                newReleaseNotes += `### ${title}\n\n`; // Main category header, but no notes here
+        
+                for (const { title: subTitle, notes: subNotes } of subCategories) {
+                  if (subNotes && subNotes.length > 0) {
+                    newReleaseNotes += `#### ${subTitle}\n\n${subNotes.join("\n")}\n\n`;
                   }
                 }
               }
