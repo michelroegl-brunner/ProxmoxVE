@@ -21,6 +21,12 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### Changes
 
+### 🚀 Updated Scripts
+
+#### 🐞 Bug Fixes
+
+- Update 2fauth.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#123](https://github.com/michelroegl-brunner/ProxmoxVE/pull/123))
+
 ## 2025-02-23
 
 ### Changes
