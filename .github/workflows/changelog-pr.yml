@@ -57,11 +57,12 @@ jobs:
             const categorizedPRs = changelogConfig.map(obj => ({
               ...obj,
               notes: [],
-              subCategories: obj.labels.includes("update script") ? [
-                { title: "🐞 Bug Fixes", labels: ["bugfix"]},
-                { title: "✨ Feature Updates", labels: ["feature"]}
-              ] : []
+              subCategories: obj.subCategories ?? (obj.labels.includes("update script") ? [
+                { title: "🐞 Bug Fixes", labels: ["bugfix"] },
+                { title: "✨ Feature Updates", labels: ["feature"] }
+              ] : [])
             }));
+
             console.log(JSON.stringify(categorizedPRs, null, 2));
 
             const latestDateInChangelog = new Date(process.env.LATEST_DATE);
