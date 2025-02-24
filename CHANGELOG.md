@@ -27,15 +27,15 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🚀 Updated Scripts
 
-  #### 🐞 Bug Fixes
+    #### 🐞 Bug Fixes
 
-  - Update 2fauth.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#123](https://github.com/michelroegl-brunner/ProxmoxVE/pull/123))
+    - Update 2fauth.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#123](https://github.com/michelroegl-brunner/ProxmoxVE/pull/123))
 
-  #### General Updates
+    #### General Updates
 
-  - Update agentdvr.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#129](https://github.com/michelroegl-brunner/ProxmoxVE/pull/129))
-  - Update alpine-nextcloud.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#131](https://github.com/michelroegl-brunner/ProxmoxVE/pull/131))
-  - Update 2fauth.sh only update_script [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#126](https://github.com/michelroegl-brunner/ProxmoxVE/pull/126))
+    - Update agentdvr.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#129](https://github.com/michelroegl-brunner/ProxmoxVE/pull/129))
+    - Update alpine-nextcloud.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#131](https://github.com/michelroegl-brunner/ProxmoxVE/pull/131))
+    - Update 2fauth.sh only update_script [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#126](https://github.com/michelroegl-brunner/ProxmoxVE/pull/126))
 
 ## 2025-02-23
 
