@@ -42,26 +42,7 @@ jobs:
               pull_number: prNumber,
             });
             const prFiles = prListFilesResponse.data;
-            console.log(`PR files: ${prFiles.map((file) => file.filename).join(", ")}`);
-
-            // Apply labels based on file changes
-            for (const [label, rules] of Object.entries(autolabelerConfig)) {
-              const shouldAddLabel = prFiles.some((prFile) => {
-                return rules.some((rule) => {
-                  const isFileStatusMatch = rule.fileStatus ? rule.fileStatus === prFile.status : true;
-                  const isIncludeGlobMatch = rule.includeGlobs.some((glob) => minimatch(prFile.filename, glob));
-                  const isExcludeGlobMatch = rule.excludeGlobs.some((glob) => minimatch(prFile.filename, glob));
-
-                  return isFileStatusMatch && isIncludeGlobMatch && !isExcludeGlobMatch;
-                });
-              });
-
-              if (shouldAddLabel) {
-                labelsToAdd.add(label);
-              }
-            }
-
-            // Apply labels based on PR template checkboxes
+           
             const templateLabelMappings = {
               "🐞 **bug fix**": "bugfix",
               "✨ **new feature**": "feature",
@@ -80,8 +61,26 @@ jobs:
             }
             if (labelsToAdd.size === 0) {
               labelsToAdd.add("general");
+            } 
+
+            // Apply labels based on file changes
+            for (const [label, rules] of Object.entries(autolabelerConfig)) {
+              const shouldAddLabel = prFiles.some((prFile) => {
+                return rules.some((rule) => {
+                  const isFileStatusMatch = rule.fileStatus ? rule.fileStatus === prFile.status : true;
+                  const isIncludeGlobMatch = rule.includeGlobs.some((glob) => minimatch(prFile.filename, glob));
+                  const isExcludeGlobMatch = rule.excludeGlobs.some((glob) => minimatch(prFile.filename, glob));
+
+                  return isFileStatusMatch && isIncludeGlobMatch && !isExcludeGlobMatch;
+                });
+              });
+
+              if (shouldAddLabel) {
+                labelsToAdd.add(label);
+              }
             }
- 
+
+            
             console.log(`Labels to add: ${Array.from(labelsToAdd).join(", ")}`);
 
             if (labelsToAdd.size > 0) {
