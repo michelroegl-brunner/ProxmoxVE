@@ -126,13 +126,29 @@ jobs:
             const changelogPath = path.resolve('CHANGELOG.md');
             const categorizedPRs = ${{ steps.get-categorized-prs.outputs.result }};
 
-            console.log(categorizedPRs);
+            console.log(JSON.stringify(categorizedPRs, null, 2));
+
 
             let newReleaseNotes = `## ${today}\n\n### Changes\n\n`;
-            for (const { title, notes } of categorizedPRs) {
-
-              if (notes.length > 0) {
-                newReleaseNotes += `### ${title}\n\n${notes.join("\n")}\n\n`;
+            for (const { title, notes, subCategories } of categorizedPRs) {
+            const hasMainNotes = notes.length > 0;
+            const hasSubNotes = subCategories && subCategories.some(sub => sub.notes && sub.notes.length > 0);
+              
+            if (hasMainNotes || hasSubNotes) {
+              newReleaseNotes += `### ${title}\n\n`;
+              
+              // Add main category notes
+              if (hasMainNotes) {
+                newReleaseNotes += `${notes.join("\n")}\n\n`;
+              }
+            
+              // Add subcategory notes
+              if (hasSubNotes) {
+                for (const { title: subTitle, notes: subNotes } of subCategories) {
+                  if (subNotes && subNotes.length > 0) {
+                    newReleaseNotes += `#### ${subTitle}\n\n${subNotes.join("\n")}\n\n`;
+                  }
+                }
               }
             }
 
