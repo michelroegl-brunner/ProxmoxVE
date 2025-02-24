@@ -78,6 +78,9 @@ jobs:
                 labelsToAdd.add(label);
               }
             }
+            if (labelsToAdd.size === 0) {
+              labelsToAdd.add("general");
+            }
  
             console.log(`Labels to add: ${Array.from(labelsToAdd).join(", ")}`);
 

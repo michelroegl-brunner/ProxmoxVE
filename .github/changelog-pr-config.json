@@ -22,7 +22,7 @@
       },
       {
         "title": "General Updates",
-        "labels": [],
+        "labels": ["general"],
         "notes" : []
       }
     ]
