@@ -54,7 +54,14 @@ jobs:
             const configPath = path.resolve(process.env.CONFIG_PATH);
             const fileContent = await fs.readFile(configPath, 'utf-8');
             const changelogConfig = JSON.parse(fileContent);
-            const categorizedPRs = changelogConfig.map(obj => ({ ...obj, notes: [] }));
+            const categorizedPRs = changelogConfig.map(obj => ({
+              ...obj,
+              notes: [],
+              subCategories: obj.labels.includes("update script") ? [
+                { title: "🐞 Bug Fixes", labels: ["bugfix"]},
+                { title: "✨ Feature Updates", labels: ["feature"]}
+              ] : []
+            }));
             console.log(JSON.stringify(categorizedPRs, null, 2));
 
             const latestDateInChangelog = new Date(process.env.LATEST_DATE);
