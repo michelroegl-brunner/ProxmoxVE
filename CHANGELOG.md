@@ -21,7 +21,14 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### Changes
 
+### ✨ New Features
+
+- Update adventurelog.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#127](https://github.com/michelroegl-brunner/ProxmoxVE/pull/127))
+
 ### 🚀 Updated Scripts
+
+- Update 2fauth.sh only update_script [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#126](https://github.com/michelroegl-brunner/ProxmoxVE/pull/126))
+- Update agentdvr.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#129](https://github.com/michelroegl-brunner/ProxmoxVE/pull/129))
 
 #### 🐞 Bug Fixes
 
