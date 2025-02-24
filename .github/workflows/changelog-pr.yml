@@ -133,36 +133,28 @@ jobs:
             for (const { title, notes, subCategories } of categorizedPRs) {
               const hasSubcategories = subCategories && subCategories.length > 0;
               const hasMainNotes = notes.length > 0;
-              const hasSubNotes = hasSubcategories && subCategories.some(sub => sub.notes && sub.notes.length > 0);
         
-              // Add main category if it has notes or subcategories with notes
-              if (hasMainNotes || hasSubNotes) {
+              // If there are notes and subcategories, put them under "General Updates" subcategory
+              if (hasSubcategories && hasMainNotes) {
+                newReleaseNotes += `### ${title}\n\n  #### General Updates\n\n    ${notes.join("\n    ")}\n\n`;
+              }
+              
+              // If there are subcategories and no main category notes, continue processing subcategories
+              if (hasSubcategories && !hasMainNotes) {
                 newReleaseNotes += `### ${title}\n\n`;
-              }
         
-              // Add main category notes (if any)
-              if (hasMainNotes) {
-                if (!hasSubcategories) {
-                  // If there are no subcategories, put the main notes under a new "General Updates" subcategory
-                  newReleaseNotes += `  #### General Updates\n\n    ${notes.join("\n    ")}\n\n`;
-                } else {
-                  // If there are subcategories, just add main category notes directly
-                  newReleaseNotes += `${notes.join("\n")}\n\n`;
-                }
-              }
-        
-              // Add subcategory notes (if any) with indentation
-              if (hasSubcategories) {
                 for (const { title: subTitle, notes: subNotes } of subCategories) {
                   if (subNotes && subNotes.length > 0) {
-                    newReleaseNotes += `  #### ${subTitle}\n\n`; // Indented subcategory title
-                    newReleaseNotes += `    ${subNotes.join("\n    ")}\n\n`; // Indented subcategory notes
+                    newReleaseNotes += `  #### ${subTitle}\n\n    ${subNotes.join("\n    ")}\n\n`;
                   }
                 }
               }
-            }
         
-        
+              // If there are notes but no subcategories, just add them under the main category
+              if (!hasSubcategories && hasMainNotes) {
+                newReleaseNotes += `### ${title}\n\n${notes.join("\n")}\n\n`;
+              }
+            }       
         
             const changelogContent = await fs.readFile(changelogPath, 'utf-8');
             const changelogIncludesTodaysReleaseNotes = changelogContent.includes(`\n## ${today}`);
