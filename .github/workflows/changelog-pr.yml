@@ -30,7 +30,6 @@ jobs:
 
       - name: Get latest dates in changelog
         run: |
-          # Extrahiere die neuesten zwei Daten aus dem Changelog
           DATES=$(grep -E '^## [0-9]{4}-[0-9]{2}-[0-9]{2}' CHANGELOG.md | head -n 2 | awk '{print $2}')
 
           LATEST_DATE=$(echo "$DATES" | sed -n '1p')
@@ -99,9 +98,11 @@ jobs:
             const latestDateInChangelog = process.env.LATEST_DATE;
             const changelogPath = path.resolve('CHANGELOG.md');
             const categorizedPRs = ${{ steps.get-categorized-prs.outputs.result }};
-
+            console.log(categorizedPRs);
+            
             let newReleaseNotes = `## ${today}\n\n### Changes\n\n`;
             for (const { title, notes } of categorizedPRs) {
+
               if (notes.length > 0) {
                 newReleaseNotes += `### ${title}\n\n${notes.join("\n")}\n\n`;
               }
