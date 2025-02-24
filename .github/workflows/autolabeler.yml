@@ -72,9 +72,9 @@ jobs:
             for (const [checkbox, label] of Object.entries(templateLabelMappings)) {
               console.log(`Checking for checkbox ${checkbox} to add label ${label}`);
               // Regex to check if the checkbox is marked with 'X'
-              const regex = new RegExp(`- \\[(x|X)\\] ${checkbox}`, "i");
+              const regex = new RegExp(`- \\[(x|X)\\].*${checkbox}`, "i");
               const match = prBody.match(regex);
-              condole.log(`prBody: ${prBody}`);
+              console.log(`prBody: ${prBody}`);
               console.log(`Match: ${match}`);
               if (match) {
                 labelsToAdd.add(label);
