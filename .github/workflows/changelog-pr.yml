@@ -142,7 +142,13 @@ jobs:
         
               // Add main category notes (if any)
               if (hasMainNotes) {
-                newReleaseNotes += `${notes.join("\n")}\n\n`;
+                if (!hasSubcategories) {
+                  // If there are no subcategories, put the main notes under a new "General Updates" subcategory
+                  newReleaseNotes += `  #### General Updates\n\n    ${notes.join("\n    ")}\n\n`;
+                } else {
+                  // If there are subcategories, just add main category notes directly
+                  newReleaseNotes += `${notes.join("\n")}\n\n`;
+                }
               }
         
               // Add subcategory notes (if any) with indentation
@@ -155,6 +161,7 @@ jobs:
                 }
               }
             }
+        
         
         
             const changelogContent = await fs.readFile(changelogPath, 'utf-8');
