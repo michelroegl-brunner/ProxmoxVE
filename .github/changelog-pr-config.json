@@ -8,6 +8,10 @@
     "labels": ["new script"]
   },
   {
+    "title": "✨ New Features",
+    "labels": ["feature"]
+  },
+  {
     "title": "🚀 Updated Scripts",
     "labels": ["update script"],
     "subCategories": [
@@ -18,10 +22,7 @@
       }
     ]
   },
-  {
-    "title": "✨ New Features",
-    "labels": ["feature"]
-  },
+  
   {
     "title": "🌐 Website",
     "labels": ["website"]
