@@ -63,10 +63,10 @@ jobs:
 
             // Apply labels based on PR template checkboxes
             const templateLabelMappings = {
-              "🐞 bug fix": "bugfix",
-              "✨ new feature": "feature",
-              "💥 breaking change": "breaking change",
-              "🆕 new script": "new script"
+              "🐞 **bug fix**": "bugfix",
+              "✨ **new feature**": "feature",
+              "💥 **breaking change**": "breaking change",
+              "🆕 **new script**": "new script"
             };
             console.log(`PR body: ${prBody}`);
             for (const [checkbox, label] of Object.entries(templateLabelMappings)) {
