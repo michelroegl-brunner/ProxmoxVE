@@ -6,7 +6,7 @@ source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/m
 # Source: https://adventurelog.app/
 
 APP="AdventureLo
-var_tags="traveling"
+var_tags="traveli
 var_disk="7"
 var_cpu="2"
 var_ram="2048"
