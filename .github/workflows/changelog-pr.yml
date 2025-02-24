@@ -74,6 +74,7 @@ jobs:
               new Date(pr.merged_at) > latestDateInChangelog && 
               !pr.labels.some(label => ["invalid", "wontdo", process.env.AUTOMATED_PR_LABEL].includes(label.name.toLowerCase()))
             ).forEach(pr => {
+              console.log(pr);
               const prLabels = pr.labels.map(label => label.name.toLowerCase());
               const prNote = `- ${pr.title} [@${pr.user.login}](https://github.com/${pr.user.login}) ([#${pr.number}](${pr.html_url}))`;
 
@@ -99,7 +100,7 @@ jobs:
             const changelogPath = path.resolve('CHANGELOG.md');
             const categorizedPRs = ${{ steps.get-categorized-prs.outputs.result }};
             console.log(categorizedPRs);
-            
+
             let newReleaseNotes = `## ${today}\n\n### Changes\n\n`;
             for (const { title, notes } of categorizedPRs) {
 
