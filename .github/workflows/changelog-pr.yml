@@ -69,19 +69,35 @@ jobs:
               per_page: 100,
             });
 
-            pulls.filter(pr => 
-              pr.merged_at && 
-              new Date(pr.merged_at) > latestDateInChangelog && 
-              !pr.labels.some(label => ["invalid", "wontdo", process.env.AUTOMATED_PR_LABEL].includes(label.name.toLowerCase()))
+            pulls.filter(pr =>
+            pr.merged_at &&
+            new Date(pr.merged_at) > latestDateInChangelog &&
+            !pr.labels.some(label =>
+              ["invalid", "wontdo", process.env.AUTOMATED_PR_LABEL].includes(label.name.toLowerCase())
+              )
             ).forEach(pr => {
               console.log(pr);
+                    
               const prLabels = pr.labels.map(label => label.name.toLowerCase());
               const prNote = `- ${pr.title} [@${pr.user.login}](https://github.com/${pr.user.login}) ([#${pr.number}](${pr.html_url}))`;
-
-              for (const { labels, notes } of categorizedPRs) {
-                if (labels.length === 0 || labels.some(label => prLabels.includes(label))) {
-                  notes.push(prNote);
-                  break;
+                    
+              // Check for the "Updated Scripts" category
+              const updateScriptsCategory = categorizedPRs.find(category =>
+                category.labels.some(label => prLabels.includes(label))
+              );
+                    
+              if (updateScriptsCategory) {
+                // Check if the PR belongs to any sub-category within "Updated Scripts"
+                const subCategory = updateScriptsCategory.subCategories.find(sub =>
+                  sub.labels.some(label => prLabels.includes(label))
+                );
+                    
+                if (subCategory) {
+                  // Add the PR note under the respective sub-category
+                  subCategory.notes.push(prNote);
+                } else {
+                  // If no sub-category matches, add the PR to the parent category directly
+                  updateScriptsCategory.notes.push(prNote);
                 }
               }
             });
@@ -99,6 +115,7 @@ jobs:
             const latestDateInChangelog = process.env.LATEST_DATE;
             const changelogPath = path.resolve('CHANGELOG.md');
             const categorizedPRs = ${{ steps.get-categorized-prs.outputs.result }};
+
             console.log(categorizedPRs);
 
             let newReleaseNotes = `## ${today}\n\n### Changes\n\n`;

@@ -17,7 +17,19 @@
   },
   {
     "title": "🚀 Updated Scripts",
-    "labels": ["update script"]
+    "labels": ["update script"],
+    "subCategories": [
+      {
+        "title": "Bug Fixes",
+       "labels": ["bugfix"],
+        "notes": []
+      },
+      {
+        "title": "Feature Updates",
+        "labels": ["feature"],
+        "notes": []
+      }
+    ]
   },
   {
     "title": "✨ New Features",
