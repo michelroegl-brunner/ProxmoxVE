@@ -55,6 +55,7 @@ jobs:
             const fileContent = await fs.readFile(configPath, 'utf-8');
             const changelogConfig = JSON.parse(fileContent);
             const categorizedPRs = changelogConfig.map(obj => ({ ...obj, notes: [] }));
+            console.log(categorizedPRs);
 
             const latestDateInChangelog = new Date(process.env.LATEST_DATE);
             latestDateInChangelog.setUTCHours(23, 59, 59, 999);
@@ -76,6 +77,7 @@ jobs:
               ["invalid", "wontdo", process.env.AUTOMATED_PR_LABEL].includes(label.name.toLowerCase())
               )
             ).forEach(pr => {
+
               const prLabels = pr.labels.map(label => label.name.toLowerCase());
               const prNote = `- ${pr.title} [@${pr.user.login}](https://github.com/${pr.user.login}) ([#${pr.number}](${pr.html_url}))`;
 
