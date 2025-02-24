@@ -1,71 +1,93 @@
-- name: Label PR based on file changes and PR template
-uses: actions/github-script@v7
-with:
-  script: |
-    const fs = require('fs').promises;
-    const path = require('path');
-    const { minimatch } = require('minimatch');
+name: Auto Label Pull Requests
 
-    const configPath = path.resolve(process.env.CONFIG_PATH);
-    const fileContent = await fs.readFile(configPath, 'utf-8');
-    const autolabelerConfig = JSON.parse(fileContent);
+on:
+  pull_request_target:
+    branches: ["main"]
+    types: [opened, synchronize, reopened, edited]
 
-    const prNumber = context.payload.pull_request.number;
-    const prBody = context.payload.pull_request.body.toLowerCase();
-    
-    let labelsToAdd = new Set();
+jobs:
+  autolabeler:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    env:
+      CONFIG_PATH: .github/autolabeler-config.json
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    const prListFilesResponse = await github.rest.pulls.listFiles({
-      owner: context.repo.owner,
-      repo: context.repo.repo,
-      pull_number: prNumber,
-    });
-    const prFiles = prListFilesResponse.data;
+      - name: Install minimatch
+        run: npm install minimatch
 
-    // Apply labels based on file changes
-    for (const [label, rules] of Object.entries(autolabelerConfig)) {
-      const shouldAddLabel = prFiles.some((prFile) => {
-        return rules.some((rule) => {
-          const isFileStatusMatch = rule.fileStatus ? rule.fileStatus === prFile.status : true;
-          const isIncludeGlobMatch = rule.includeGlobs.some((glob) => minimatch(prFile.filename, glob));
-          const isExcludeGlobMatch = rule.excludeGlobs.some((glob) => minimatch(prFile.filename, glob));
-          
-          return isFileStatusMatch && isIncludeGlobMatch && !isExcludeGlobMatch;
-        });
-      });
-
-      if (shouldAddLabel) {
-        labelsToAdd.add(label);
-      }
-    }
-
-    // Apply labels based on PR template checkboxes
-    const templateLabelMappings = {
-      "🐞 bug fix": "bugfix",
-      "✨ new feature": "feature",
-      "💥 breaking change": "breaking change",
-      "🆕 new script": "new script"
-    };
-
-    for (const [checkbox, label] of Object.entries(templateLabelMappings)) {
-      // Regex to check if the checkbox is marked with 'X'
-      const regex = new RegExp(`- \\[(x|X)\\] ${checkbox}`, "i");
-      const match = prBody.match(regex);
-      if (match) {
-        labelsToAdd.add(label);
-      }
-    }
-
-    // Debugging: Output the labels that are being added
-    console.log(`Labels to add: ${Array.from(labelsToAdd).join(", ")}`);
-
-    // Apply labels to PR
-    if (labelsToAdd.size > 0) {
-      console.log(`Adding labels ${Array.from(labelsToAdd).join(", ")} to PR ${prNumber}`);
-      await github.rest.issues.addLabels({
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-        issue_number: prNumber,
-        labels: Array.from(labelsToAdd),
-      });
-    }
+      - name: Label PR based on file changes and PR template
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs').promises;
+            const path = require('path');
+            const { minimatch } = require('minimatch');
+              
+            const configPath = path.resolve(process.env.CONFIG_PATH);
+            const fileContent = await fs.readFile(configPath, 'utf-8');
+            const autolabelerConfig = JSON.parse(fileContent);
+              
+            const prNumber = context.payload.pull_request.number;
+            const prBody = context.payload.pull_request.body.toLowerCase();
+              
+            let labelsToAdd = new Set();
+              
+            const prListFilesResponse = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+            const prFiles = prListFilesResponse.data;
+              
+            // Apply labels based on file changes
+            for (const [label, rules] of Object.entries(autolabelerConfig)) {
+              const shouldAddLabel = prFiles.some((prFile) => {
+                return rules.some((rule) => {
+                  const isFileStatusMatch = rule.fileStatus ? rule.fileStatus === prFile.status : true;
+                  const isIncludeGlobMatch = rule.includeGlobs.some((glob) => minimatch(prFile.filename, glob));
+                  const isExcludeGlobMatch = rule.excludeGlobs.some((glob) => minimatch(prFile.filename, glob));
+              
+                  return isFileStatusMatch && isIncludeGlobMatch && !isExcludeGlobMatch;
+                });
+              });
+              
+              if (shouldAddLabel) {
+                labelsToAdd.add(label);
+              }
+            }
+              
+            // Apply labels based on PR template checkboxes
+            const templateLabelMappings = {
+              "🐞 bug fix": "bugfix",
+              "✨ new feature": "feature",
+              "💥 breaking change": "breaking change",
+              "🆕 new script": "new script"
+            };
+              
+            for (const [checkbox, label] of Object.entries(templateLabelMappings)) {
+              // Regex to check if the checkbox is marked with 'X'
+              const regex = new RegExp(`- \\[(x|X)\\] ${checkbox}`, "i");
+              const match = prBody.match(regex);
+              if (match) {
+                labelsToAdd.add(label);
+              }
+            }
+              
+            // Debugging: Output the labels that are being added
+            console.log(`Labels to add: ${Array.from(labelsToAdd).join(", ")}`);
+              
+            // Apply labels to PR
+            if (labelsToAdd.size > 0) {
+              console.log(`Adding labels ${Array.from(labelsToAdd).join(", ")} to PR ${prNumber}`);
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                labels: Array.from(labelsToAdd),
+              });
+            }
+              
