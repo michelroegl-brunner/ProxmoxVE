@@ -74,6 +74,7 @@ jobs:
               // Regex to check if the checkbox is marked with 'X'
               const regex = new RegExp(`- \\[(x|X)\\] ${checkbox}`, "i");
               const match = prBody.match(regex);
+              console.log(`Match: ${match}`);
               if (match) {
                 labelsToAdd.add(label);
               }
