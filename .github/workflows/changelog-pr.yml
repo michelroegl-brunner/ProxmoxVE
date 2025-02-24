@@ -55,7 +55,7 @@ jobs:
             const fileContent = await fs.readFile(configPath, 'utf-8');
             const changelogConfig = JSON.parse(fileContent);
             const categorizedPRs = changelogConfig.map(obj => ({ ...obj, notes: [] }));
-            console.log(categorizedPRs);
+            console.log(JSON.stringify(categorizedPRs, null, 2));
 
             const latestDateInChangelog = new Date(process.env.LATEST_DATE);
             latestDateInChangelog.setUTCHours(23, 59, 59, 999);
