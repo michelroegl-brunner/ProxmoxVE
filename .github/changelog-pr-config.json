@@ -21,13 +21,11 @@
     "subCategories": [
       {
         "title": "Bug Fixes",
-       "labels": ["bugfix"],
-        "notes": []
+       "labels": ["bugfix"]
       },
       {
         "title": "Feature Updates",
-        "labels": ["feature"],
-        "notes": []
+        "labels": ["feature"]
       }
     ]
   },
