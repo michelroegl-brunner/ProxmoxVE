@@ -15,11 +15,6 @@
         "title": "🐞 Bug Fixes",
         "labels": ["bugfix"],
         "notes" : []
-      },
-      {
-        "title": "✨ Feature Updates",
-        "labels": ["feature_update"],
-        "notes" : []
       }
     ]
   },

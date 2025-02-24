@@ -156,7 +156,6 @@ jobs:
             const changelogContent = await fs.readFile(changelogPath, 'utf-8');
             const changelogIncludesTodaysReleaseNotes = changelogContent.includes(`\n## ${today}`);
 
-            // Ersetze oder füge Release Notes ein
             const regex = changelogIncludesTodaysReleaseNotes 
               ? new RegExp(`## ${today}.*(?=## ${latestDateInChangelog})`, "gs") 
               : new RegExp(`(?=## ${latestDateInChangelog})`, "gs");
