@@ -68,7 +68,7 @@ jobs:
               "💥 breaking change": "breaking change",
               "🆕 new script": "new script"
             };
-
+            console.log(`PR body: ${prBody}`);
             for (const [checkbox, label] of Object.entries(templateLabelMappings)) {
               console.log(`Checking for checkbox ${checkbox} to add label ${label}`);
               // Regex to check if the checkbox is marked with 'X'
