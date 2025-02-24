@@ -145,15 +145,17 @@ jobs:
                 newReleaseNotes += `${notes.join("\n")}\n\n`;
               }
         
-              // Add subcategory notes (if any)
+              // Add subcategory notes (if any) with indentation
               if (hasSubcategories) {
                 for (const { title: subTitle, notes: subNotes } of subCategories) {
                   if (subNotes && subNotes.length > 0) {
-                    newReleaseNotes += `#### ${subTitle}\n\n${subNotes.join("\n")}\n\n`;
+                    newReleaseNotes += `  #### ${subTitle}\n\n`; // Indented subcategory title
+                    newReleaseNotes += `    ${subNotes.join("\n    ")}\n\n`; // Indented subcategory notes
                   }
                 }
               }
             }
+        
         
             const changelogContent = await fs.readFile(changelogPath, 'utf-8');
             const changelogIncludesTodaysReleaseNotes = changelogContent.includes(`\n## ${today}`);
