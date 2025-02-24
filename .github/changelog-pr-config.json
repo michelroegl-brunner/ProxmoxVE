@@ -19,6 +19,11 @@
         "title": "🐞 Bug Fixes",
         "labels": ["bugfix"],
         "notes" : []
+      },
+      {
+        "title": "General Updates",
+        "labels": [],
+        "notes" : []
       }
     ]
   },
