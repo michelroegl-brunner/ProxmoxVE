@@ -23,8 +23,6 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 - <!-- hidden -->
 
-- <!-- hidden -->
-
 - Update alpine-zigbee2mqtt.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#134](https://github.com/michelroegl-brunner/ProxmoxVE/pull/134))
 
   #### 🐞 Bug Fixes
@@ -36,8 +34,6 @@ Do not break established syntax in this file, as it is automatically updated by 
   - Update adventurelog.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#140](https://github.com/michelroegl-brunner/ProxmoxVE/pull/140))
 
 ### 🧰 Maintenance
-
-- <!-- hidden -->
 
 - <!-- hidden -->
 
@@ -54,8 +50,6 @@ Do not break established syntax in this file, as it is automatically updated by 
   - Update CONTRIBUTING.md [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#136](https://github.com/michelroegl-brunner/ProxmoxVE/pull/136))
 
 ### 🌐 Website
-
-- <!-- hidden -->
 
 - <!-- hidden -->
 
