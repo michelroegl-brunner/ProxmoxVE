@@ -35,7 +35,7 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🧰 Maintenance
 
-<!-- hidden - text -->
+- <!-- hidden - text -->
   
   #### 📡 API
 
