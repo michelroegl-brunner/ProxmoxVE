@@ -35,8 +35,8 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🧰 Maintenance
 
-- <!-- hidden -->
-
+- &nbsp; <!-- hidden -->
+   
   #### 📡 API
 
   - Update main.go [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#141](https://github.com/michelroegl-brunner/ProxmoxVE/pull/141))
