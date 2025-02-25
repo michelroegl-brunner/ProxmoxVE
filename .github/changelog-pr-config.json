@@ -49,6 +49,11 @@
         "notes" : []
       },
       {
+        "title": "Core",
+        "labels": ["core"],
+        "notes" : []
+      },
+      {
         "title": "Github",
         "labels": ["github"],
         "notes" : []

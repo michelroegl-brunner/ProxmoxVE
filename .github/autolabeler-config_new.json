@@ -28,6 +28,13 @@
       "excludeGlobs": []
     }
   ],
+  "core": [
+    {
+      "fileStatus": null,
+      "includeGlobs": ["misc/*.func", "ct/create_lxc.sh"],
+      "excludeGlobs": []
+    }
+  ],
   "website": [
     {
       "fileStatus": null,
