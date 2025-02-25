@@ -19,7 +19,7 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ## 2025-02-25
 
-  - <!-- hidden -->
+- <!-- hidden -->
 
 ### 🚀 Updated Scripts
 
@@ -35,7 +35,7 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🧰 Maintenance
 
-  - <!-- hidden -->
+- <!-- hidden -->
 
   #### 📡 API
 
@@ -51,7 +51,7 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🌐 Website
 
-  - <!-- hidden -->
+- <!-- hidden -->
 
   #### 🐞 Bug Fixes
 
@@ -69,9 +69,9 @@ Do not break established syntax in this file, as it is automatically updated by 
 
   - Update 2fauth.json [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#142](https://github.com/michelroegl-brunner/ProxmoxVE/pull/142))
 
-  - <!-- hidden -->
+- <!-- hidden -->
 
-  - <!-- hidden -->
+- <!-- hidden -->
 
 ## 2025-02-24
 
