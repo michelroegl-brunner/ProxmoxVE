@@ -21,8 +21,7 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🚀 Updated Scripts
 
-<!-- > lol --> 
-- Update adguard.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#133](https://github.com/michelroegl-brunner/ProxmoxVE/pull/133))
+ - <!-- hidden --> 
 
   #### 🐞 Bug Fixes
 
@@ -34,7 +33,7 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🧰 Maintenance
 
-<!-- > lol -->   
+- <!-- hidden -->   
    
   #### 📡 API
 
