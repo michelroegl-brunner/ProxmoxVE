@@ -24,7 +24,7 @@
   "maintenance": [
     {
       "fileStatus": null,
-      "includeGlobs": ["*.md", ".github/**", "misc/*.func", "ct/create_lxc.sh"],
+      "includeGlobs": ["*.md", ".github/**", "misc/*.func", "ct/create_lxc.sh", "api/**"],
       "excludeGlobs": []
     }
   ],
