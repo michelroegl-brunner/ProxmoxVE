@@ -64,10 +64,7 @@ jobs:
             const templateLabelMappings = {
               "🐞 **Bug fix**": "bugfix",
               "✨ **New feature**": "feature",
-              "💥 **Breaking change**": "breaking_change",
-              "🔨 **Github**": "github_change",
-              "📡 **API**": "api_change",
-              "📃 **(JSON)Script Information**": "script_info_change",
+              "💥 **Breaking change**": "breaking change",
             };
             
             for (const [checkbox, label] of Object.entries(templateLabelMappings)) {
