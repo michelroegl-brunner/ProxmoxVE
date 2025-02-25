@@ -49,12 +49,12 @@
         "notes" : []
       },
       {
-        "title": "Core",
+        "title": "💾 Core",
         "labels": ["core"],
         "notes" : []
       },
       {
-        "title": "Github",
+        "title": "📂 Github",
         "labels": ["github"],
         "notes" : []
       }
@@ -80,7 +80,7 @@
         "notes" : []
       },
       {
-        "title": "Script Information",
+        "title": "📝 Script Information",
         "labels": ["json"],
         "notes" : []
       }
