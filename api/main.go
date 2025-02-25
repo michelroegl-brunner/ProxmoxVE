@@ -1,5 +1,5 @@
 // Copyright (c) 2021-2025 community-scripts ORG
-// Author: Michel Roegl-Brunner (michelroegl-brunner)
+// Author: Michel Roegl-Brunner (michelroeglbrunner)
 // License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 
 package main
