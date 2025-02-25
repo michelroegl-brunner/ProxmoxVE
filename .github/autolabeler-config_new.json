@@ -51,12 +51,12 @@
   ],
   "json": [
     {
-      "fileStatus": null,
+      "fileStatus": "modified",
       "includeGlobs": ["json/**"],
       "excludeGlobs": []
     }
   ],
-  
+
   "high risk": [
     {
       "fileStatus": null,
