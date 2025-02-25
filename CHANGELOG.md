@@ -37,11 +37,11 @@ Do not break established syntax in this file, as it is automatically updated by 
 
   - Update main.go [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#141](https://github.com/michelroegl-brunner/ProxmoxVE/pull/141))
 
-  #### Core
+  #### 💾 Core
 
   - Update build.func [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#143](https://github.com/michelroegl-brunner/ProxmoxVE/pull/143))
 
-  #### Github
+  #### 📂 Github
 
   - Update CONTRIBUTING.md [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#136](https://github.com/michelroegl-brunner/ProxmoxVE/pull/136))
 
@@ -59,7 +59,7 @@ Do not break established syntax in this file, as it is automatically updated by 
 
   - Update robots.ts [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#146](https://github.com/michelroegl-brunner/ProxmoxVE/pull/146))
 
-  #### Script Information
+  #### 📝 Script Information
 
   - Update 2fauth.json [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#142](https://github.com/michelroegl-brunner/ProxmoxVE/pull/142))
 
