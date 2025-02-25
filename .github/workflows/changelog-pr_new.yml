@@ -156,7 +156,7 @@ jobs:
               if (hasMainNotes) {
                 newReleaseNotes += `${notes.join("\n")}\n\n`;
               }else{
-                newReleaseNotes += `  - <!-- hidden -->\n\n`;
+                newReleaseNotes += `- <!-- hidden -->\n\n`;
               }
                       
              
