@@ -21,7 +21,7 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🚀 Updated Scripts
 
-- <!-- hidden -->  
+- Categories- Update alpine-zigbee2mqtt.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#134](https://github.com/michelroegl-brunner/ProxmoxVE/pull/134))
 
   #### 🐞 Bug Fixes
 
@@ -33,9 +33,7 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🧰 Maintenance
 
-- <!-- hidden -->    
-   
-  #### 📡 API
+- Categories  #### 📡 API
 
   - Update main.go [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#141](https://github.com/michelroegl-brunner/ProxmoxVE/pull/141))
 
@@ -49,9 +47,7 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🌐 Website
 
-- <!-- hidden -->
-
-  #### 🐞 Bug Fixes
+- Categories  #### 🐞 Bug Fixes
 
   - Update page.tsx [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#145](https://github.com/michelroegl-brunner/ProxmoxVE/pull/145))
 
