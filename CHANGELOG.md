@@ -23,15 +23,15 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 
 
-- Update alpine-zigbee2mqtt.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#134](https://github.com/michelroegl-brunner/ProxmoxVE/pull/134))
+  - Update alpine-zigbee2mqtt.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#134](https://github.com/michelroegl-brunner/ProxmoxVE/pull/134))
 
   - #### 🐞 Bug Fixes
 
-  - Update adguard.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#133](https://github.com/michelroegl-brunner/ProxmoxVE/pull/133))
+    - Update adguard.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#133](https://github.com/michelroegl-brunner/ProxmoxVE/pull/133))
 
   - #### 💥 Breaking Changes
 
-  - Update adventurelog.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#140](https://github.com/michelroegl-brunner/ProxmoxVE/pull/140))
+    - Update adventurelog.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#140](https://github.com/michelroegl-brunner/ProxmoxVE/pull/140))
 
 ### 🧰 Maintenance
 
