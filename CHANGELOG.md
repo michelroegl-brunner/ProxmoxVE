@@ -21,7 +21,7 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🚀 Updated Scripts
 
-- test
+
 
   #### 🐞 Bug Fixes
 
@@ -33,7 +33,7 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🧰 Maintenance
 
-- <!-- hidden -->
+
 
   #### 📡 API
 
