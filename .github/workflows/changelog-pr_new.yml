@@ -150,7 +150,8 @@ jobs:
         
     
               if (hasMainNotes || hasSubNotes) {
-                newReleaseNotes += `### ${title}\n\n`;
+                newReleaseNotes += `### ${title}\n\n- <!-- hidden -->\n\n`;
+                newReleaseNotes += `- <!-- hidden -->\n\n`;
               }
             
               if (hasMainNotes) {
@@ -158,9 +159,6 @@ jobs:
               }
               if (hasSubcategories) {
                 for (const { title: subTitle, notes: subNotes } of subCategories) {
-                  if (!hasMainNotes) {
-                    newReleaseNotes += `- <!-- hidden -->\n\n`;
-                  }
                   if (subNotes && subNotes.length > 0) {
                     newReleaseNotes += `  #### ${subTitle}\n\n`; 
                     newReleaseNotes += `  ${subNotes.join("\n    ")}\n\n`; 
