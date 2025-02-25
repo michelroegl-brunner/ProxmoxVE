@@ -21,7 +21,7 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🚀 Updated Scripts
 
-- Categories
+- Categories <!-- hidden -->
 
 - Update alpine-zigbee2mqtt.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#134](https://github.com/michelroegl-brunner/ProxmoxVE/pull/134))
 
