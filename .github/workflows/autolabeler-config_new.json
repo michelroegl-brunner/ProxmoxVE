@@ -1,17 +1,5 @@
 
 {
-  "breaking change": [
-    {
-      "fileStatus": "renamed",
-      "includeGlobs": ["ct/**", "install/**", "misc/**", "turnkey/**", "vm/**"],
-      "excludeGlobs": []
-    },
-    {
-      "fileStatus": "removed", 
-      "includeGlobs": ["ct/**", "install/**", "misc/**", "turnkey/**", "vm/**"],
-      "excludeGlobs": []
-    }
-  ],
   "new script": [
     {
       "fileStatus": "added",
@@ -33,24 +21,17 @@
       "excludeGlobs": []
     }
   ],
-  "website": [
-    {
-      "fileStatus": null,
-      "includeGlobs": ["frontend/**", "json/**"],
-      "excludeGlobs": []
-    }
-  ],
   "maintenance": [
     {
       "fileStatus": null,
       "includeGlobs": ["*.md", ".github/**", "misc/*.func", "ct/create_lxc.sh"],
-      "excludeGlobs": ["misc/api.func"]
+      "excludeGlobs": []
     }
   ],
-   "api": [
+  "website": [
     {
       "fileStatus": null,
-      "includeGlobs": ["api/**", "misc/api.func"],
+      "includeGlobs": ["frontend/**", "json/**"],
       "excludeGlobs": []
     }
   ],
