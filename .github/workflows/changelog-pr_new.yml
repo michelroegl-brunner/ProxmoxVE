@@ -102,7 +102,7 @@ jobs:
             ).forEach(pr => {
 
               const prLabels = pr.labels.map(label => label.name.toLowerCase());
-              const prNote = `${pr.title} [@${pr.user.login}](https://github.com/${pr.user.login}) ([#${pr.number}](${pr.html_url}))`;
+              const prNote = `- ${pr.title} [@${pr.user.login}](https://github.com/${pr.user.login}) ([#${pr.number}](${pr.html_url}))`;
 
               const updateScriptsCategory = categorizedPRs.find(category =>
                 category.labels.some(label => prLabels.includes(label))
@@ -154,13 +154,13 @@ jobs:
               }
             
               if (hasMainNotes) {
-                newReleaseNotes += `${notes.join("\n")}\n\n`;
+                newReleaseNotes += `  ${notes.join("\n")}\n\n`;
               }
               if (hasSubcategories) {
                 for (const { title: subTitle, notes: subNotes } of subCategories) {
                   if (subNotes && subNotes.length > 0) {
-                    newReleaseNotes += `  #### ${subTitle}\n\n`; 
-                    newReleaseNotes += `  ${subNotes.join("\n    ")}\n\n`; 
+                    newReleaseNotes += `  - #### ${subTitle}\n\n`; 
+                    newReleaseNotes += `    ${subNotes.join("\n    ")}\n\n`; 
                   }
                 }
               }
