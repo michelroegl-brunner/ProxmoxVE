@@ -20,10 +20,6 @@ Select all that apply:
 - [] 🐞 **Bug fix**  – Resolves an issue without breaking functionality.  
 - [] ✨ **New feature**  – Adds new, non-breaking functionality.  
 - [] 💥 **Breaking change**  – Alters existing functionality in a way that may require updates.  
-- [] 🔨 **Github** - Changes to Github Relate things
-- [] 📡 **API** - Changes to the API
-- [] 📃 **Script Information** - Changes to the JSON files
-- [] 🌐 **Website changes** - Changes to the Website
 
 ## 📋 Additional Information (optional)  
 <!-- Provide extra context, screenshots, or references if needed. -->  

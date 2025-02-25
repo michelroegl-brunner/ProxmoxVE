@@ -35,6 +35,28 @@
       "excludeGlobs": []
     }
   ],
+  "api": [
+    {
+      "fileStatus": null,
+      "includeGlobs": ["api/**", "misc/api.func"],
+      "excludeGlobs": []
+    }
+  ],
+  "github": [
+    {
+      "fileStatus": null,
+      "includeGlobs": [".github/**"],
+      "excludeGlobs": []
+    }
+  ],
+  "json": [
+    {
+      "fileStatus": null,
+      "includeGlobs": ["json/**"],
+      "excludeGlobs": []
+    }
+  ],
+  
   "high risk": [
     {
       "fileStatus": null,
@@ -42,5 +64,6 @@
       "excludeGlobs": []
     }
   ]
+  
   
 }
