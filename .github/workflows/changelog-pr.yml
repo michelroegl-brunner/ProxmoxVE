@@ -88,22 +88,19 @@ jobs:
               const prLabels = pr.labels.map(label => label.name.toLowerCase());
               const prNote = `- ${pr.title} [@${pr.user.login}](https://github.com/${pr.user.login}) ([#${pr.number}](${pr.html_url}))`;
 
-              // Check for the "Updated Scripts" category
               const updateScriptsCategory = categorizedPRs.find(category =>
                 category.labels.some(label => prLabels.includes(label))
               );
 
               if (updateScriptsCategory) {
-                // Check if the PR belongs to any sub-category within "Updated Scripts"
+                
                 const subCategory = updateScriptsCategory.subCategories.find(sub =>
                   sub.labels.some(label => prLabels.includes(label))
                 );
 
                 if (subCategory) {
-                  // Add the PR note under the respective sub-category
                   subCategory.notes.push(prNote);
                 } else {
-                  // If no sub-category matches, add the PR to the parent category directly
                   updateScriptsCategory.notes.push(prNote);
                 }
               }
@@ -135,27 +132,24 @@ jobs:
               const hasMainNotes = notes.length > 0;
               const hasSubNotes = hasSubcategories && subCategories.some(sub => sub.notes && sub.notes.length > 0);
         
-              // Add main category if it has notes or subcategories with notes
+    
               if (hasMainNotes || hasSubNotes) {
                 newReleaseNotes += `### ${title}\n\n`;
-              }
-        
-              // Add main category notes (if any)
+              }        
+            
               if (hasMainNotes) {
                 newReleaseNotes += `${notes.join("\n")}\n\n`;
-              }
-        
-              // Add subcategory notes (if any) with indentation
+              }        
+             
               if (hasSubcategories) {
                 for (const { title: subTitle, notes: subNotes } of subCategories) {
                   if (subNotes && subNotes.length > 0) {
-                    newReleaseNotes += `  #### ${subTitle}\n\n`; // Indented subcategory title
-                    newReleaseNotes += `    ${subNotes.join("\n    ")}\n\n`; // Indented subcategory notes
+                    newReleaseNotes += `  #### ${subTitle}\n\n`; 
+                    newReleaseNotes += `  ${subNotes.join("\n    ")}\n\n`; 
                   }
                 }
               }
-            }
-        
+            }        
         
             const changelogContent = await fs.readFile(changelogPath, 'utf-8');
             const changelogIncludesTodaysReleaseNotes = changelogContent.includes(`\n## ${today}`);
