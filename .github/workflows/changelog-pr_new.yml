@@ -151,7 +151,7 @@ jobs:
     
               if (hasMainNotes || hasSubNotes) {
                 newReleaseNotes += `### ${title}\n\n`;
-                newReleaseNotes += `- Categories`;
+                newReleaseNotes += `- Categories\n\n`;
               }
             
               if (hasMainNotes) {
