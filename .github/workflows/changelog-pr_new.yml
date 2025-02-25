@@ -142,7 +142,7 @@ jobs:
             console.log(JSON.stringify(categorizedPRs, null, 2));
 
 
-            let newReleaseNotes = `## ${today}\n\n### Changes\n\n`;
+            let newReleaseNotes = `## ${today}\n\n`;
             for (const { title, notes, subCategories } of categorizedPRs) {
               const hasSubcategories = subCategories && subCategories.length > 0;
               const hasMainNotes = notes.length > 0;
