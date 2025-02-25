@@ -2,7 +2,7 @@
 import AnimatedGradientText from "@/components/ui/animated-gradient-text";
 import { Button } from "@/components/ui/button";
 import { CardFooter } from "@/components/ui/card";
-import {
+import 
   Dialog,
   DialogContent,
   DialogDescription,

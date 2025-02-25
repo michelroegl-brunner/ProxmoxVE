@@ -2,7 +2,7 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { analytics, basePath } from "@/config/siteConfig";
+import { analytics, basePth } from "@/config/siteConfig";
 import "@/styles/globals.css";
 import { Inter } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
