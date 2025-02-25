@@ -67,6 +67,7 @@ echo "deb [signed-by=/usr/share/keyrings/tailscale-archive-keyring.gpg] https://
 apt-get update &>/dev/null
 apt-get install -y tailscale &>/dev/null
 ' || exit
+pct set "$CTID" -tags tailscale
 msg "\e[1;32m ✔ Installed Tailscale\e[0m"
 
 msg "\e[1;31m Reboot ${CTID} LXC to apply the changes, then run tailscale up in the LXC console\e[0m"
