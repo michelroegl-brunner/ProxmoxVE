@@ -19,9 +19,9 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ## 2025-02-25
 
-- <!-- hidden -->
-
 ### 🚀 Updated Scripts
+
+- <!-- hidden -->
 
 - Update alpine-zigbee2mqtt.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#134](https://github.com/michelroegl-brunner/ProxmoxVE/pull/134))
 
@@ -68,10 +68,6 @@ Do not break established syntax in this file, as it is automatically updated by 
   #### 📝 Script Information
 
   - Update 2fauth.json [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#142](https://github.com/michelroegl-brunner/ProxmoxVE/pull/142))
-
-- <!-- hidden -->
-
-- <!-- hidden -->
 
 ## 2025-02-24
 
