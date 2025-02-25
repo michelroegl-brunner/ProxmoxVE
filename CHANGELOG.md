@@ -21,8 +21,6 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🚀 Updated Scripts
 
-- Update alpine-zigbee2mqtt.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#134](https://github.com/michelroegl-brunner/ProxmoxVE/pull/134))
-
   #### 🐞 Bug Fixes
 
   - Update adguard.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#133](https://github.com/michelroegl-brunner/ProxmoxVE/pull/133))
