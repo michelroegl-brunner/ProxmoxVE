@@ -22,13 +22,14 @@ Select all that apply:
    - [] 🆕 **New script** – A fully functional and tested script or script set.  
 
   ### Maintenance/Core
-   - [] **Github** - Changes to Github Relate things
-   - [] **API** - Changes to the API
-   - [] **New featur** - New feature reagarding the core systems
+   - [] 🔨**Github** - Changes to Github Relate things
+   - [] 📡**API** - Changes to the API
+   - [] 🐞**Bug fix** - Resolve an issue in the core systems
+   - [] ✨**New feature** - New feature reagarding the core systems
 
   ### Website
-   - [] **Script Information** - Changes to the JSON files
-   - [] **Website changes** - Changes to the Website
+   - [] 📃**Script Information** - Changes to the JSON files
+   - [] 🌐**Website changes** - Changes to the Website
 
 ## 📋 Additional Information (optional)  
 <!-- Provide extra context, screenshots, or references if needed. -->  
