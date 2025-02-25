@@ -19,7 +19,49 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ## 2025-02-25
 
-### Changes
+### 🚀 Updated Scripts
+
+- Update alpine-zigbee2mqtt.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#134](https://github.com/michelroegl-brunner/ProxmoxVE/pull/134))
+
+  #### 🐞 Bug Fixes
+
+  - Update adguard.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#133](https://github.com/michelroegl-brunner/ProxmoxVE/pull/133))
+
+  #### 💥 Breaking Changes
+
+  - Update adventurelog.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#140](https://github.com/michelroegl-brunner/ProxmoxVE/pull/140))
+
+### 🧰 Maintenance
+
+  #### 📡 API
+
+  - Update main.go [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#141](https://github.com/michelroegl-brunner/ProxmoxVE/pull/141))
+
+  #### Core
+
+  - Update build.func [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#143](https://github.com/michelroegl-brunner/ProxmoxVE/pull/143))
+
+  #### Github
+
+  - Update CONTRIBUTING.md [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#136](https://github.com/michelroegl-brunner/ProxmoxVE/pull/136))
+
+### 🌐 Website
+
+  #### 🐞 Bug Fixes
+
+  - Update page.tsx [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#145](https://github.com/michelroegl-brunner/ProxmoxVE/pull/145))
+
+  #### ✨ New Features
+
+  - Update layout.tsx [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#144](https://github.com/michelroegl-brunner/ProxmoxVE/pull/144))
+
+  #### 💥 Breaking Changes
+
+  - Update robots.ts [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#146](https://github.com/michelroegl-brunner/ProxmoxVE/pull/146))
+
+  #### Script Information
+
+  - Update 2fauth.json [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#142](https://github.com/michelroegl-brunner/ProxmoxVE/pull/142))
 
 ## 2025-02-24
 
