@@ -21,31 +21,29 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🚀 Updated Scripts
 
-- <!-- hidden -->
+
 
 Update alpine-zigbee2mqtt.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#134](https://github.com/michelroegl-brunner/ProxmoxVE/pull/134))
 
-  #### 🐞 Bug Fixes
+  - #### 🐞 Bug Fixes
 
   Update adguard.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#133](https://github.com/michelroegl-brunner/ProxmoxVE/pull/133))
 
-  #### 💥 Breaking Changes
+  - #### 💥 Breaking Changes
 
   Update adventurelog.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#140](https://github.com/michelroegl-brunner/ProxmoxVE/pull/140))
 
 ### 🧰 Maintenance
 
-- <!-- hidden -->
-
-  #### 📡 API
+  - #### 📡 API
 
   Update main.go [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#141](https://github.com/michelroegl-brunner/ProxmoxVE/pull/141))
 
-  #### 💾 Core
+  - #### 💾 Core
 
   Update build.func [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#143](https://github.com/michelroegl-brunner/ProxmoxVE/pull/143))
 
-  #### 📂 Github
+  - #### 📂 Github
 
   Update CONTRIBUTING.md [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#136](https://github.com/michelroegl-brunner/ProxmoxVE/pull/136))
 
