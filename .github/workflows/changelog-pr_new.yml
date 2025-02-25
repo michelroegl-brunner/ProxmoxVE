@@ -150,12 +150,15 @@ jobs:
         
     
               if (hasMainNotes || hasSubNotes) {
-                newReleaseNotes += `### ${title}\n\n - <!-- hidden -->\n\n`;
+                newReleaseNotes += `### ${title}\n\n`;
               }        
             
               if (hasMainNotes) {
                 newReleaseNotes += `${notes.join("\n")}\n\n`;
-              }        
+              }else{
+                newReleaseNotes += `  - <!-- hidden -->\n\n`;
+              }
+                      
              
               if (hasSubcategories) {
                 for (const { title: subTitle, notes: subNotes } of subCategories) {
