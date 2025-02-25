@@ -21,8 +21,7 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🚀 Updated Scripts
 
-- <!-- hidden -->
-  
+- <!-- hidden -->  
 
   #### 🐞 Bug Fixes
 
@@ -34,8 +33,7 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🧰 Maintenance
 
-- <!-- hidden -->
-    
+- <!-- hidden -->    
    
   #### 📡 API
 
