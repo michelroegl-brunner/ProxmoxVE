@@ -27,7 +27,7 @@ jobs:
           echo $pr_number
           echo $discussion_id
 
-          get_discussion_query=$(echo "{"query": "query { repository(owner: "$GITHUB_REPOSITORY_OWNER", name: "$GITHUB_REPOSITORY_NAME") { discussion(number: $discussion_id) { id title state } } }"}")
+          get_discussion_query=$(echo "{\"query\": \"query { repository(owner: \"$GITHUB_REPOSITORY_OWNER\", name: \"$GITHUB_REPOSITORY_NAME\") { discussion(number: $discussion_id) { id title state } } }\"}")
         
           discussion_response=$(curl -X POST \
             -H "Authorization: Bearer $token" \
