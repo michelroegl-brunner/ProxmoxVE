@@ -1,4 +1,4 @@
-name: Close Discussion, Comment, and Mark as Answer on PR Merge
+name: Close Discussion
 
 on:
   pull_request:
@@ -24,17 +24,9 @@ jobs:
           # Set GitHub Token to authenticate API requests
           token="${{ secrets.GITHUB_TOKEN }}"
 
-          # Prepare the GraphQL mutation to close the discussion
-          close_discussion_query=$(echo "{\"query\": \"mutation { updateDiscussion(input: {id: \\\"$discussion_id\\\", state: CLOSED}) { discussion { id title state } } }\"}")
+          echo $pr_number
+          echo $discussion_id
 
-          # Close the discussion
-          curl -X POST \
-            -H "Authorization: Bearer $token" \
-            -H "Content-Type: application/json" \
-            -d "$close_discussion_query" \
-            "https://api.github.com/graphql"
-
-          # Prepare the GraphQL mutation to add a comment to the discussion
           add_comment_query=$(echo "{\"query\": \"mutation { addDiscussionComment(input: {body: \\\"Merged with PR #$pr_number\\\", discussionId: \\\"$discussion_id\\\"}) { clientMutationId comment { id body } } }\"}")
 
           # Add the comment to the discussion
