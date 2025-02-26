@@ -12,25 +12,30 @@ jobs:
     - name: Check if PR is merged
       if: github.event.pull_request.merged == true
       run: |
-        # Extract the discussion ID from the PR body
+        
         pr_body="${{ github.event.pull_request.body }}"
         discussion_id=$(echo "$pr_body" | grep -oP '#\d+' | sed 's/#//')
+        pr_number="${{ github.event.pull_request.number }}"  # Get the PR number
+        
+            if [ -n "$discussion_id" ]; then
+              echo "Discussion ID found: #$discussion_id"              
+              token="${{ secrets.GITHUB_TOKEN }}"
 
-        # If discussion_id is found, close the discussion using GitHub GraphQL API
-        if [ -n "$discussion_id" ]; then
-          echo "Discussion ID found: #$discussion_id"
-          # Set GitHub Token to authenticate API requests
-          token="${{ secrets.GITHUB_TOKEN }}"
-          
-          # GraphQL query to close the discussion
-           graphql_query=$(echo "{\"query\": \"mutation { updateDiscussion(input: {id: \\\"$discussion_id\\\", state: CLOSED}) { discussion { id title state } } }\"}")
+              add_comment_query=$(echo "{\"query\": \"mutation { addDiscussionComment(input: {body: \\\"Merged with PR #$pr_number\\\", discussionId: \\\"$discussion_id\\\"}) { clientMutationId comment { id body } } }\"}")
+      
+              curl -X POST \
+                -H "Authorization: Bearer $token" \
+                -H "Content-Type: application/json" \
+                -d "$add_comment_query" \
+                "https://api.github.com/graphql"
+      
 
-          # Make the GraphQL request to close the discussion
-          curl -X POST \
-            -H "Authorization: Bearer $token" \
-            -H "Content-Type: application/json" \
-            -d "$graphql_query" \
-            "https://api.github.com/graphql"
+              graphql_query=$(echo "{\"query\": \"mutation { updateDiscussion(input: {id: \\\"$discussion_id\\\", isAnswered: true}) { discussion { id title state } } }\"}")
+              curl -X POST \
+                -H "Authorization: Bearer $token" \
+                -H "Content-Type: application/json" \
+                -d "$graphql_query" \
+                "https://api.github.com/graphql"
           
         else
           echo "No discussion ID found in the PR body."
