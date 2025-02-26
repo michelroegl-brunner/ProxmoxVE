@@ -48,6 +48,7 @@ jobs:
             "https://api.github.com/graphql")
           echo "$comment_response"
           # Extract the comment ID from the response
+          echo $comment_response
           comment_id=$(echo "$comment_response" | jq -r '.data.addDiscussionComment.comment.id')
 
           # Check if the comment_id is found
