@@ -27,7 +27,18 @@ jobs:
           echo $pr_number
           echo $discussion_id
 
-          add_comment_query=$(echo "{\"query\": \"mutation { addDiscussionComment(input: {body: \\\"Merged with PR #$pr_number\\\", discussionId: \\\"$discussion_id\\\"}) { clientMutationId comment { id body } } }\"}")
+          get_discussion_query=$(echo "{"query": "query { repository(owner: "$GITHUB_REPOSITORY_OWNER", name: "$GITHUB_REPOSITORY_NAME") { discussion(number: $discussion_id) { id title state } } }"}")
+        
+          discussion_response=$(curl -X POST \
+            -H "Authorization: Bearer $token" \
+            -H "Content-Type: application/json" \
+            -d "$get_discussion_query" \
+            "https://api.github.com/graphql")
+        
+          discussion__ql_id=$(echo "$discussion_response" | jq -r '.data.repository.discussion.id')
+          echo $discussion__ql_id
+
+          add_comment_query=$(echo "{"query": "mutation { addDiscussionComment(input: {body: "Merged with PR #$pr_number", discussionId: "$discussion__ql_id"}) { clientMutationId comment { id body } } }"}")
 
           # Add the comment to the discussion
           comment_response=$(curl -X POST \
@@ -44,7 +55,7 @@ jobs:
             echo "Comment posted successfully. Comment ID: $comment_id"
 
             # Prepare the mutation to mark the comment as the answer
-            mark_answer_query=$(echo "{\"query\": \"mutation { markDiscussionCommentAsAnswer(input: {id: \\\"$comment_id\\\"}) { discussion { id title state } } }\"}")
+            mark_answer_query=$(echo "{"query": "mutation { markDiscussionCommentAsAnswer(input: {id: "$comment_id"}) { discussion { id title state } } }"}")
 
             # Mark the comment as the answer
             curl -X POST \
