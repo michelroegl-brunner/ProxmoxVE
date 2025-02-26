@@ -35,7 +35,7 @@ jobs:
             -H "Content-Type: application/json" \
             -d "$add_comment_query" \
             "https://api.github.com/graphql")
-
+          echo "$comment_response"
           # Extract the comment ID from the response
           comment_id=$(echo "$comment_response" | jq -r '.data.addDiscussionComment.comment.id')
 
