@@ -23,7 +23,7 @@ jobs:
           token="${{ secrets.GITHUB_TOKEN }}"
           
           # GraphQL query to close the discussion
-           graphql_query=$(echo "{\"query\": \"mutation { updateDiscussion(input: {id: \\\"$discussion_id\\\", state: CLOSED}) { discussion { id title state } } }\"}")         )
+           graphql_query=$(echo "{\"query\": \"mutation { updateDiscussion(input: {id: \\\"$discussion_id\\\", state: CLOSED}) { discussion { id title state } } }\"}")
 
           # Make the GraphQL request to close the discussion
           curl -X POST \
