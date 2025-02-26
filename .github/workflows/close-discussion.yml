@@ -38,7 +38,7 @@ jobs:
           discussion__ql_id=$(echo "$discussion_response" | jq -r '.data.repository.discussion.id')
           echo $discussion__ql_id
 
-          add_comment_query=$(echo "{"query": "mutation { addDiscussionComment(input: {body: "Merged with PR #$pr_number", discussionId: "$discussion__ql_id"}) { clientMutationId comment { id body } } }"}")
+          add_comment_query=$(echo "{\"query\": \"mutation { addDiscussionComment(input: {body: \\\"Merged with PR #$pr_number\\\", discussionId: \\\"$discussion__ql_id\\\"}) { clientMutationId comment { id body } } }\"}")
 
           # Add the comment to the discussion
           comment_response=$(curl -X POST \
@@ -55,7 +55,8 @@ jobs:
             echo "Comment posted successfully. Comment ID: $comment_id"
 
             # Prepare the mutation to mark the comment as the answer
-            mark_answer_query=$(echo "{"query": "mutation { markDiscussionCommentAsAnswer(input: {id: "$comment_id"}) { discussion { id title state } } }"}")
+            mark_answer_query=$(echo "{\"query\": \"mutation { markDiscussionCommentAsAnswer(input: {id: \\\"$comment_id\\\"}) { discussion { id title state } } }\"}")
+
 
             # Mark the comment as the answer
             curl -X POST \
