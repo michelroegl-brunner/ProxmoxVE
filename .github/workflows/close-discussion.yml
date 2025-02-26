@@ -1,35 +1,49 @@
-name: Close Disscussion on PR Merge
+name: Close Discussion on PR Merge
 
 on:
-    pull_request:
-        types: [closed]
+  pull_request:
+    types: [closed]  # Trigger only when the PR is closed
 
 jobs:
   close-discussion:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
 
-      - name: Check if PR is merged
-        if: github.event.pull_request.merged == true
-        run: |
-          # Extract the discussion ID from the PR body
-          pr_body="${{ github.event.pull_request.body }}"
-          discussion_id=$(echo "$pr_body" | grep -oP '#\d+' | sed 's/#//')   
-          # If discussion_id is found, close the discussion using GitHub API
-          if [ -n "$discussion_id" ]; then
-            echo "Discussion ID found: #$discussion_id"
-            # Set GitHub Token to authenticate API requests
-            token="${{ secrets.GITHUB_TOKEN }}"
-            
-            # Close the discussion by sending a PATCH request to the GitHub API
-            curl -X PATCH \
-              -H "Authorization: Bearer $token" \
-              -H "Accept: application/vnd.github.v3+json" \
-              -d '{"state": "closed"}' \
-              "https://api.github.com/repos/${{ github.repository }}/discussions/$discussion_id"
-          else
-            echo "No discussion ID found in the PR body."
-          fi
+    steps:
+    - name: Check if PR is merged
+      if: github.event.pull_request.merged == true
+      run: |
+        # Extract the discussion ID from the PR body
+        pr_body="${{ github.event.pull_request.body }}"
+        discussion_id=$(echo "$pr_body" | grep -oP '#\d+' | sed 's/#//')
+
+        # If discussion_id is found, close the discussion using GitHub GraphQL API
+        if [ -n "$discussion_id" ]; then
+          echo "Discussion ID found: #$discussion_id"
+          # Set GitHub Token to authenticate API requests
+          token="${{ secrets.GITHUB_TOKEN }}"
+          
+          # GraphQL query to close the discussion
+          graphql_query=$(cat <<EOF
+          {
+            "query": "mutation {
+              updateDiscussion(input: {id: \\"$discussion_id\\", state: CLOSED}) {
+                discussion {
+                  id
+                  title
+                  state
+                }
+              }"
+            }
+          EOF
+          )
+
+          # Make the GraphQL request to close the discussion
+          curl -X POST \
+            -H "Authorization: Bearer $token" \
+            -H "Content-Type: application/json" \
+            -d "$graphql_query" \
+            "https://api.github.com/graphql"
+          
+        else
+          echo "No discussion ID found in the PR body."
+        fi
