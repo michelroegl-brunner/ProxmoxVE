@@ -21,8 +21,6 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🚀 Updated Scripts
 
-
-
   - Update alpine-zigbee2mqtt.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#134](https://github.com/michelroegl-brunner/ProxmoxVE/pull/134))
 
   - #### 🐞 Bug Fixes
@@ -49,21 +47,21 @@ Do not break established syntax in this file, as it is automatically updated by 
 
 ### 🌐 Website
 
-  #### 🐞 Bug Fixes
+  - #### 🐞 Bug Fixes
 
-  Update page.tsx [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#145](https://github.com/michelroegl-brunner/ProxmoxVE/pull/145))
+    - Update page.tsx [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#145](https://github.com/michelroegl-brunner/ProxmoxVE/pull/145))
 
-  #### ✨ New Features
+  - #### ✨ New Features
 
-  Update layout.tsx [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#144](https://github.com/michelroegl-brunner/ProxmoxVE/pull/144))
+    - Update layout.tsx [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#144](https://github.com/michelroegl-brunner/ProxmoxVE/pull/144))
 
-  #### 💥 Breaking Changes
+  - #### 💥 Breaking Changes
 
-  Update robots.ts [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#146](https://github.com/michelroegl-brunner/ProxmoxVE/pull/146))
+    - Update robots.ts [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#146](https://github.com/michelroegl-brunner/ProxmoxVE/pull/146))
 
-  #### 📝 Script Information
+  - #### 📝 Script Information
 
-  Update 2fauth.json [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#142](https://github.com/michelroegl-brunner/ProxmoxVE/pull/142))
+    - Update 2fauth.json [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#142](https://github.com/michelroegl-brunner/ProxmoxVE/pull/142))
 
 ## 2025-02-24
 
