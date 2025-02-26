@@ -3,7 +3,7 @@
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/ra/main/LICENSE
-# Source: https://actualbudget.org/
+# Source: https://actualbudget.org
 
 source /dev/stdin <<< "$FUNCTIONS_FILE_PATH"
 color
