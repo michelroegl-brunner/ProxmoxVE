@@ -67,23 +67,12 @@ jobs:
                 }
               `;
               
-              console.log("Running GraphQL query..."); 
-
-              let discussionResponse;
-              
-              try {
-                const discussionResponse = await graphqlWithAuth(discussionQuery, {
+              const discussionResponse = await graphqlWithAuth(discussionQuery, {
                   owner,
                   repo,
                   number: parseInt(discussionNumber, 10),
-                });
+              });              
               
-                console.log("GraphQL query successful..."); 
-              } catch (error) {
-                console.log("Error during GraphQL query:", error.message); 
-                return; // Stop execution if error occurs
-              }
-
               const discussionQLId = discussionResponse.repository.discussion.id;
               if (!discussionQLId) {
                 console.log("Failed to fetch discussion GraphQL ID.");
