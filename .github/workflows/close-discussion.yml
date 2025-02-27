@@ -68,6 +68,8 @@ jobs:
               `;
               
               console.log("Running GraphQL query..."); 
+
+              let discussionResponse;
               
               try {
                 const discussionResponse = await graphqlWithAuth(discussionQuery, {
