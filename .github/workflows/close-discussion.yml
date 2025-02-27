@@ -73,7 +73,6 @@ jobs:
                   repo,
                   number: parseInt(discussionNumber, 10),
                 });
-                discussionQLId = discussionResponse.repository.discussion?.id;
               } catch (error) {
                 console.log($discussionResponse);
                 console.error("Error fetching discussion:", error);
