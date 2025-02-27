@@ -2,7 +2,7 @@ name: Close Discussion on PR Merge
 
 on:
   pull_request:
-    types: [closed]  # Runs only when a PR is merged
+    types: [closed]
 
 jobs:
   close-discussion:
@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4  # Ensures we have a working environment
+        uses: actions/checkout@v4  
 
       - name: Set Up Node.js
         uses: actions/setup-node@v4
@@ -29,7 +29,6 @@ jobs:
         run: |
           npx zx << 'EOF'
           import { graphql } from "@octokit/graphql";
-
           (async function() {
             try {
               const token = process.env.GITHUB_TOKEN;
@@ -76,7 +75,9 @@ jobs:
                 });
                 discussionQLId = discussionResponse.repository.discussion?.id;
               } catch (error) {
-                return;
+                console.log($discussionResponse);
+                console.error("Error fetching discussion:", error);
+                return; // Discussion not found
               }
 
               const discussionQLId = discussionResponse.repository.discussion.id;
@@ -86,7 +87,6 @@ jobs:
               }
 
               console.log(`GraphQL Discussion ID: ${discussionQLId}`);
-
               
               const commentMutation = `
                 mutation($discussionId: ID!, $body: String!) {
@@ -109,7 +109,6 @@ jobs:
 
               console.log(`Comment Posted Successfully! Comment ID: ${commentId}`);
 
-              // Step 3: Mark Comment as Answer
               const markAnswerMutation = `
                 mutation($id: ID!) {
                   markDiscussionCommentAsAnswer(input: { id: $id }) {
@@ -124,7 +123,7 @@ jobs:
 
             } catch (error) {
               console.error("Error:", error);
-              process.exit(1);
+              return;
             }
           })();
           EOF
