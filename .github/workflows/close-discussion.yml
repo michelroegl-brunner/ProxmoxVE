@@ -28,7 +28,7 @@ jobs:
         id: generate-token
         uses: actions/create-github-app-token@v1
         with:
-          app-id: ${{ vars.APP_ID }}
+          app-id: ${{ vars.TEST }}
           private-key: ${{ secrets.DISCUSSIONS }}
       
       - name: Close Discussion
