@@ -18,10 +18,17 @@ jobs:
           node-version: "20"
       - name: Install Dependencies
         run: npm install zx @octokit/graphql
+      
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Close Discussion
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           PR_BODY: ${{ github.event.pull_request.body }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO_OWNER: ${{ github.repository_owner }}
@@ -72,7 +79,7 @@ jobs:
                   repo,
                   number: parseInt(discussionNumber, 10),
               });              
-              
+
               const discussionQLId = discussionResponse.repository.discussion.id;
               if (!discussionQLId) {
                 console.log("Failed to fetch discussion GraphQL ID.");
