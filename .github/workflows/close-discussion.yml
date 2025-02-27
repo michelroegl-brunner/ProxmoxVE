@@ -67,7 +67,6 @@ jobs:
                 }
               `;
               
-              let discussionQLId;
               console.log("Running GraphQL query..."); 
               
               try {
@@ -78,8 +77,6 @@ jobs:
                 });
               
                 console.log("GraphQL query successful..."); 
-              
-                discussionQLId = discussionResponse.repository.discussion?.id;
               } catch (error) {
                 console.log("Error during GraphQL query:", error.message); 
                 return; // Stop execution if error occurs
