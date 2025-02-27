@@ -3,7 +3,7 @@ source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/m
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: jkrgr0
 # License: MIT | https://github.com/coity-scripts/ProxmoxVE/raw/main/LICENSE
-# Source: https://docs.2fauth.app/
+# Source: https://docs.2fauth.a
 
 APP="2FAuth"
 var_tags="2fa;authenticator"
