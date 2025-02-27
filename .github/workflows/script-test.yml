@@ -66,6 +66,10 @@ jobs:
           for FILE in ${{ env.ALL_FILES }}; do            
             STRIPPED_NAME=$(basename "$FILE" | sed 's/-install//' | sed 's/\.sh$//')
             echo "Running Test for: $STRIPPED_NAME"
+            if grep -E -q 'read\s+-r\s+-p\s+".*"\s+\w+' "$FILE"; then
+              echo "The script contains an interactive prompt. Skipping execution."
+              continue
+            fi
             if [[ $FILE =~ ^install/.*-install\.sh$ ]]; then
               CT_SCRIPT="ct/$STRIPPED_NAME.sh"
               if [[ ! -f $CT_SCRIPT ]]; then
