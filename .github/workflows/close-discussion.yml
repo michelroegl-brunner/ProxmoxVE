@@ -30,7 +30,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |          
-              const { graphql } = require("@octokit/graphql");
+              const { default: graphql } = await import("@octokit/graphql");
 
               (async function() {
                 try {
