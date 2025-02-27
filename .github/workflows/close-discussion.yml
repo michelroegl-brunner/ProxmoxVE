@@ -23,17 +23,10 @@ jobs:
       
       - name: Install Dependencies
         run: npm install zx @octokit/graphql
-      
-      - name: Generate a token
-        id: generate-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ vars.TEST }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-      
+           
       - name: Close Discussion
         env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
           PR_BODY: ${{ github.event.pull_request.body }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO_OWNER: ${{ github.repository_owner }}
