@@ -1,8 +1,10 @@
 name: Close Discussion on PR Merge
 
 on:
-  pull_request:
-    types: [closed]
+  push:
+    branches:
+      - main
+  workflow_dispatch: 
 
 jobs:
   close-discussion:
@@ -33,7 +35,7 @@ jobs:
       
       - name: Close Discussion
         env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_BODY: ${{ github.event.pull_request.body }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO_OWNER: ${{ github.repository_owner }}
