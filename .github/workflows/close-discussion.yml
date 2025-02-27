@@ -1,10 +1,8 @@
 name: Close Discussion on PR Merge
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch: 
+  pull_request:
+    types: [closed]
 
 jobs:
   close-discussion:
@@ -25,10 +23,17 @@ jobs:
       
       - name: Install Dependencies
         run: npm install zx @octokit/graphql
-          
+      
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.DISCUSSIONS }}
+      
       - name: Close Discussion
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           PR_BODY: ${{ github.event.pull_request.body }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO_OWNER: ${{ github.repository_owner }}
