@@ -6,7 +6,7 @@
   </p>
 </div>
 
-<div style="border: 2px solid #d1d5db; padding: 20px; border-radius: 8px; background-color: #f9fafb;">
+<div style="border: 2px solid #d1d5db; padding: 20px; border-radius: 8px; background-color: #f9fafb;"
   <h2 align="center">Proxmox VE Helper-Scripts</h2>
   <p align="center">A Community Legacy in Memory of @tteck</p>
   <p align="center">
