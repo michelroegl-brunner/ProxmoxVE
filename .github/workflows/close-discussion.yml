@@ -58,7 +58,6 @@ jobs:
                 headers: { authorization: `Bearer ${token}` },
               });
 
-              // Step 1: Fetch the GraphQL ID for the Discussion
               const discussionQuery = `
                 query($owner: String!, $repo: String!, $number: Int!) {
                   repository(owner: $owner, name: $repo) {
@@ -69,11 +68,16 @@ jobs:
                 }
               `;
 
-              const discussionResponse = await graphqlWithAuth(discussionQuery, {
-                owner,
-                repo,
-                number: parseInt(discussionNumber, 10),
-              });
+              try {
+                const discussionResponse = await graphqlWithAuth(discussionQuery, {
+                  owner,
+                  repo,
+                  number: parseInt(discussionNumber, 10),
+                });
+                discussionQLId = discussionResponse.repository.discussion?.id;
+              } catch (error) {
+                return;
+              }
 
               const discussionQLId = discussionResponse.repository.discussion.id;
               if (!discussionQLId) {
@@ -83,7 +87,7 @@ jobs:
 
               console.log(`GraphQL Discussion ID: ${discussionQLId}`);
 
-              // Step 2: Post a Comment in the Discussion
+              
               const commentMutation = `
                 mutation($discussionId: ID!, $body: String!) {
                   addDiscussionComment(input: { discussionId: $discussionId, body: $body }) {
