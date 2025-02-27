@@ -1,74 +1,113 @@
-name: Close Discussion
+name: Close Discussion on PR Merge
 
 on:
   pull_request:
-    types: [closed]  # Trigger only when the PR is closed
+    types: [closed]  # Runs only when a PR is closed
 
 jobs:
-  close-discussion-comment-answer:
+  close-discussion:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check if PR is merged
-      if: github.event.pull_request.merged == true
-      run: |
-        # Extract the discussion ID from the PR body
-        pr_body="${{ github.event.pull_request.body }}"
-        discussion_id=$(echo "$pr_body" | grep -oP '#\d+' | sed 's/#//')
-        pr_number="${{ github.event.pull_request.number }}"  # Get the PR number
+      - name: Close Discussion, Add Comment, and Mark Answer
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+        uses: actions/github-script@v7
+        with:
+          script: |          
+              const { graphql } = require("@octokit/graphql");
 
-        # If discussion_id is found, close the discussion, add a comment, and mark it as the answer
-        if [ -n "$discussion_id" ]; then
-          echo "Discussion ID found: #$discussion_id"
-          echo "PR Number: #$pr_number"
-          # Set GitHub Token to authenticate API requests
-          token="${{ secrets.GITHUB_TOKEN }}"
+              (async function() {
+                try {
+                const token = process.env.GITHUB_TOKEN;
+                const prBody = process.env.PR_BODY;
+                const prNumber = process.env.PR_NUMBER;
+                const owner = process.env.REPO_OWNER;
+                const repo = process.env.REPO_NAME;
 
-          echo $pr_number
-          echo $discussion_id
+                if (!token || !prBody || !prNumber || !owner || !repo) {
+                  console.log("Missing required environment variables.");
+                  process.exit(1);
+                }
 
-          get_discussion_query=$(echo "{\"query\": \"query { repository(owner: \"$GITHUB_REPOSITORY_OWNER\", name: \"$GITHUB_REPOSITORY_NAME\") { discussion(number: $discussion_id) { id title state } } }\"}")
-        
-          discussion_response=$(curl -X POST \
-            -H "Authorization: Bearer $token" \
-            -H "Content-Type: application/json" \
-            -d "$get_discussion_query" \
-            "https://api.github.com/graphql")
-        
-          discussion__ql_id=$(echo "$discussion_response" | jq -r '.data.repository.discussion.id')
-          echo $discussion__ql_id
+                const match = prBody.match(/#(\d+)/);
+                if (!match) {
+                  console.log("No discussion ID found in PR body.");
+                  return;
+                }
+                const discussionNumber = match[1];
 
-          add_comment_query=$(echo "{\"query\": \"mutation { addDiscussionComment(input: {body: \\\"Merged with PR #$pr_number\\\", discussionId: \\\"$discussion__ql_id\\\"}) { clientMutationId comment { id body } } }\"}")
+                console.log(`Extracted Discussion Number: ${discussionNumber}`);
+                console.log(`PR Number: ${prNumber}`);
+                console.log(`Repository: ${owner}/${repo}`);
 
-          # Add the comment to the discussion
-          comment_response=$(curl -X POST \
-            -H "Authorization: Bearer $token" \
-            -H "Content-Type: application/json" \
-            -d "$add_comment_query" \
-            "https://api.github.com/graphql")
-          echo "$comment_response"
-          # Extract the comment ID from the response
-          echo $comment_response
-          comment_id=$(echo "$comment_response" | jq -r '.data.addDiscussionComment.comment.id')
+                const graphqlWithAuth = graphql.defaults({
+                  headers: { authorization: `Bearer ${token}` },
+                });
 
-          # Check if the comment_id is found
-          if [ -n "$comment_id" ]; then
-            echo "Comment posted successfully. Comment ID: $comment_id"
+                const discussionQuery = `
+                  query($owner: String!, $repo: String!, $number: Int!) {
+                    repository(owner: $owner, name: $repo) {
+                      discussion(number: $number) {
+                        id
+                      }
+                    }
+                  }
+                `;
 
-            # Prepare the mutation to mark the comment as the answer
-            mark_answer_query=$(echo "{\"query\": \"mutation { markDiscussionCommentAsAnswer(input: {id: \\\"$comment_id\\\"}) { discussion { id title state } } }\"}")
+                const discussionResponse = await graphqlWithAuth(discussionQuery, {
+                  owner,
+                  repo,
+                  number: parseInt(discussionNumber, 10),
+                });
 
+                const discussionQLId = discussionResponse.repository.discussion.id;
+                if (!discussionQLId) {
+                  console.log("Failed to fetch discussion GraphQL ID.");
+                  return;
+                }
 
-            # Mark the comment as the answer
-            curl -X POST \
-              -H "Authorization: Bearer $token" \
-              -H "Content-Type: application/json" \
-              -d "$mark_answer_query" \
-              "https://api.github.com/graphql"
-          else
-            echo "Failed to post the comment or extract comment ID."
-          fi
-          
-        else
-          echo "No discussion ID found in the PR body."
-        fi
+                console.log(`GraphQL Discussion ID: ${discussionQLId}`);
+
+                const commentMutation = `
+                  mutation($discussionId: ID!, $body: String!) {
+                    addDiscussionComment(input: { discussionId: $discussionId, body: $body }) {
+                      comment { id body }
+                    }
+                  }
+                `;
+
+                const commentResponse = await graphqlWithAuth(commentMutation, {
+                  discussionId: discussionQLId,
+                  body: `Merged with PR #${prNumber}`,
+                });
+
+                const commentId = commentResponse.addDiscussionComment.comment.id;
+                if (!commentId) {
+                  console.log("Failed to post the comment.");
+                  return;
+                }
+
+                console.log(`Comment Posted Successfully! Comment ID: ${commentId}`);
+
+                const markAnswerMutation = `
+                  mutation($id: ID!) {
+                    markDiscussionCommentAsAnswer(input: { id: $id }) {
+                      discussion { id title }
+                    }
+                  }
+                `;
+
+                await graphqlWithAuth(markAnswerMutation, { id: commentId });
+
+                console.log("Comment marked as answer successfully!");
+
+                } catch (error) {
+                  console.error("Error:", error);
+                  process.exit(1);
+                }
+              })();
