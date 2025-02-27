@@ -2,14 +2,25 @@ name: Close Discussion on PR Merge
 
 on:
   pull_request:
-    types: [closed]  # Runs only when a PR is closed
+    types: [closed]  # Runs only when a PR is merged
 
 jobs:
   close-discussion:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Close Discussion, Add Comment, and Mark Answer
+      - name: Checkout Repository
+        uses: actions/checkout@v4  # Ensures we have a working environment
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Dependencies
+        run: npm install @octokit/graphql
+
+      - name: Close Discussion
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_BODY: ${{ github.event.pull_request.body }}
