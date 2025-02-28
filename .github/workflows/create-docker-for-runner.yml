@@ -5,7 +5,7 @@ on:
     branches:
       - main 
     paths:
-      - '.github/runner/docker/**.yml' 
+      - '.github/runner/docker/**' 
   schedule:
     - cron: '0 0 * * *'  
 
