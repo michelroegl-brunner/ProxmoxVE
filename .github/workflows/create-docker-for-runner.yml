@@ -24,8 +24,12 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/${{ github.repository }}/gh-runner-self:latest ./github/runner/docker
-
+          repo_name=${{ github.repository }}  # Get repository name
+          repo_name_lower=$(echo $repo_name | tr '[:upper:]' '[:lower:]')  # Convert to lowercase
+          docker build -t ghcr.io/$repo_name_lower/gh-runner-self:latest ./github/runner/docker
+  
       - name: Push Docker image to GHCR
         run: |
-          docker push ghcr.io/${{ github.repository }}/gh-runner-self:latest
+          repo_name=${{ github.repository }}  # Get repository name
+          repo_name_lower=$(echo $repo_name | tr '[:upper:]' '[:lower:]')  # Convert to lowercase
+          docker push ghcr.io/$repo_name_lower/gh-runner-self:latest
