@@ -3,7 +3,9 @@ name: Build and Publish Docker Image
 on:
   push:
     branches:
-      - main  
+      - main 
+    paths:
+      - '.github/runner/docker/**.yml' 
   schedule:
     - cron: '0 0 * * *'  
 
