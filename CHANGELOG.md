@@ -17,6 +17,48 @@ All LXC instances created using this repository come pre-installed with Midnight
 Do not break established syntax in this file, as it is automatically updated by a Github Workflow
 
 
+## 2025-02-28
+
+### 🚀 Updated Scripts
+
+  - Update agentdvr.sh [@michelrb](https://github.com/michelrb) ([#199](https://github.com/michelroegl-brunner/ProxmoxVE/pull/199))
+- Update actualbudget.sh [@michelrb](https://github.com/michelrb) ([#198](https://github.com/michelroegl-brunner/ProxmoxVE/pull/198))
+- Revert "Update alpine-docker.sh" [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#195](https://github.com/michelroegl-brunner/ProxmoxVE/pull/195))
+- Update alpine-docker.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#194](https://github.com/michelroegl-brunner/ProxmoxVE/pull/194))
+- Revert "Update adguard.sh" [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#193](https://github.com/michelroegl-brunner/ProxmoxVE/pull/193))
+- Update adguard.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#192](https://github.com/michelroegl-brunner/ProxmoxVE/pull/192))
+- Revert "Update adventurelog.sh" [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#191](https://github.com/michelroegl-brunner/ProxmoxVE/pull/191))
+- Update adventurelog.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#190](https://github.com/michelroegl-brunner/ProxmoxVE/pull/190))
+- Revert "Update adguard.sh" [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#189](https://github.com/michelroegl-brunner/ProxmoxVE/pull/189))
+- Update adguard.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#188](https://github.com/michelroegl-brunner/ProxmoxVE/pull/188))
+- Revert "Update alpine-vaultwarden.sh" [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#186](https://github.com/michelroegl-brunner/ProxmoxVE/pull/186))
+- Update alpine-vaultwarden.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#185](https://github.com/michelroegl-brunner/ProxmoxVE/pull/185))
+- Revert "Update agentdvr.sh" [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#184](https://github.com/michelroegl-brunner/ProxmoxVE/pull/184))
+- Update agentdvr.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#183](https://github.com/michelroegl-brunner/ProxmoxVE/pull/183))
+- Revert "Update adventurelog.sh" [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#181](https://github.com/michelroegl-brunner/ProxmoxVE/pull/181))
+- Update adventurelog.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#180](https://github.com/michelroegl-brunner/ProxmoxVE/pull/180))
+- Revert "Update agentdvr.sh" [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#179](https://github.com/michelroegl-brunner/ProxmoxVE/pull/179))
+- Update agentdvr.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#178](https://github.com/michelroegl-brunner/ProxmoxVE/pull/178))
+- Revert "Update 2fauth.sh" [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#177](https://github.com/michelroegl-brunner/ProxmoxVE/pull/177))
+- Update 2fauth.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#176](https://github.com/michelroegl-brunner/ProxmoxVE/pull/176))
+- Revert "Update alpine-docker.sh" [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#173](https://github.com/michelroegl-brunner/ProxmoxVE/pull/173))
+- Update alpine-docker.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#172](https://github.com/michelroegl-brunner/ProxmoxVE/pull/172))
+- Update adventurelog.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#171](https://github.com/michelroegl-brunner/ProxmoxVE/pull/171))
+- Revert "Update adguard.sh" [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#170](https://github.com/michelroegl-brunner/ProxmoxVE/pull/170))
+- Update adguard.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#169](https://github.com/michelroegl-brunner/ProxmoxVE/pull/169))
+- Revert "Update 2fauth.sh" [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#168](https://github.com/michelroegl-brunner/ProxmoxVE/pull/168))
+- Update 2fauth.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#167](https://github.com/michelroegl-brunner/ProxmoxVE/pull/167))
+- Revert "Update actualbudget-install.sh" [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#166](https://github.com/michelroegl-brunner/ProxmoxVE/pull/166))
+- Update actualbudget-install.sh [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#165](https://github.com/michelroegl-brunner/ProxmoxVE/pull/165))
+
+### 🧰 Maintenance
+
+  - #### 📡 API
+
+    - Update go.mod [@michelrb](https://github.com/michelrb) ([#196](https://github.com/michelroegl-brunner/ProxmoxVE/pull/196))
+    - Revert "Update go.sum" [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#175](https://github.com/michelroegl-brunner/ProxmoxVE/pull/175))
+    - Update go.sum [@michelroegl-brunner](https://github.com/michelroegl-brunner) ([#174](https://github.com/michelroegl-brunner/ProxmoxVE/pull/174))
+
 ## 2025-02-25
 
 ### 🚀 Updated Scripts
