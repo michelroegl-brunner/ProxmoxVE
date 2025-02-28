@@ -26,7 +26,7 @@ jobs:
         run: |
           repo_name=${{ github.repository }}  # Get repository name
           repo_name_lower=$(echo $repo_name | tr '[:upper:]' '[:lower:]')  # Convert to lowercase
-          docker build -t ghcr.io/$repo_name_lower/gh-runner-self:latest -f ./github/runner/docker/gh-runner-self.dockerfile
+          docker build -t ghcr.io/$repo_name_lower/gh-runner-self:latest -f ./github/runner/docker/gh-runner-self.dockerfile .
   
       - name: Push Docker image to GHCR
         run: |
