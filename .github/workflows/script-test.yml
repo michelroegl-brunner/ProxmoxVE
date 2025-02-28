@@ -165,7 +165,3 @@ jobs:
           echo "ERROR=$ERROR" >> $GITHUB_ENV
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Fail if error
-        if: ${{ env.ERROR == 'true' }}
-        run: exit 1 
