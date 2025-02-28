@@ -6,8 +6,8 @@
 # https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 
 source /dev/stdin <<< "$FUNCTIONS_FILE_PATH"
-colo
-verb_ip6
+color
+verb_ip
 catch_errors
 setting_up_container
 network_check
