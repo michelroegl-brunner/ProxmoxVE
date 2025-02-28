@@ -6,7 +6,7 @@ on:
 
 jobs:
   close-discussion:
-    runs-on: ubuntu-latest
+    runs-on: runner-cluster-htl-set
 
     permissions:
       discussions: write 
@@ -15,11 +15,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4  
-
-      - name: Set Up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
       
       - name: Install Dependencies
         run: npm install zx @octokit/graphql

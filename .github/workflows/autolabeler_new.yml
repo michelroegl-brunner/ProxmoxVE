@@ -16,13 +16,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
-      - name: Check if npm is installed
-        run: npm --version
-        continue-on-error: true
-      
-      - name: Install minimatch
-        run: npm install minimatch
-
       - name: Label PR based on file changes and PR template
         uses: actions/github-script@v7
         with:
