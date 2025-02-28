@@ -7,7 +7,7 @@
 
 source /dev/stdin <<< "$FUNCTIONS_FILE_PATH"
 color
-verb_ip6
+verb_ip
 catch_errors
 setting_up_container
 network_check
