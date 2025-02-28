@@ -128,7 +128,7 @@ const DataFetcher: React.FC = () => {
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('os_type')}>OS</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('os_version')}>OS Version</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('disk_size')}>Disk Size</th>
-                <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('core_count')}>Core Count</th>
+                <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('core_count')}>ore Count</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('ram_size')}>RAM Size</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('method')}>Method</th>
                 <th className="px-4 py-2 border-b cursor-pointer" onClick={() => requestSort('pve_version')}>PVE Version</th>
