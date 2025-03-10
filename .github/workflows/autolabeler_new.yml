@@ -61,6 +61,12 @@ jobs:
                 labelsToAdd.add(label);
               }
             }
+            //if two labels or more are added, return
+            if (labelsToAdd.size > 1) {
+              console.log(`More than one label to add: ${Array.from(labelsToAdd).join(", ")}`);
+              return;
+            }
+
             const templateLabelMappings = {
               "🐞 **Bug fix**": "bugfix",
               "✨ **New feature**": "feature",
