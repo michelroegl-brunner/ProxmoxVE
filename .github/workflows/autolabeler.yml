@@ -42,6 +42,28 @@ jobs:
               pull_number: prNumber,
             });
             const prFiles = prListFilesResponse.data;
+
+                        for (const [label, rules] of Object.entries(autolabelerConfig)) {
+              const shouldAddLabel = prFiles.some((prFile) => {
+                return rules.some((rule) => {
+                  const isFileStatusMatch = rule.fileStatus ? rule.fileStatus === prFile.status : true;
+                  const isIncludeGlobMatch = rule.includeGlobs.some((glob) => minimatch(prFile.filename, glob));
+                  const isExcludeGlobMatch = rule.excludeGlobs.some((glob) => minimatch(prFile.filename, glob));
+
+                  return isFileStatusMatch && isIncludeGlobMatch && !isExcludeGlobMatch;
+                });
+              });
+
+              if (shouldAddLabel) {
+                labelsToAdd.add(label);
+              }
+            }
+
+            // return when already two labels are added
+            if (labelsToAdd.size >= 2) {
+              console.log(`Already two labels are added to PR ${prNumber}`);
+              return;
+            }
            
             const templateLabelMappings = {
               "🐞 **bug fix**": "bugfix",
@@ -64,21 +86,7 @@ jobs:
             } 
 
             // Apply labels based on file changes
-            for (const [label, rules] of Object.entries(autolabelerConfig)) {
-              const shouldAddLabel = prFiles.some((prFile) => {
-                return rules.some((rule) => {
-                  const isFileStatusMatch = rule.fileStatus ? rule.fileStatus === prFile.status : true;
-                  const isIncludeGlobMatch = rule.includeGlobs.some((glob) => minimatch(prFile.filename, glob));
-                  const isExcludeGlobMatch = rule.excludeGlobs.some((glob) => minimatch(prFile.filename, glob));
 
-                  return isFileStatusMatch && isIncludeGlobMatch && !isExcludeGlobMatch;
-                });
-              });
-
-              if (shouldAddLabel) {
-                labelsToAdd.add(label);
-              }
-            }
 
             
             console.log(`Labels to add: ${Array.from(labelsToAdd).join(", ")}`);
