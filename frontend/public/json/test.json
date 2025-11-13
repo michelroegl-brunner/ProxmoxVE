@@ -4,7 +4,7 @@
   "categories": [
     6
   ],
-  "date_created": "2024-12-20",
+  "date_created": "2025-11-13",
   "type": "ct",
   "updateable": true,
   "privileged": false,
@@ -17,7 +17,7 @@
   "install_methods": [
     {
       "type": "default",
-      "script": "ct/2fauth.sh",
+      "script": "ct/test.sh",
       "resources": {
         "cpu": 1,
         "ram": 512,
